@@ -1,0 +1,6 @@
+name: SmileGlobalConfig
+description: SmileGlobalConfig - 全局设置 - 确保所有交互使用简体中文
+interface:
+  hidden: true
+invocation: auto
+

@@ -1,0 +1,8 @@
+name: skill-creator
+description: 创建和开发 AI_Skill 技能
+interface:
+  display_name: "技能开发工具"
+  short_description: "创建、开发和维护 AI 技能"
+  default_prompt: "使用 -creator 创建一个新的 AI 技能"
+  hidden: true
+invocation: auto

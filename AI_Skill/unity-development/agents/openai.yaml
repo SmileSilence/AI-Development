@@ -1,0 +1,13 @@
+interface:
+  display_name: "Unity开发助手"
+  short_description: "Unity项目开发支持"
+  description: "自动检测项目Unity版本、技术栈（URP/HDRP/DOTS/Netcode等）和第三方插件，提供官方文档下载或在线查阅。"
+  icon: "gamepad"
+  color: "#2196F3"
+  tags: ["unity", "game-development", "csharp", "urp", "hdrp", "documentation"]
+  examples:
+    - "创建一个新的Unity项目"
+    - "检测项目使用的技术栈和插件"
+    - "下载Unity 2022.3官方文档到本地"
+    - "在线查看URP文档"
+    - "如何解决编译错误？"

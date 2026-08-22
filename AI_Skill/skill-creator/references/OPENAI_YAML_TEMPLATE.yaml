@@ -1,0 +1,8 @@
+name: <skill-name>
+description: <技能描述>
+interface:
+  display_name: "<显示名称>"
+  short_description: "<简短描述>"
+  default_prompt: "<默认提示词>"
+  hidden: true
+invocation: auto

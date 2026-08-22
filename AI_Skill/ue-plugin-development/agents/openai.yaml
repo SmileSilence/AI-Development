@@ -1,0 +1,13 @@
+interface:
+  display_name: "UE插件开发助手"
+  short_description: "UE插件/扩展开发支持"
+  description: "用于Unreal Engine插件和扩展开发，自动检测项目UE版本、技术栈和第三方插件，提供官方文档下载或在线查阅。"
+  icon: "puzzle-piece"
+  color: "#4CAF50"
+  tags: ["unreal-engine", "plugin", "editor-extension", "blueprint", "lua", "third-party", "module"]
+  examples:
+    - "创建一个UE插件"
+    - "检测项目第三方插件"
+    - "如何创建蓝图函数库？"
+    - "Lua插件绑定开发"
+    - "与Advanced Sessions集成"
