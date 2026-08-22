@@ -1,0 +1,66 @@
+{
+  "install_dir": "$CODEX_HOME/skills",
+  "version": "1.0",
+  "skills": [
+    {
+      "name": "ai-coding-workflow",
+      "description": "\"用于AI辅助编码的完整工作流程，包括需求分析、提示设计、代码生成、审查、测试和迭代优化。当用户请求AI编码帮助、代码生成流程或开发工作流程时激活。\"",
+      "source": "local"
+    },
+    {
+      "name": "code-style",
+      "description": "\"用于代码规范、编码标准和代码风格指南。当用户请求代码格式化、命名约定、注释规范或代码审查时激活。\"",
+      "source": "local"
+    },
+    {
+      "name": "deepseek-harness-plugin-creator",
+      "description": "创建和开发 DeepSeek Harness 插件。当用户要求创建 dsh 插件、开发 DeepSeek Harness 扩展、发布插件到 GitHub 时使用。遵循官方插件规范，支持 dsh add 命令安装。",
+      "source": "local"
+    },
+    {
+      "name": "McpAutoLoader",
+      "description": "按需自动加载 MCP 服务器。当用户需要使用 GitHub、浏览器自动化、代码搜索等功能时，自动检测并启用对应的 MCP 服务器。支持 context7、github、gitlab、playwright、firebase、telegram、discord 等 15+ 个 MCP 服务器。当用户说\"启动 github\"\"加载 playwright\"\"启用 MCP\"等时激活。",
+      "source": "local"
+    },
+    {
+      "name": "mode-manager",
+      "description": "管理 AI Agent 的工作模式：从 mode-state.json 读取并显示当前模式，在 6 种预定义模式（架构、编码、调试、多模式协调、分析、提问）之间切换并持久化，随后按新模式执行。支持 Codex、Claude、DeepSeek Harness、MiMo Code 等多种 Agent。当用户询问\"当前模式\"\"现在是什么模式\"，或说\"切换到X模式\"\"切到编码/调试/分析\"\"进入架构模式\"时使用。",
+      "source": "local"
+    },
+    {
+      "name": "skill-creator",
+      "description": "创建和开发 AI_Skill 技能。当用户要求创建新技能、开发 skill、添加 AI 能力时使用。遵循 D:\\Work\\Config\\AI-Development\\AI_Skill 的开发规范。",
+      "source": "local"
+    },
+    {
+      "name": "SmileGlobalConfig",
+      "description": "全局中文设置 - 确保所有项目、会话交流、文档、代码注释等都使用简体中文。当用户要求使用中文或需要中文交互时激活。",
+      "source": "local"
+    },
+    {
+      "name": "SmileProjectConfig",
+      "description": "项目配置规范 - D:\\Work\\Project 工作区的项目结构、编码规范、Git规范、AI助手行为指南等。当涉及 Python 桌面应用开发、项目初始化、文档生成时激活。",
+      "source": "local"
+    },
+    {
+      "name": "ue-development",
+      "description": "\"用于Unreal Engine项目的开发，包括C++编程、蓝图设计、项目结构管理、构建配置和部署。自动检测项目UE版本，提供官方文档下载或在线查阅，遇到问题时优先查阅对应版本文档。当用户询问UE项目开发、游戏开发、C++/蓝图编程、项目初始化或构建问题时激活。\"",
+      "source": "local"
+    },
+    {
+      "name": "ue-plugin-development",
+      "description": "\"用于Unreal Engine插件和扩展开发，包括插件结构设计、模块创建、蓝图函数库、编辑器扩展、资产类型定义等。自动检测项目UE版本，提供官方文档下载或在线查阅。当用户询问UE插件开发、编辑器扩展、自定义资产类型、蓝图函数库、模块开发时激活。\"",
+      "source": "local"
+    },
+    {
+      "name": "unity-development",
+      "description": "\"用于Unity项目的开发，包括C#编程、场景设计、项目结构管理、构建配置和部署。自动检测项目Unity版本、技术栈（URP/HDRP/DOTS/Netcode等）和第三方插件，提供官方文档下载或在线查阅。当用户询问Unity项目开发、游戏开发、C#编程、项目初始化或构建问题时激活。\"",
+      "source": "local"
+    },
+    {
+      "name": "unity-plugin-development",
+      "description": "\"用于Unity插件和Package开发，包括Package结构设计、程序集定义、编辑器扩展、自定义Inspector、ScriptableObject等。自动检测项目Unity版本、技术栈和第三方插件，提供官方文档下载或在线查阅。当用户询问Unity插件开发、Package开发、编辑器扩展、自定义工具时激活。\"",
+      "source": "local"
+    }
+  ]
+}
