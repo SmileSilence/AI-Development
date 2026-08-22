@@ -91,3 +91,47 @@ Write-Host "1. 技能已安装到 Codex 技能目录" -ForegroundColor White
 Write-Host "2. 重启 Codex 以加载新技能" -ForegroundColor White
 Write-Host "3. 使用 -UseSymlink 参数可创建符号链接（便于同步更新）" -ForegroundColor White
 Write-Host "4. 使用 -Force 参数可强制覆盖已存在的技能" -ForegroundColor White
+# 检查认证配置
+function Test-GitAuth {
+    param([string]$RepoUrl)
+    
+    # 检查SSH
+    if ($RepoUrl -match "^git@") {
+        $sshTest = ssh -T git@github.com 2>&1
+        if ($sshTest -match "successfully authenticated") {
+            return "SSH"
+        }
+    }
+    
+    # 检查HTTPS凭证
+    if ($RepoUrl -match "^https://") {
+        try {
+            $gitTest = git ls-remote $RepoUrl 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                return "HTTPS"
+            }
+        } catch {}
+    }
+    
+    # 检查环境变量
+    if ($env:GITHUB_PAT_TOKEN) {
+        return "PAT"
+    }
+    
+    return $null
+}
+
+# 在安装脚本中添加认证检查
+Write-Host "检查Git认证配置..." -ForegroundColor Cyan
+$repoUrl = "https://github.com/SmileSilence/AI-Development.git"
+$authMethod = Test-GitAuth -RepoUrl $repoUrl
+
+if (-not $authMethod) {
+    Write-Host "警告：未检测到有效的Git认证配置" -ForegroundColor Yellow
+    Write-Host "请按以下方式之一配置认证：" -ForegroundColor Yellow
+    Write-Host "1. 设置环境变量 GITHUB_PAT_TOKEN" -ForegroundColor White
+    Write-Host "2. 配置SSH密钥" -ForegroundColor White
+    Write-Host "3. 使用GitHub CLI登录" -ForegroundColor White
+    Write-Host ""
+    Write-Host "详细说明请查看 INSTALL_README.md" -ForegroundColor White
+}
