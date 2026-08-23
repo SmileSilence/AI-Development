@@ -1,0 +1,47 @@
+{
+  "default_storage_dir": null,
+  "custom_export_dir": "D:/Work/Config",
+  "first_run": true,
+  "configured_at": null,
+  "custom_keywords": {
+    "enabled": true,
+    "keywords": [
+      "SmileKnow",
+      "SmileKnowXXX"
+    ],
+    "set_at": null
+  },
+  "auto_cleanup": {
+    "enabled": false,
+    "frequency": "weekly",
+    "time": "02:00",
+    "last_run": null,
+    "next_run": null,
+    "actions": [
+      "analyze",
+      "cleanup",
+      "extract"
+    ],
+    "notify": false,
+    "retention_days": 30,
+    "max_records": 1000
+  },
+  "encryption": {
+    "enabled": false,
+    "algorithm": "AES-256",
+    "password_hash": null,
+    "auto_lock": true,
+    "lock_timeout": 300
+  },
+  "quick_record": {
+    "enabled": true,
+    "auto_tag": true,
+    "smart_detect": true
+  },
+  "backup": {
+    "auto_backup": true,
+    "frequency": "daily",
+    "max_backups": 10,
+    "backup_dir": "backups"
+  }
+}

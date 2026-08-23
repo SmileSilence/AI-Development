@@ -61,6 +61,11 @@
       "name": "unity-plugin-development",
       "description": "\"用于Unity插件和Package开发，包括Package结构设计、程序集定义、编辑器扩展、自定义Inspector、ScriptableObject等。自动检测项目Unity版本、技术栈和第三方插件，提供官方文档下载或在线查阅。当用户询问Unity插件开发、Package开发、编辑器扩展、自定义工具时激活。\"",
       "source": "local"
+    },
+    {
+      "name": "SmileKnow-Collector",
+      "description": "收集和整理用户在使用过程中遇到的问题、解决方式和查找方法，提炼出通用的工作方式和习惯，形成个人知识库。当用户说\"记录这个问题\"、\"添加解决方案\"、\"查找类似问题\"、\"知识收集\"、\"整理知识库\"、\"提炼方式\"、\"总结习惯\"、\"SmileKnow\"等时激活。",
+      "source": "local"
     }
   ]
 }

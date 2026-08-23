@@ -2,7 +2,7 @@
 name: code-style
 description: "用于代码规范、编码标准和代码风格指南。当用户请求代码格式化、命名约定、注释规范或代码审查时激活。"
 metadata:
-  version: "v1"
+  version: "v3"
 ---
 
 # 代码规范技能
@@ -23,33 +23,36 @@ metadata:
 
 ## 通用规范
 
-### 命名约定
+### 命名规范
 - 使用有意义的变量名、函数名和类名
 - 变量名使用小写字母和下划线（snake_case）或小驼峰（camelCase），根据语言约定
 - 常量使用全大写和下划线（UPPER_SNAKE_CASE）
 - 类名使用大驼峰（PascalCase）
+- 命名风格选择依据：
+  - 小驼峰（camelCase）：第一个单词小写，后续单词首字母大写，如 `firstName`、`getUserName`
+  - 大驼峰（PascalCase）：所有单词首字母大写，如 `FirstName`、`GetUserName`
+  - 蛇形命名（snake_case）：所有字母小写，单词间用下划线连接，如 `first_name`、`get_user_name`
+  - 大写蛇形命名（UPPER_SNAKE_CASE）：所有字母大写，单词间用下划线连接，常用于常量，如 `MAX_VALUE`、`DEFAULT_TIMEOUT`
+- 根据编程语言的惯例选择命名风格，保持项目内部一致性，遵循团队或社区的编码规范
 
-### 命名风格
-- **驼峰命名法（CamelCase）**：
-  - 小驼峰（camelCase）：第一个单词小写，后续单词首字母大写，如`firstName`、`getUserName`
-  - 大驼峰（PascalCase）：所有单词首字母大写，如`FirstName`、`GetUserName`
-- **蛇形命名法（snake_case）**：
-  - 所有字母小写，单词间用下划线连接，如`first_name`、`get_user_name`
-- **大写蛇形命名法（UPPER_SNAKE_CASE）**：
-  - 所有字母大写，单词间用下划线连接，常用于常量，如`MAX_VALUE`、`DEFAULT_TIMEOUT`
-- **命名约定选择**：
-  - 根据编程语言的惯例选择命名风格
-  - 保持项目内部一致性
-  - 遵循团队或社区的编码规范
 ### 代码格式
 - 使用一致的缩进（空格或制表符，根据项目要求）
-- 每行代码长度建议不超过80-120个字符
+- 每行代码长度建议不超过 80-120 个字符
 - 使用空行分隔逻辑块
 
 ### 注释规范
-- 为公共API、复杂算法和业务逻辑添加注释
+- 为公共 API、复杂算法和业务逻辑添加注释
 - 使用文档字符串（docstring）描述函数、类和模块
 - 避免无意义的注释，代码应自解释
+
+### 代码区域划分（region）
+- 使用 region 标记区分代码块/功能块，增强可读性并支持编辑器折叠与跳转
+- region 名称应简洁明确，描述该块的功能，如「初始化」「事件处理」「工具函数」
+- 每个代码块/功能块必须以 region 开始标记开头、结束标记收尾，确保成对匹配
+- region 语法随语言而定：
+  - Lua：`--#region` / `--#endregion`
+  - C#、C/C++、JavaScript：`//#region` / `//#endregion`
+  - Python（部分编辑器）：`#region` / `#endregion`
 
 ### 错误处理
 - 使用适当的异常处理机制
@@ -59,39 +62,41 @@ metadata:
 ## 语言特定规范
 
 ### Python
-- 遵循PEP 8规范
+- 遵循 PEP 8 规范
 - 使用类型提示（type hints）
-- 使用文档字符串（Google或NumPy风格）
+- 使用文档字符串（Google 或 NumPy 风格）
 
 ### C/C++
-- 遵循Google C++ Style Guide或项目特定的规范
+- 遵循 Google C++ Style Guide 或项目特定的规范
 - 使用头文件保护（#ifndef 或 #pragma once）
-- 命名约定：变量和函数使用snake_case，类名使用PascalCase，常量使用UPPER_SNAKE_CASE
+- 命名约定：变量和函数使用 snake_case，类名使用 PascalCase，常量使用 UPPER_SNAKE_CASE
 - 明确内存管理，避免内存泄漏
-- 使用RAII（资源获取即初始化）管理资源
-- 避免使用裸指针，优先使用智能指针（如std::unique_ptr, std::shared_ptr）
-- 使用const正确性
-- 遵循C++核心指南
+- 使用 RAII（资源获取即初始化）管理资源
+- 避免使用裸指针，优先使用智能指针（如 std::unique_ptr, std::shared_ptr）
+- 使用 const 正确性
+- 遵循 C++ 核心指南
 
 ### C#
-- 遵循微软C#编码规范
-- 使用PascalCase用于类名、方法名、属性名和公共成员
-- 使用camelCase用于局部变量和参数
+- 遵循微软 C# 编码规范
+- 使用 PascalCase 用于类名、方法名、属性名和公共成员
+- 使用 camelCase 用于局部变量和参数
 - 使用属性（Properties）而不是公共字段
-- 使用var进行类型推断（当类型明显时）
-- 遵循LINQ最佳实践
-- 使用async/await进行异步编程
+- 使用 var 进行类型推断（当类型明显时）
+- 遵循 LINQ 最佳实践
+- 使用 async/await 进行异步编程
 - 使用依赖注入（DI）和控制反转（IoC）
-- 遵循SOLID原则
+- 遵循 SOLID 原则
 
 ### Lua
-- 使用snake_case用于变量和函数名
-- 避免使用全局变量，优先使用local关键字
-- 使用LuaDoc或LDoc进行注释
-- 遵循LuaRocks风格指南
+- 使用 snake_case 用于变量和函数名
+- 避免使用全局变量，优先使用 local 关键字
+- 使用 LuaDoc 或 LDoc 进行注释
+- 遵循 LuaRocks 风格指南
 - 使用模块化组织代码
 - 避免使用复杂的表构造，保持简洁
 - 使用元表（metatable）进行面向对象编程时，保持清晰
+- **跳转标记**：按文档要求添加跳转标记（如 `--! 标记名`），便于在编辑器中快速定位到对应代码位置，具体语法以项目文档为准
+- **代码区域**：使用 region 标记（`--#region` / `--#endregion`）区分代码块与功能块，每个功能块成对包裹
 
 ## 工作流程
 
@@ -104,9 +109,8 @@ metadata:
 
 当需要特定语言的详细规范时，请参考相应的官方风格指南。
 
+## 版本记录
 
-
-
-
-
-
+- v3 (2026-08-24): 整理优化文档结构：合并命名小节、统一排版与标点格式
+- v2 (2026-08-24): 新增代码区域划分规范（region 区分代码块/功能块）；Lua 新增按文档添加跳转标记与 region 标记要求
+- v1 (2026-08-23): 初始版本
