@@ -1,8 +1,8 @@
 ---
 name: ue-development
-description: "用于Unreal Engine项目的开发，包括C++编程、蓝图设计、项目结构管理、构建配置和部署。自动检测项目UE版本，提供官方文档下载或在线查阅，遇到问题时优先查阅对应版本文档。当用户询问UE项目开发、游戏开发、C++/蓝图编程、项目初始化或构建问题时激活。"
+description: "用于Unreal Engine项目开发：C++编程、蓝图设计、项目结构、构建配置与部署。自动检测项目UE版本并提供对应版本文档。当用户询问UE/虚幻引擎项目开发、游戏开发、C++/蓝图编程、项目初始化或构建时激活。"
 metadata:
-  version: "v1"
+  version: "v2"
 ---
 
 # Unreal Engine 开发指南
@@ -11,9 +11,19 @@ metadata:
 
 ## 触发条件
 
-- 用户说「UE 开发」「虚幻引擎」「Unreal Engine」
-- 用户询问 C++ 编程、蓝图设计、项目初始化
-- 用户说「ue-development」或「UE 开发」
+### 自动触发
+- 用户说「UE」「虚幻引擎」「Unreal Engine」
+- 用户询问 C++ 编程、蓝图设计、关卡/场景、动画、AI、UI(UMG)、网络等游戏功能开发
+- 用户请求 UE 项目初始化、构建配置、部署打包、编译报错排查
+- 用户说「ue-development」
+
+### 不触发（避免误用）
+- 只做 UE 插件/模块/编辑器扩展/蓝图函数库/自定义资产 → 用 `ue-plugin-development`
+- 非 UE 的通用编码 → 用 `ai-coding-workflow` 或 `code-style`
+
+### 与 ue-plugin-development 的边界
+- `ue-development`：引擎内游戏内容与玩法逻辑（Actor/Pawn/组件/关卡/UI/动画/网络）
+- `ue-plugin-development`：引擎扩展层（.uplugin 插件、模块、编辑器工具、自定义资产、蓝图函数库）
 
 ## 核心工作流程
 
@@ -265,6 +275,15 @@ GENERATED_BODY()   // 生成反射代码
 - UE 5.2: https://docs.unrealengine.com/5.2/en-US/
 - UE 5.3: https://docs.unrealengine.com/5.3/en-US/
 - UE 5.4: https://docs.unrealengine.com/5.4/en-US/
+
+---
+
+## 版本记录
+
+| 日期 | 版本 | 变更说明 |
+|------|------|----------|
+| 2026-08-27 | v2 | 优化触发条件：补充不触发场景及与 ue-plugin-development 的边界 |
+| 2026-08-22 | v1 | 初始版本 |
 
 
 

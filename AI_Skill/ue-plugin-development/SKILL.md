@@ -1,8 +1,8 @@
 ---
 name: ue-plugin-development
-description: "用于Unreal Engine插件和扩展开发，包括插件结构设计、模块创建、蓝图函数库、编辑器扩展、资产类型定义等。自动检测项目UE版本，提供官方文档下载或在线查阅。当用户询问UE插件开发、编辑器扩展、自定义资产类型、蓝图函数库、模块开发时激活。"
+description: "用于Unreal Engine插件和扩展开发：插件结构设计、模块创建、蓝图函数库、编辑器扩展、自定义资产类型定义。自动检测项目UE版本并提供对应文档。当用户询问UE插件开发、模块/编辑器扩展、自定义资产、蓝图函数库时激活。"
 metadata:
-  version: "v1"
+  version: "v2"
 ---
 
 # UE插件/扩展开发指南
@@ -11,9 +11,19 @@ metadata:
 
 ## 触发条件
 
-- 用户说「UE 插件开发」「虚幻引擎插件」
-- 用户询问编辑器扩展、蓝图函数库、模块开发
-- 用户说「ue-plugin-development」或「UE 插件」
+### 自动触发
+- 用户说「UE 插件」「虚幻引擎插件」「.uplugin」「模块开发」
+- 用户询问编辑器扩展（工具栏/面板/菜单）、自定义资产类型、蓝图函数库/自定义节点、详情面板
+- 用户请求创建或修改 Plugins/ 下的插件与模块（Runtime/Editor/Developer/ThirdParty）
+- 用户说「ue-plugin-development」
+
+### 不触发（避免误用）
+- 在 UE 游戏内写玩法逻辑（Actor/蓝图/关卡/UI）→ 用 `ue-development`
+- 非 UE 的插件/扩展 → 用 `unity-plugin-development` 或对应平台技能
+
+### 与 ue-development 的边界
+- `ue-plugin-development`：引擎扩展层（插件、模块、编辑器工具、自定义资产、蓝图函数库）
+- `ue-development`：游戏内容层（玩法、蓝图、关卡、UI、动画、网络）
 
 ## 核心工作流程
 
@@ -107,12 +117,6 @@ python scripts/detect_third_party.py [项目路径] --json
 | 资产类型 | `--topic assettypes` |
 
 ---
-
-## 触发条件
-
-- 用户说「UE 插件开发」「虚幻引擎插件」
-- 用户询问编辑器扩展、蓝图函数库、模块开发
-- 用户说「ue-plugin-development」或「UE 插件」
 
 ## 插件结构规范
 
@@ -582,6 +586,15 @@ python scripts/doc_manager.py --mode cloud --topic editorextensions --version [�
 | `detect_ue_version.py` | 检测项目UE版本 |
 | `doc_manager.py` | 文档管理（下载/在线） |
 | `create_plugin.py` | 创建插件骨架 |
+
+---
+
+## 版本记录
+
+| 日期 | 版本 | 变更说明 |
+|------|------|----------|
+| 2026-08-27 | v2 | 优化触发条件：删除重复的触发条件小节，补充不触发场景及与 ue-development 的边界 |
+| 2026-08-22 | v1 | 初始版本 |
 
 
 

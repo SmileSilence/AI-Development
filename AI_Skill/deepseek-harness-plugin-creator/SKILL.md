@@ -1,8 +1,8 @@
 ---
 name: deepseek-harness-plugin-creator
-description: 创建和开发 DeepSeek Harness 插件。当用户要求创建 dsh 插件、开发 DeepSeek Harness 扩展、发布插件到 GitHub 时使用。遵循官方插件规范，支持 dsh add 命令安装。
+description: 创建和开发 DeepSeek Harness (dsh) 插件：plugin.json 清单、命令实现、本地测试与发布 GitHub。当用户要求创建 dsh 插件、开发 DeepSeek Harness 扩展、发布插件到 GitHub 时使用。
 metadata:
-  version: "v1"
+  version: "v2"
   short-description: DeepSeek Harness 插件开发工具
 ---
 
@@ -14,9 +14,18 @@ metadata:
 
 ## 一、触发条件
 
-- 用户说「创建 dsh 插件」「开发 DeepSeek Harness 插件」
-- 用户要求创建可安装的 dsh 扩展
-- 用户说「发布插件到 GitHub」「dsh 插件开发」
+### 自动触发
+- 用户说「创建 dsh 插件」「开发 DeepSeek Harness 插件」「dsh 插件开发」
+- 用户要求创建可安装的 dsh 扩展（plugin.json + src/ + commands/）
+- 用户说「发布插件到 GitHub」「dsh add 安装」
+- 用户说「deepseek-harness-plugin-creator」
+
+### 不触发（避免误用）
+- 创建 Agent 技能（SKILL.md）→ 用 `skill-creator`
+- 修改 dsh 内核/源码本身 → 直接操作 deepseek-harness 源码 checkout，不使用本技能
+
+### 与其他技能的边界
+- `skill-creator`：管理 Agent 技能；`deepseek-harness-plugin-creator`：管理 dsh 插件
 
 ---
 
@@ -249,6 +258,7 @@ A: 避免与其他插件命令重名，如冲突需修改命令名称。
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-08-27 | v2 | 优化触发条件：补充自动触发关键词、不触发场景及与 skill-creator 的边界 |
 | 2026-08-22 | v1 | 初始版本 |
 
 

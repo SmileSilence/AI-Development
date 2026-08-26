@@ -1,9 +1,9 @@
 ---
 name: McpAutoLoader
-description: 按需自动加载 MCP 服务器。当用户需要使用 GitHub、浏览器自动化、代码搜索等功能时，自动检测并启用对应的 MCP 服务器。支持 context7、github、gitlab、playwright、firebase、telegram、discord 等 15+ 个 MCP 服务器。当用户说"启动 github""加载 playwright""启用 MCP"等时激活。
+description: 按需自动加载 MCP 服务器：当用户需要调用 GitHub/GitLab、浏览器自动化(playwright)、代码搜索、Firebase、Telegram、Discord 等服务时，自动检测并启用对应的 MCP 服务器。支持 context7、github、gitlab、playwright 等 15+ 个 MCP。当用户说「启动 github」「加载 playwright」「启用 MCP」等时激活。
 metadata:
   short-description: MCP 按需自动加载器
-  version: "v2"
+  version: "v3"
   author: AI Development Team
 ---
 
@@ -15,7 +15,8 @@ metadata:
 
 ## 一、触发条件
 
-当用户提到以下关键词或功能时，自动启用对应的 MCP 服务器：
+### 自动触发
+当用户需要调用下列服务能力时，启用对应的 MCP 服务器：
 
 | 用户需求关键词 | 对应 MCP 服务器 | 功能描述 |
 |--------------|----------------|---------|
@@ -32,6 +33,15 @@ metadata:
 | 代码搜索、语义搜索 | serena, greptile | 代码搜索 |
 | Terraform、基础设施 | terraform | 基础设施即代码 |
 | 模拟聊天、测试对话 | fakechat | 模拟聊天 |
+
+### 判定要点
+- 以「是否实际需要调用该外部服务」为准：例如「读 GitHub issue / 发 PR」才启用 github MCP
+- MCP 已启用则直接使用，不重复安装
+- 仅讨论概念、无调用需求时，不自动启用
+
+### 不触发（避免误用）
+- 用户仅讨论 GitHub/浏览器 等技术名词，无实际调用需求
+- 用户只要写代码（无需外部服务）→ 用 `ai-coding-workflow`
 
 ---
 
@@ -253,6 +263,7 @@ claude mcp add-json <mcp-name> '<config-json>'
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-08-27 | v3 | 优化触发条件：补充判定要点与不触发场景，避免概念性讨论误触发 |
 | 2026-08-22 | v2 | 新增 MCP 搜索与安装功能，完善文档结构 |
 | 2026-08-22 | v1 | 初始版本 |
 

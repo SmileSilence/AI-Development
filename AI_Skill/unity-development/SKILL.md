@@ -1,8 +1,8 @@
 ---
 name: unity-development
-description: "用于Unity项目的开发，包括C#编程、场景设计、项目结构管理、构建配置和部署。自动检测项目Unity版本、技术栈（URP/HDRP/DOTS/Netcode等）和第三方插件，提供官方文档下载或在线查阅。当用户询问Unity项目开发、游戏开发、C#编程、项目初始化或构建问题时激活。"
+description: "用于Unity项目开发：C#编程、场景设计、项目结构、构建配置与部署。自动检测Unity版本、技术栈（URP/HDRP/DOTS/Netcode等）与第三方插件，并提供对应文档。当用户询问Unity项目开发、游戏开发、C#编程、项目初始化或构建时激活。"
 metadata:
-  version: "v1"
+  version: "v2"
 ---
 
 # Unity 开发指南
@@ -11,9 +11,19 @@ metadata:
 
 ## 触发条件
 
-- 用户说「Unity 开发」「Unity 项目」
-- 用户询问 C# 编程、场景设计、项目初始化
-- 用户说「unity-development」或「Unity 开发」
+### 自动触发
+- 用户说「Unity」「Unity 项目」「Unity 开发」
+- 用户询问 C# 脚本、场景/预制体、物理/动画/UI/网络、渲染管线（URP/HDRP）配置
+- 用户请求 Unity 项目初始化、构建打包、编译/运行报错排查
+- 用户说「unity-development」
+
+### 不触发（避免误用）
+- 只做 Unity 插件/Package/编辑器扩展 → 用 `unity-plugin-development`
+- 非 Unity 的 C#/通用编码 → 用 `ai-coding-workflow` 或 `code-style`
+
+### 与 unity-plugin-development 的边界
+- `unity-development`：项目内游戏内容（场景、预制体、MonoBehaviour 逻辑、构建部署）
+- `unity-plugin-development`：可复用 Package/插件（.asmdef、编辑器扩展、自定义 Inspector、ScriptableObject）
 
 ## 核心工作流程
 
@@ -285,6 +295,15 @@ python scripts/doc_manager.py --mode cloud --topic urp --version 2022.3
 - [Unity Learn](https://learn.unity.com/)
 - [Unity Forum](https://forum.unity.com/)
 - [Asset Store](https://assetstore.unity.com/)
+
+---
+
+## 版本记录
+
+| 日期 | 版本 | 变更说明 |
+|------|------|----------|
+| 2026-08-27 | v2 | 优化触发条件：补充不触发场景及与 unity-plugin-development 的边界 |
+| 2026-08-22 | v1 | 初始版本 |
 
 
 

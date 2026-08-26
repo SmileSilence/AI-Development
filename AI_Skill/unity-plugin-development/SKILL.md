@@ -1,8 +1,8 @@
 ---
 name: unity-plugin-development
-description: "用于Unity插件和Package开发，包括Package结构设计、程序集定义、编辑器扩展、自定义Inspector、ScriptableObject等。自动检测项目Unity版本、技术栈和第三方插件，提供官方文档下载或在线查阅。当用户询问Unity插件开发、Package开发、编辑器扩展、自定义工具时激活。"
+description: "用于Unity插件和Package开发：Package结构设计、程序集定义(.asmdef)、编辑器扩展、自定义Inspector、ScriptableObject等。自动检测Unity版本、技术栈与第三方插件，并提供对应文档。当用户询问Unity插件/Package开发、编辑器扩展、自定义工具时激活。"
 metadata:
-  version: "v1"
+  version: "v2"
 ---
 
 # Unity插件/Package开发指南
@@ -11,9 +11,19 @@ metadata:
 
 ## 触发条件
 
-- 用户说「Unity 插件开发」「Unity Package」
-- 用户询问编辑器扩展、自定义 Inspector、ScriptableObject
-- 用户说「unity-plugin-development」或「Unity 插件」
+### 自动触发
+- 用户说「Unity 插件」「Unity Package」「Package 开发」
+- 用户询问编辑器扩展（Inspector/窗口/菜单/PropertyDrawer）、程序集定义(.asmdef)、ScriptableObject
+- 用户请求创建或修改 Package（package.json、Runtime/、Editor/、Samples~）
+- 用户说「unity-plugin-development」
+
+### 不触发（避免误用）
+- 在 Unity 项目内写玩法/场景逻辑（MonoBehaviour 游戏内容）→ 用 `unity-development`
+- 非 Unity 的插件/扩展 → 用 `ue-plugin-development` 或对应平台技能
+
+### 与 unity-development 的边界
+- `unity-plugin-development`：可复用 Package/插件（.asmdef、编辑器扩展、自定义 Inspector、ScriptableObject）
+- `unity-development`：项目内游戏内容（场景、预制体、MonoBehaviour 逻辑、构建部署）
 
 ## 核心工作流程
 
@@ -430,6 +440,15 @@ python scripts/doc_manager.py --mode cloud --topic assembly-definition --version
 - [Assembly Definitions](https://docs.unity3d.com/Manual/ScriptCompilationAssemblyDefinitionFiles.html)
 - [Editor Extensions](https://docs.unity3d.com/Manual/ExtendingTheEditor.html)
 - [ScriptableObject](https://docs.unity3d.com/Manual/class-ScriptableObject.html)
+
+---
+
+## 版本记录
+
+| 日期 | 版本 | 变更说明 |
+|------|------|----------|
+| 2026-08-27 | v2 | 优化触发条件：补充不触发场景及与 unity-development 的边界 |
+| 2026-08-22 | v1 | 初始版本 |
 
 
 

@@ -1,8 +1,8 @@
 ---
 name: skill-creator
-description: 创建和开发 AI_Skill 技能。当用户要求创建新技能、开发 skill、添加 AI 能力时使用。遵循 D:\Work\Config\AI-Development\AI_Skill 的开发规范。
+description: 创建和开发 AI_Skill 技能：SKILL.md 编写、agents/openai.yaml、目录结构与安装测试。当用户要求创建新技能、开发 skill、添加 AI 能力时使用。技能源目录 D:\Work\AI-Development\AI_Skill。
 metadata:
-  version: "v1"
+  version: "v2"
   short-description: AI 技能开发工具
 ---
 
@@ -14,9 +14,18 @@ metadata:
 
 ## 一、触发条件
 
-- 用户说「创建一个 skill」「开发技能」「新建 AI 技能」
-- 用户要求为某个功能创建可复用的技能
-- 用户说「skill-creator」或「技能开发」
+### 自动触发
+- 用户说「创建一个 skill」「开发技能」「新建 AI 技能」「技能开发」
+- 用户要求为某个功能创建可复用的 Agent 技能（SKILL.md 资产）
+- 用户说「skill-creator」
+
+### 不触发（避免误用）
+- 创建 DeepSeek Harness 插件（dsh 插件，plugin.json + 命令）→ 用 `deepseek-harness-plugin-creator`
+- 普通编码 / 编码流程 → 用 `ai-coding-workflow`
+
+### 与其他技能的边界
+- `skill-creator`：管理 Agent 技能（SKILL.md、agents/、references/ 等）
+- `deepseek-harness-plugin-creator`：管理 dsh 插件（plugin.json、src/、commands/ 等）
 
 ---
 
@@ -97,8 +106,8 @@ invocation: auto        # auto（自动）或 explicit（显式）
 
 `powershell
 # 在 AI_Skill 目录下创建
-New-Item -Path "D:\Work\Config\AI-Development\AI_Skill\<skill-name>" -ItemType Directory
-New-Item -Path "D:\Work\Config\AI-Development\AI_Skill\<skill-name>\agents" -ItemType Directory
+New-Item -Path "D:\Work\AI-Development\AI_Skill\<skill-name>" -ItemType Directory
+New-Item -Path "D:\Work\AI-Development\AI_Skill\<skill-name>\agents" -ItemType Directory
 `
 
 ### 3.3 编写文档
@@ -112,7 +121,7 @@ New-Item -Path "D:\Work\Config\AI-Development\AI_Skill\<skill-name>\agents" -Ite
 
 `powershell
 # 复制到 Codex skills 目录
-Copy-Item -Path "D:\Work\Config\AI-Development\AI_Skill\<skill-name>" 
+Copy-Item -Path "D:\Work\AI-Development\AI_Skill\<skill-name>" 
           -Destination "C:/Users/19163/.codex/skills/<skill-name>" 
           -Recurse -Force
 `
@@ -188,6 +197,7 @@ A: 删除 C:/Users/19163/.codex/skills/<skill-name> 目录即可。
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-08-27 | v2 | 优化触发条件：补充不触发场景及与 deepseek-harness-plugin-creator 的边界；修正技能源目录路径 |
 | 2026-08-22 | v1 | 初始版本 |
 
 

@@ -1,13 +1,9 @@
 ---
 name: SmileProjectConfig
-description: 项目配置规范 - D:\Work\Project 工作区的项目结构、编码规范、Git规范、AI助手行为指南等。当涉及 Python 桌面应用开发、项目初始化、文档生成时激活。
+description: 项目配置规范：D:\Work\Project 工作区的项目结构、编码规范、Git 规范、AI 助手行为指南。当涉及该工作区项目初始化、AGENTS.md/PROJECT_SPEC.md/README 生成、Git 规范、Python 打包发布时激活。
 metadata:
-  version: "v1"
-metadata:
-  version: "v1"
+  version: "v2"
   short-description: Python 项目配置规范
-metadata:
-  version: "v1"
 ---
 
 # SmileProjectConfig — 项目配置规范
@@ -18,9 +14,15 @@ metadata:
 
 ## 触发条件
 
-- 用户说「项目配置」「项目规范」「项目结构」
-- 用户要求初始化项目、生成文档、配置 Git
-- 用户说「SmileProjectConfig」或「项目配置」
+### 自动触发
+- 涉及 D:\Work\Project 工作区下的项目（新建、初始化、结构、规范）
+- 用户要求生成/更新 AGENTS.md、PROJECT_SPEC.md、README.md、CHANGELOG
+- 用户询问项目 Git 规范、Python 编码规范、PyInstaller 打包发布
+- 用户说「SmileProjectConfig」「项目配置」
+
+### 不触发（避免误用）
+- 与 D:\Work\Project 无关的通用编码/格式化 → 用 `ai-coding-workflow` / `code-style`
+- UE / Unity 项目 → 用 `ue-development` / `unity-development`
 
 ## 一、核心原则
 
@@ -183,6 +185,7 @@ metadata:
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-08-27 | v4 | 优化触发条件：限定 D:\Work\Project 工作区范围，补充不触发场景；修复 frontmatter 重复 metadata |
 | 2026-07-25 | v3 | 新增 3.6 界面素材获取规范 |
 | 2026-07-25 | v2 | 新增版本号规则（1.3）；新增 5.5 使用项目模板 |
 | 2026-07-19 | v1 | 初始版本 |
