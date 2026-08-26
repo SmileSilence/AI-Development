@@ -21,8 +21,8 @@ metadata:
 - 用户说「SmileProjectConfig」「项目配置」
 
 ### 不触发（避免误用）
-- 与 D:\Work\Project 无关的通用编码/格式化 → 用 `ai-coding-workflow` / `code-style`
-- UE / Unity 项目 → 用 `ue-development` / `unity-development`
+- 与 D:\Work\Project 无关的通用编码/格式化 → 不激活本技能
+- UE / Unity 项目 → 不激活本技能
 
 ## 一、核心原则
 

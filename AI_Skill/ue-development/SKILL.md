@@ -18,12 +18,8 @@ metadata:
 - 用户说「ue-development」
 
 ### 不触发（避免误用）
-- 只做 UE 插件/模块/编辑器扩展/蓝图函数库/自定义资产 → 用 `ue-plugin-development`
-- 非 UE 的通用编码 → 用 `ai-coding-workflow` 或 `code-style`
-
-### 与 ue-plugin-development 的边界
-- `ue-development`：引擎内游戏内容与玩法逻辑（Actor/Pawn/组件/关卡/UI/动画/网络）
-- `ue-plugin-development`：引擎扩展层（.uplugin 插件、模块、编辑器工具、自定义资产、蓝图函数库）
+- 只做 UE 插件/模块/编辑器扩展/蓝图函数库/自定义资产（引擎扩展层）→ 不激活本技能
+- 非 UE 的通用编码 → 不激活本技能
 
 ## 核心工作流程
 
@@ -282,7 +278,7 @@ GENERATED_BODY()   // 生成反射代码
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
-| 2026-08-27 | v2 | 优化触发条件：补充不触发场景及与 ue-plugin-development 的边界 |
+| 2026-08-27 | v2 | 优化触发条件：补充不触发场景，技能自包含（不引用其他技能） |
 | 2026-08-22 | v1 | 初始版本 |
 
 

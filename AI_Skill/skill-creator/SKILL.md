@@ -20,12 +20,8 @@ metadata:
 - 用户说「skill-creator」
 
 ### 不触发（避免误用）
-- 创建 DeepSeek Harness 插件（dsh 插件，plugin.json + 命令）→ 用 `deepseek-harness-plugin-creator`
-- 普通编码 / 编码流程 → 用 `ai-coding-workflow`
-
-### 与其他技能的边界
-- `skill-creator`：管理 Agent 技能（SKILL.md、agents/、references/ 等）
-- `deepseek-harness-plugin-creator`：管理 dsh 插件（plugin.json、src/、commands/ 等）
+- 创建 dsh 插件（plugin.json + 命令）→ 不激活本技能
+- 普通编码 / 编码流程 → 不激活本技能
 
 ---
 
@@ -197,7 +193,7 @@ A: 删除 C:/Users/19163/.codex/skills/<skill-name> 目录即可。
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
-| 2026-08-27 | v2 | 优化触发条件：补充不触发场景及与 deepseek-harness-plugin-creator 的边界；修正技能源目录路径 |
+| 2026-08-27 | v2 | 优化触发条件：补充不触发场景，技能自包含（不引用其他技能）；修正技能源目录路径 |
 | 2026-08-22 | v1 | 初始版本 |
 
 

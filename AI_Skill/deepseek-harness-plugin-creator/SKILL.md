@@ -21,11 +21,8 @@ metadata:
 - 用户说「deepseek-harness-plugin-creator」
 
 ### 不触发（避免误用）
-- 创建 Agent 技能（SKILL.md）→ 用 `skill-creator`
+- 创建 Agent 技能（SKILL.md）→ 不激活本技能
 - 修改 dsh 内核/源码本身 → 直接操作 deepseek-harness 源码 checkout，不使用本技能
-
-### 与其他技能的边界
-- `skill-creator`：管理 Agent 技能；`deepseek-harness-plugin-creator`：管理 dsh 插件
 
 ---
 
@@ -258,7 +255,7 @@ A: 避免与其他插件命令重名，如冲突需修改命令名称。
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
-| 2026-08-27 | v2 | 优化触发条件：补充自动触发关键词、不触发场景及与 skill-creator 的边界 |
+| 2026-08-27 | v2 | 优化触发条件：补充自动触发关键词与不触发场景，技能自包含（不引用其他技能） |
 | 2026-08-22 | v1 | 初始版本 |
 
 

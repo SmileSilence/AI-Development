@@ -18,12 +18,8 @@ metadata:
 - 用户说「unity-development」
 
 ### 不触发（避免误用）
-- 只做 Unity 插件/Package/编辑器扩展 → 用 `unity-plugin-development`
-- 非 Unity 的 C#/通用编码 → 用 `ai-coding-workflow` 或 `code-style`
-
-### 与 unity-plugin-development 的边界
-- `unity-development`：项目内游戏内容（场景、预制体、MonoBehaviour 逻辑、构建部署）
-- `unity-plugin-development`：可复用 Package/插件（.asmdef、编辑器扩展、自定义 Inspector、ScriptableObject）
+- 只做 Unity 插件/Package/编辑器扩展（可复用扩展层）→ 不激活本技能
+- 非 Unity 的 C#/通用编码 → 不激活本技能
 
 ## 核心工作流程
 
@@ -302,7 +298,7 @@ python scripts/doc_manager.py --mode cloud --topic urp --version 2022.3
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
-| 2026-08-27 | v2 | 优化触发条件：补充不触发场景及与 unity-plugin-development 的边界 |
+| 2026-08-27 | v2 | 优化触发条件：补充不触发场景，技能自包含（不引用其他技能） |
 | 2026-08-22 | v1 | 初始版本 |
 
 

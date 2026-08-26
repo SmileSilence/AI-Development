@@ -18,12 +18,8 @@ metadata:
 - 用户说「ue-plugin-development」
 
 ### 不触发（避免误用）
-- 在 UE 游戏内写玩法逻辑（Actor/蓝图/关卡/UI）→ 用 `ue-development`
-- 非 UE 的插件/扩展 → 用 `unity-plugin-development` 或对应平台技能
-
-### 与 ue-development 的边界
-- `ue-plugin-development`：引擎扩展层（插件、模块、编辑器工具、自定义资产、蓝图函数库）
-- `ue-development`：游戏内容层（玩法、蓝图、关卡、UI、动画、网络）
+- 在 UE 游戏内写玩法逻辑（Actor/蓝图/关卡/UI，游戏内容层）→ 不激活本技能
+- 非 UE 的插件/扩展 → 不激活本技能
 
 ## 核心工作流程
 
@@ -593,7 +589,7 @@ python scripts/doc_manager.py --mode cloud --topic editorextensions --version [�
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
-| 2026-08-27 | v2 | 优化触发条件：删除重复的触发条件小节，补充不触发场景及与 ue-development 的边界 |
+| 2026-08-27 | v2 | 优化触发条件：删除重复的触发条件小节，补充不触发场景，技能自包含（不引用其他技能） |
 | 2026-08-22 | v1 | 初始版本 |
 
 

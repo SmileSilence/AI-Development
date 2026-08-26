@@ -18,12 +18,8 @@ metadata:
 - 用户说「unity-plugin-development」
 
 ### 不触发（避免误用）
-- 在 Unity 项目内写玩法/场景逻辑（MonoBehaviour 游戏内容）→ 用 `unity-development`
-- 非 Unity 的插件/扩展 → 用 `ue-plugin-development` 或对应平台技能
-
-### 与 unity-development 的边界
-- `unity-plugin-development`：可复用 Package/插件（.asmdef、编辑器扩展、自定义 Inspector、ScriptableObject）
-- `unity-development`：项目内游戏内容（场景、预制体、MonoBehaviour 逻辑、构建部署）
+- 在 Unity 项目内写玩法/场景逻辑（MonoBehaviour 游戏内容）→ 不激活本技能
+- 非 Unity 的插件/扩展 → 不激活本技能
 
 ## 核心工作流程
 
@@ -447,7 +443,7 @@ python scripts/doc_manager.py --mode cloud --topic assembly-definition --version
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
-| 2026-08-27 | v2 | 优化触发条件：补充不触发场景及与 unity-development 的边界 |
+| 2026-08-27 | v2 | 优化触发条件：补充不触发场景，技能自包含（不引用其他技能） |
 | 2026-08-22 | v1 | 初始版本 |
 
 
