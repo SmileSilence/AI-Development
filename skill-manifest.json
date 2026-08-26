@@ -23,11 +23,6 @@
       "source": "local"
     },
     {
-      "name": "mode-manager",
-      "description": "管理 AI Agent 的工作模式：从 mode-state.json 读取并显示当前模式，在 6 种预定义模式（架构、编码、调试、多模式协调、分析、提问）之间切换并持久化，随后按新模式执行。支持 Codex、Claude、DeepSeek Harness、MiMo Code 等多种 Agent。当用户询问\"当前模式\"\"现在是什么模式\"，或说\"切换到X模式\"\"切到编码/调试/分析\"\"进入架构模式\"时使用。",
-      "source": "local"
-    },
-    {
       "name": "skill-creator",
       "description": "创建和开发 AI_Skill 技能。当用户要求创建新技能、开发 skill、添加 AI 能力时使用。遵循 D:\\Work\\Config\\AI-Development\\AI_Skill 的开发规范。",
       "source": "local"

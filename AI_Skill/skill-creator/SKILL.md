@@ -43,7 +43,7 @@ metadata:
 
 ### 2.2 命名规范
 
-- **目录名**：PascalCase（如 SmileGlobalConfig）或 kebab-case（如 mode-manager）
+- **目录名**：PascalCase（如 SmileGlobalConfig）或 kebab-case（如 ai-coding-workflow）
 - **SKILL.md 中的 name**：与目录名一致
 - **描述**：简短说明功能和触发条件
 

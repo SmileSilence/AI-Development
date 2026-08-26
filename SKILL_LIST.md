@@ -1,4 +1,4 @@
-﻿# 技能清单（Skill List）
+# 技能清单（Skill List）
 
 > 整理日期：2026-08-24
 > 环境：Windows 11 / Codex Desktop
@@ -12,9 +12,9 @@
 |------|------|------|
 | 系统内置技能 | 6 | Codex 自带（`.codex/skills/.system/`） |
 | 插件内置技能 | 3 | 随插件捆绑（browser / computer-use / visualize） |
-| 用户自定义技能 | 13 | 源仓库 `AI_Skill/` 管理 |
+| 用户自定义技能 | 12 | 源仓库 `AI_Skill/` 管理 |
 | ├ 已安装到 `.codex/skills` | 11 | 可被 Codex 加载 |
-| ├ 仅存在于源仓库 | 2 | deepseek-harness-plugin-creator、mode-manager |
+| ├ 仅存在于源仓库 | 1 | deepseek-harness-plugin-creator |
 
 ---
 
@@ -60,17 +60,16 @@
 | unity-development | v1 | 游戏开发 | Unity 项目开发（C#、场景、结构、构建部署） | “Unity 开发”“Unity 项目” | ✅ 已安装 |
 | unity-plugin-development | v1 | 游戏开发 | Unity 插件/Package 开发（程序集、编辑器扩展、Inspector） | “Unity 插件开发” | ✅ 已安装 |
 | deepseek-harness-plugin-creator | v1 | 插件开发 | 创建、开发、发布 DeepSeek Harness (dsh) 插件 | “创建 dsh 插件” | ⚠️ 仅源仓库 |
-| mode-manager | v1 | 模式管理 | 管理与切换 Agent 工作模式（架构/编码/调试/分析/提问等 6 种） | “当前模式”“切换到编码模式” | ⚠️ 仅源仓库 |
 
 ## 五、安装状态与差异说明
 
-1. **源仓库共有 13 个技能**，其中 11 个已安装到 `.codex/skills`。
-2. **未安装**：`deepseek-harness-plugin-creator`、`mode-manager`（`skill-manifest.json` 已登记，但未同步安装）。
+1. **源仓库共有 12 个技能**，其中 11 个已安装到 `.codex/skills`。
+2. **未安装**：`deepseek-harness-plugin-creator`（`skill-manifest.json` 已登记，但未同步安装）。
 3. **版本差异**：
    - `SmileGlobalConfig`：安装副本 **v10** > 源仓库 **v5**，源文件需同步更新。
    - `SmileKnow-Collector`：源仓库 **v3.3** > 安装副本 **v3.2**，安装副本需重新安装。
-4. **`.agents/skills` 另有一份副本（10 个）**：缺少 `SmileKnow-Collector`、`deepseek-harness-plugin-creator`、`mode-manager`。
-5. **清单文件 `skill-manifest.json`（12 项）**：包含 deepseek-harness-plugin-creator、mode-manager，但缺少 SmileKnow-Collector，建议补全。
+4. **`.agents/skills` 另有一份副本（9 个）**：缺少 `SmileKnow-Collector`、`deepseek-harness-plugin-creator`。
+5. **清单文件 `skill-manifest.json`（12 项）**：包含 deepseek-harness-plugin-creator，但缺少 SmileKnow-Collector，建议补全。
 
 ## 六、技能管理工具
 
@@ -80,4 +79,4 @@
 | `skill-manifest.json` | 技能安装清单（源：local） |
 | `AI_Skill/README.md` | 技能开发规范与现有技能说明 |
 
-> 建议：补齐 manifest 中的 SmileKnow-Collector，重新执行 `install-skills.ps1` 即可同步安装 deepseek-harness-plugin-creator、mode-manager 并更新版本。
+> 建议：补齐 manifest 中的 SmileKnow-Collector，重新执行 `install-skills.ps1` 即可同步安装 deepseek-harness-plugin-creator 并更新版本。

@@ -23,7 +23,7 @@
 
 ### 1.2 命名规范
 
-- **目录名**：使用 PascalCase（如 SmileGlobalConfig）或 kebab-case（如 mode-manager）
+- **目录名**：使用 PascalCase（如 SmileGlobalConfig）或 kebab-case（如 ai-coding-workflow）
 - **SKILL.md 中的 name**：与目录名一致
 
 ### 1.3 必需文件
@@ -45,26 +45,7 @@ metadata:
 
 ## 二、现有技能清单
 
-### 2.1 mode-manager（模式管理）
-
-**位置**：AI_Skill/mode-manager/
-
-**功能**：管理 AI Agent 的工作模式切换
-
-**支持的模式**：
-
-| 中文名 | ID | 描述 |
-|--------|----|------|
-| 架构 | architecture | 系统总体设计与技术选型 |
-| 编码 | coding | 代码实现与修改 |
-| 调试 | debugging | 问题定位与诊断 |
-| 多模式协调 | multi-mode-coordination | 复杂任务分解与子代理协调 |
-| 分析 | analysis | 数据分析与根因分析 |
-| 提问 | general-qa | 通用问答与知识讲解 |
-
----
-
-### 2.2 SmileGlobalConfig（全局中文配置）
+### 2.1 SmileGlobalConfig（全局中文配置）
 
 **位置**：AI_Skill/SmileGlobalConfig/
 
@@ -81,7 +62,7 @@ metadata:
 
 ---
 
-### 2.3 SmileProjectConfig（项目配置规范）
+### 2.2 SmileProjectConfig（项目配置规范）
 
 **位置**：AI_Skill/SmileProjectConfig/
 
@@ -108,7 +89,7 @@ metadata:
 
 ---
 
-### 2.4 skill-creator（技能开发工具）
+### 2.3 skill-creator（技能开发工具）
 
 **位置**：AI_Skill/skill-creator/
 
@@ -128,7 +109,7 @@ metadata:
 
 ---
 
-### 2.5 deepseek-harness-plugin-creator（DSH 插件开发工具）
+### 2.4 deepseek-harness-plugin-creator（DSH 插件开发工具）
 
 **位置**：AI_Skill/deepseek-harness-plugin-creator/
 
@@ -241,7 +222,7 @@ Copy-Item -Path "D:\Work\Config\AI-Development\AI_Skill\<skill-name>"
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
 | 2026-08-22 | v2 | 添加 skill-creator 和 deepseek-harness-plugin-creator |
-| 2026-08-22 | v1 | 初始版本 — 包含 mode-manager、SmileGlobalConfig、SmileProjectConfig |
+| 2026-08-22 | v1 | 初始版本 — 包含 SmileGlobalConfig、SmileProjectConfig |
 
 ---
 

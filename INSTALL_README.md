@@ -1,4 +1,4 @@
-﻿# AI技能安装清单
+# AI技能安装清单
 
 本目录包含AI技能的安装清单和一键安装脚本，方便在其他电脑上快速部署技能。
 
@@ -40,7 +40,6 @@
 | code-style | 代码规范指南 |
 | deepseek-harness-plugin-creator | DeepSeek Harness插件创建 |
 | McpAutoLoader | MCP服务器自动加载 |
-| mode-manager | AI Agent模式管理 |
 | skill-creator | 技能创建工具 |
 | SmileGlobalConfig | 全局中文设置 |
 | SmileProjectConfig | 项目配置规范 |
@@ -70,6 +69,7 @@
 
 ## 更新日志
 
+- 2026-08-24：删除 mode-manager 技能，技能总数调整为 12 个
 - 2026-08-24：同步所有技能至最新版本，新增 SmileKnow-Collector，新增 QUICK_INSTALL.md 快速安装教程
 - 2026-08-22：初始版本，包含12个AI技能
 
