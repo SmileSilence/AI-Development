@@ -1,14 +1,16 @@
-# Python
+# 依赖 / 虚拟环境
+node_modules/
+venv/
+.venv/
 __pycache__/
 *.py[cod]
 *.egg-info/
+
+# 构建产物
 dist/
 build/
 *.spec
-
-# 虚拟环境
-venv/
-.venv/
+*.tsbuildinfo
 
 # IDE
 .vscode/

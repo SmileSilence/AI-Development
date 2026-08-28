@@ -3,6 +3,8 @@ name: ue-development
 description: "用于Unreal Engine项目开发：C++编程、蓝图设计、项目结构、构建配置与部署。自动检测项目UE版本并提供对应版本文档。当用户询问UE/虚幻引擎项目开发、游戏开发、C++/蓝图编程、项目初始化或构建时激活。"
 metadata:
   version: "v2"
+  short-description: Unreal Engine 项目开发指南
+  category: 游戏开发
 ---
 
 # Unreal Engine 开发指南

@@ -1,5 +1,0 @@
-name: SmileProjectConfig
-description: 项目配置规范 - Python 桌面应用开发规范
-interface:
-  hidden: true
-invocation: auto

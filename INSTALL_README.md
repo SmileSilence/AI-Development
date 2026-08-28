@@ -37,13 +37,14 @@
 | 技能名称 | 描述 |
 |----------|------|
 | ai-coding-workflow | AI辅助编码工作流程 |
+| anget-manager | Agent 启动、会话同步与临时文件清理 |
 | code-style | 代码规范指南 |
 | deepseek-harness-plugin-creator | DeepSeek Harness插件创建 |
-| McpAutoLoader | MCP服务器自动加载 |
+| mcp-auto-loader | MCP服务器自动加载 |
 | skill-creator | 技能创建工具 |
-| SmileGlobalConfig | 全局中文设置 |
-| SmileProjectConfig | 项目配置规范 |
-| SmileKnow-Collector | 个人知识库收集与整理 |
+| smile-global-config | 全局中文设置 |
+| smile-know-collector | 个人知识库收集与整理 |
+| smile-project-config | 项目配置规范 |
 | ue-development | Unreal Engine开发 |
 | ue-plugin-development | UE插件开发 |
 | unity-development | Unity开发 |
@@ -69,6 +70,7 @@
 
 ## 更新日志
 
+- 2026-08-28：技能名统一为 kebab-case（mcp-auto-loader、smile-global-config、smile-project-config、smile-know-collector），技能总数调整为 13 个，全环境（DSH/Codex/Claude）同步
 - 2026-08-24：删除 mode-manager 技能，技能总数调整为 12 个
 - 2026-08-24：同步所有技能至最新版本，新增 SmileKnow-Collector，新增 QUICK_INSTALL.md 快速安装教程
 - 2026-08-22：初始版本，包含12个AI技能

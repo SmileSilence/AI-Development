@@ -1,4 +1,4 @@
-name: McpAutoLoader
+name: mcp-auto-loader
 description: 按需自动加载 MCP 服务器。当用户需要使用 GitHub、浏览器自动化、代码搜索等功能时，自动检测并启用对应的 MCP 服务器。
 interface:
   display_name: "MCP 自动加载器"

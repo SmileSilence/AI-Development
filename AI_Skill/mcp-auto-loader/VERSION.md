@@ -1,4 +1,4 @@
-# McpAutoLoader 版本记录
+# mcp-auto-loader 版本记录
 
 ## v2 (2026-08-22)
 

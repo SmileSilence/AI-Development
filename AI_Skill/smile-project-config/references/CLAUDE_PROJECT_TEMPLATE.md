@@ -18,20 +18,18 @@ _在此描述项目的功能定位、目标用户和技术栈。_
 
 `
 {项目名}/
-├── main.py                 # 程序入口
-├── CLAUDE.md               # 项目规范（本文档）
-├── PROJECT_SPEC.md         # 项目特殊规范
-├── README.md               # 使用说明
-├── requirements.txt        # Python 依赖
-├── .gitignore              # Git 忽略规则
+├── <入口文件>             # 程序入口（如 main.py、src/index.ts）
+├── CLAUDE.md              # 项目规范（本文档）
+├── PROJECT_SPEC.md        # 项目特殊规范
+├── README.md              # 使用说明
+├── <依赖清单>             # 依赖声明（如 requirements.txt、package.json）
+├── .gitignore             # Git 忽略规则
 │
-├── src/ 或 app/ 或 core/   # 源代码
-│   └── __init__.py
-│
-├── build_exe.py            # 打包脚本（如适用）
-├── output/                 # 运行时输出（如有，不提交 Git）
-├── resources/              # 静态资源（如有）
-└── dist/                   # 构建产物（如有，不提交 Git）
+├── src/ 或 app/ 或 core/  # 源代码
+├── <打包脚本>             # 打包/构建脚本（如 build.py、build.js，如适用）
+├── output/                # 运行时输出（如有，不提交 Git）
+├── resources/             # 静态资源（如有）
+└── dist/                  # 构建产物（如有，不提交 Git）
 `
 
 ---
@@ -63,30 +61,33 @@ _在此记录已知问题和临时解决方案。_
 
 ### 4.1 环境要求
 
-- Python 3.10+
-- 依赖见 equirements.txt
+_在此记录运行环境与版本要求（语言运行时、依赖等）。示例：_
+- Python 3.10+（依赖见 requirements.txt）
+- Node.js 18+（依赖见 package.json）
 
 ### 4.2 快速开始
 
-`ash
-# 创建虚拟环境
+_按技术栈选择对应示例：_
+
+`bash
+# Python
 python -m venv venv
 venv\Scripts\activate    # Windows
-
-# 安装依赖
 pip install -r requirements.txt
-
-# 运行
 python main.py
+
+# Node.js
+npm install
+npm run dev
 `
 
 ### 4.3 打包（如适用）
 
-`ash
-python build_exe.py
+`bash
+python build.py        # 或 npm run build
 `
 
-输出文件：dist/{项目名}.exe
+输出文件：dist/{项目名}（具体产物随技术栈而定）
 
 ---
 
@@ -98,7 +99,7 @@ _在此记录项目特有的注意事项。_
 
 ## 六、版本记录
 
-> 版本号规则：{顺序号}（1、2、3...），每次实质性修改后 +1。
+> 版本号规则：顺序号（v1、v2、v3...），每次实质性修改后 +1。
 > 修改项目代码或文档时，必须在下方追加版本记录。
 
 | 日期 | 版本 | 变更说明 |

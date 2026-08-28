@@ -4,6 +4,7 @@ description: 创建和开发 DeepSeek Harness (dsh) 插件：plugin.json 清单�
 metadata:
   version: "v2"
   short-description: DeepSeek Harness 插件开发工具
+  category: 插件开发
 ---
 
 # DeepSeek Harness Plugin Creator — 插件开发工具

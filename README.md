@@ -1,148 +1,92 @@
-# AI-Development — 工作区总览
+# AI-Development — AI 技能与配置工作区
 
-> 本工作区用于管理 AI Agent 的配置、技能和开发资源。
-> 主要包含全局配置、项目规范以及相关配置文件。
+> 本工作区用于管理 AI Agent 的可复用技能（`AI_Skill/`）、安装脚本与说明文档。
+> 技能命名统一为 kebab-case 小写，支持 DSH / Codex / Claude 等多 Agent 加载。
 
 ---
 
 ## 一、工作区概述
 
-**AI-Development** 是一个专注于 AI Agent 开发和配置的工作区，提供以下核心功能：
-
-- **全局配置**：确保所有交互使用中文、文档同步更新、版本管理
-- **项目规范**：Python 桌面应用开发的标准规范和模板
-- **技能开发**：维护和开发可复用的 AI 技能
+- **AI_Skill/**：13 个可复用 AI 技能（技能源文件，唯一事实来源）
+- **install-skills.ps1**：一键安装脚本（按 `skill-manifest.json` 安装到 `$CODEX_HOME/skills`）
+- **skill-manifest.json**：技能安装清单
+- **SKILL_LIST.md**：技能总览清单（含安装状态）
+- **QUICK_INSTALL.md / INSTALL_README.md**：安装说明
 
 ---
 
-## 二、目录结构
+## 二、技能清单
+
+| 技能 | 分类 | 说明 |
+|------|------|------|
+| ai-coding-workflow | 编码开发 | AI 辅助编码完整工作流 |
+| anget-manager | Agent 管理 | Agent 启动、会话整理/合并/同步与临时文件清理 |
+| code-style | 代码规范 | 代码规范与代码风格指南 |
+| deepseek-harness-plugin-creator | 插件开发 | dsh 插件开发 |
+| mcp-auto-loader | Agent 管理 | 按需自动加载 MCP 服务器（15+） |
+| skill-creator | 技能开发 | AI_Skill 技能开发工具 |
+| smile-global-config | 全局配置 | 全局简体中文设置（安装后自动激活） |
+| smile-know-collector | 知识管理 | 个人知识库收集、整理与提炼 |
+| smile-project-config | 项目规范 | 通用项目结构、Git 规范、文档模板（语言无关） |
+| ue-development | 游戏开发 | Unreal Engine 项目开发 |
+| ue-plugin-development | 游戏开发 | UE 插件/扩展开发 |
+| unity-development | 游戏开发 | Unity 项目开发 |
+| unity-plugin-development | 游戏开发 | Unity 插件/Package 开发 |
+
+---
+
+## 三、目录结构
 
 `
 AI-Development/
-├── AI_Skill/                        # AI 技能目录
-│   ├── SmileGlobalConfig/          # 全局中文配置
-│   │   ├── SKILL.md
-│   │   └── agents/
-│   │       └── openai.yaml
-│   └── SmileProjectConfig/         # 项目配置规范
-│       ├── SKILL.md
-│       ├── agents/
-│       │   └── openai.yaml
-│       └── references/             # 模板文件
-│           ├── CLAUDE_PROJECT_TEMPLATE.md
-│           ├── PROJECT_SPEC_TEMPLATE.md
-│           ├── README_TEMPLATE.md
-│           └── GITIGNORE_TEMPLATE.txt
-├── modes-unified/                  # 统一模式定义（待创建）
-│   └── modes.json
-└── README.md                       # 本文件
+├── AI_Skill/                        # 技能源文件目录（13 个技能，kebab-case 命名）
+│   ├── ai-coding-workflow/
+│   ├── anget-manager/
+│   ├── code-style/
+│   ├── deepseek-harness-plugin-creator/
+│   ├── mcp-auto-loader/
+│   ├── skill-creator/
+│   ├── smile-global-config/
+│   ├── smile-know-collector/
+│   ├── smile-project-config/
+│   ├── ue-development/
+│   ├── ue-plugin-development/
+│   ├── unity-development/
+│   └── unity-plugin-development/
+├── install-skills.ps1               # 一键安装脚本
+├── skill-manifest.json              # 技能安装清单
+├── SKILL_LIST.md                    # 技能总览清单
+├── QUICK_INSTALL.md                 # 快速安装教程
+└── INSTALL_README.md                # 完整安装说明
 `
 
 ---
 
-## 三、核心模块
+## 四、安装与使用
 
-### 3.1 全局中文配置（SmileGlobalConfig）
+1. 克隆仓库：`git clone https://github.com/SmileSilence/AI-Development.git`
+2. 一键安装：`powershell -ExecutionPolicy Bypass -File .\install-skills.ps1`
+   - 可选参数：`-UseSymlink`（符号链接）、`-Force`（强制覆盖）
+3. 按需安装单个技能：复制 `AI_Skill/<skill-name>` 到对应 Agent 的 skills 目录
+   - Codex：`~/.codex/skills/`
+   - DSH：`~/.agents/skills/`
+   - Claude：`~/.claude/skills/`
 
-**位置**：AI_Skill/SmileGlobalConfig/
-
-**功能**：
-- 确保所有交互使用简体中文
-- 代码注释、文档使用中文
-- 修改代码时同步更新文档
-- 修改代码后检查并更新版本文档
-
-**核心规则**：
-1. **交互语言**：所有回复、解释、确认使用中文
-2. **代码相关**：注释和文档使用中文，变量名保持英文
-3. **文档同步**：修改代码时必须同步更新相关文档
-4. **版本管理**：检查并更新 CHANGELOG、VERSION 等版本文档
-
-### 3.2 项目配置规范（SmileProjectConfig）
-
-**位置**：AI_Skill/SmileProjectConfig/
-
-**功能**：
-- Python 桌面应用开发的标准规范
-- 项目结构、编码规范、Git 规范
-- AI 助手行为指南
-- 提供项目文档模板
-
-**包含规范**：
-1. **核心原则**：中文沟通、文档同步、版本号规则、代码风格
-2. **项目结构**：统一目录结构约定
-3. **通用规范**：命名、错误处理、防御编程、测试、日志
-4. **Git 规范**：主分支、分支命名、提交规范
-5. **打包发布**：PyInstaller 打包规范
-
-**模板文件**：
-- CLAUDE_PROJECT_TEMPLATE.md — 项目规范模板
-- PROJECT_SPEC_TEMPLATE.md — 特殊规范模板
-- README_TEMPLATE.md — README 模板
-- GITIGNORE_TEMPLATE.txt — .gitignore 模板
+详细说明见 `QUICK_INSTALL.md` 与 `INSTALL_README.md`。
 
 ---
 
-## 四、使用说明
+## 五、开发环境
 
-### 4.1 全局配置
-
-SmileGlobalConfig 会自动激活，确保：
-- 所有交互使用中文
-- 代码修改时同步更新文档
-- 版本文档保持最新
-
-### 4.2 项目开发
-
-使用 SmileProjectConfig 规范进行项目开发：
-1. 参考 eferences/ 目录下的模板创建项目文档
-2. 遵循编码规范和 Git 规范
-3. 完成后打包发布
+- Windows 11
+- 支持多种 AI Agent 平台（DSH / Codex / Claude 等）
 
 ---
 
-## 五、相关资源
-
-### 外部参考
-
-- [D:\\Work\\Project 工作区](../Project/) — 包含多个桌面工具项目的通用规范
-- [CLAUDE_PROJECT_TEMPLATE.md](../Project/CLAUDE_PROJECT_TEMPLATE.md) — 项目文档模板
-
-### 内部资源
-
-- AI_Skill/SmileGlobalConfig/SKILL.md — 全局中文配置详细说明
-- AI_Skill/SmileProjectConfig/SKILL.md — 项目配置规范详细说明
-
----
-
-## 六、开发环境
-
-### 环境要求
-
-- Python 3.10+
-- 支持多种 AI Agent 平台
-
-### 配置说明
-
-1. **技能配置**：每个技能目录下的 SKILL.md 和 agents/ 配置
-2. **中文支持**：所有界面和文档使用简体中文
-
----
-
-## 七、注意事项
-
-1. **配置路径**：不同 Agent 使用不同的配置路径，请确保路径正确
-2. **中文支持**：所有界面和文档使用简体中文
-
----
-
-## 八、版本记录
+## 六、版本记录
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-08-28 | v3 | 技能体系整理：全部技能统一为 kebab-case 命名并补齐规范（metadata、触发条件、openai.yaml）；新增 anget-manager、mcp-auto-loader；smile-* 三个技能改名；全环境（DSH/Codex/Claude）同步 13 个技能 |
 | 2026-08-22 | v2 | 添加 SmileGlobalConfig 和 SmileProjectConfig 技能 |
 | 2026-08-22 | v1 | 初始版本 — 创建 AI-Development 工作区总览 |
-
----
-
-*本工作区文档参照 D:\\Work\\Project 工作区的文档结构创建。*

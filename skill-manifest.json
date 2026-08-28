@@ -3,63 +3,68 @@
   "version": "1.0",
   "skills": [
     {
+      "name": "anget-manager",
+      "description": "管理本机所有 AI Agent（anget，含 DSH/Codex/Claude/Gemini 等）的启动、临时文件和会话同步流程。支持将 Claude Code、dsh 及反向导入会话按工作区整理、比较差异、合并重复或分支内容并同步到 Codex。Agent 产生的脚本和临时文件统一放入 Downloads\\anget-tmp 的任务子目录，完成后自动清理。当用户要求启动/使用/管理 Agent、整理/合并/同步 Claude 或 dsh 会话、或要求清理临时文件时激活。",
+      "source": "local"
+    },
+    {
       "name": "ai-coding-workflow",
-      "description": "\"用于AI辅助编码的完整工作流程，包括需求分析、提示设计、代码生成、审查、测试和迭代优化。当用户请求AI编码帮助、代码生成流程或开发工作流程时激活。\"",
+      "description": "用于AI辅助编码的完整工作流程：需求分析、提示设计、代码生成、代码审查、测试与迭代优化。当用户请求AI编写/生成/审查/重构代码、编写单元测试或需要完整编码工作流程时激活。",
       "source": "local"
     },
     {
       "name": "code-style",
-      "description": "\"用于代码规范、编码标准和代码风格指南。当用户请求代码格式化、命名约定、注释规范或代码审查时激活。\"",
+      "description": "用于代码规范、编码标准与代码风格指南：代码格式化、命名约定、注释规范、region 划分与代码审查。当用户请求格式化代码、统一代码风格、命名/注释规范或代码审查时激活。",
       "source": "local"
     },
     {
       "name": "deepseek-harness-plugin-creator",
-      "description": "创建和开发 DeepSeek Harness 插件。当用户要求创建 dsh 插件、开发 DeepSeek Harness 扩展、发布插件到 GitHub 时使用。遵循官方插件规范，支持 dsh add 命令安装。",
+      "description": "创建和开发 DeepSeek Harness (dsh) 插件：plugin.json 清单、命令实现、本地测试与发布 GitHub。当用户要求创建 dsh 插件、开发 DeepSeek Harness 扩展、发布插件到 GitHub 时使用。",
       "source": "local"
     },
     {
-      "name": "McpAutoLoader",
-      "description": "按需自动加载 MCP 服务器。当用户需要使用 GitHub、浏览器自动化、代码搜索等功能时，自动检测并启用对应的 MCP 服务器。支持 context7、github、gitlab、playwright、firebase、telegram、discord 等 15+ 个 MCP 服务器。当用户说\"启动 github\"\"加载 playwright\"\"启用 MCP\"等时激活。",
+      "name": "mcp-auto-loader",
+      "description": "按需自动加载 MCP 服务器：当用户需要调用 GitHub/GitLab、浏览器自动化(playwright)、代码搜索、Firebase、Telegram、Discord 等服务时，自动检测并启用对应的 MCP 服务器。支持 context7、github、gitlab、playwright 等 15+ 个 MCP。当用户说「启动 github」「加载 playwright」「启用 MCP」等时激活。",
       "source": "local"
     },
     {
       "name": "skill-creator",
-      "description": "创建和开发 AI_Skill 技能。当用户要求创建新技能、开发 skill、添加 AI 能力时使用。遵循 D:\\Work\\Config\\AI-Development\\AI_Skill 的开发规范。",
+      "description": "创建和开发 AI_Skill 技能：SKILL.md 编写、agents/openai.yaml、目录结构与安装测试。当用户要求创建新技能、开发 skill、添加 AI 能力时使用。技能源目录 D:\\Work\\AI-Development\\AI_Skill。",
       "source": "local"
     },
     {
-      "name": "SmileGlobalConfig",
-      "description": "全局中文设置 - 确保所有项目、会话交流、文档、代码注释等都使用简体中文。当用户要求使用中文或需要中文交互时激活。",
+      "name": "smile-global-config",
+      "description": "全局中文设置：确保所有项目、会话交流、文档、代码注释等都使用简体中文。安装后自动激活，全局适用，无需关键词触发。",
       "source": "local"
     },
     {
-      "name": "SmileProjectConfig",
-      "description": "项目配置规范 - D:\\Work\\Project 工作区的项目结构、编码规范、Git规范、AI助手行为指南等。当涉及 Python 桌面应用开发、项目初始化、文档生成时激活。",
+      "name": "smile-know-collector",
+      "description": "个人知识库工具：记录问题/解决方案/查找方式，查询检索、分析整理、提炼方法与习惯、导出统计、定时整理、备份恢复。当用户说「记录问题」「添加解决方案」「查找问题」「整理知识库」「提炼方式」「SmileKnow」等时激活。",
+      "source": "local"
+    },
+    {
+      "name": "smile-project-config",
+      "description": "项目配置规范：通用项目结构、Git 规范、项目文档模板（AGENTS.md/CLAUDE.md、PROJECT_SPEC.md、README.md、.gitignore）与配置管理，语言无关。当涉及 D:\\Work\\Project 工作区项目初始化、项目文档生成、Git 规范、目录结构约定时激活。",
       "source": "local"
     },
     {
       "name": "ue-development",
-      "description": "\"用于Unreal Engine项目的开发，包括C++编程、蓝图设计、项目结构管理、构建配置和部署。自动检测项目UE版本，提供官方文档下载或在线查阅，遇到问题时优先查阅对应版本文档。当用户询问UE项目开发、游戏开发、C++/蓝图编程、项目初始化或构建问题时激活。\"",
+      "description": "用于Unreal Engine项目开发：C++编程、蓝图设计、项目结构、构建配置与部署。自动检测项目UE版本并提供对应版本文档。当用户询问UE/虚幻引擎项目开发、游戏开发、C++/蓝图编程、项目初始化或构建时激活。",
       "source": "local"
     },
     {
       "name": "ue-plugin-development",
-      "description": "\"用于Unreal Engine插件和扩展开发，包括插件结构设计、模块创建、蓝图函数库、编辑器扩展、资产类型定义等。自动检测项目UE版本，提供官方文档下载或在线查阅。当用户询问UE插件开发、编辑器扩展、自定义资产类型、蓝图函数库、模块开发时激活。\"",
+      "description": "用于Unreal Engine插件和扩展开发：插件结构设计、模块创建、蓝图函数库、编辑器扩展、自定义资产类型定义。自动检测项目UE版本并提供对应文档。当用户询问UE插件开发、模块/编辑器扩展、自定义资产、蓝图函数库时激活。",
       "source": "local"
     },
     {
       "name": "unity-development",
-      "description": "\"用于Unity项目的开发，包括C#编程、场景设计、项目结构管理、构建配置和部署。自动检测项目Unity版本、技术栈（URP/HDRP/DOTS/Netcode等）和第三方插件，提供官方文档下载或在线查阅。当用户询问Unity项目开发、游戏开发、C#编程、项目初始化或构建问题时激活。\"",
+      "description": "用于Unity项目开发：C#编程、场景设计、项目结构、构建配置与部署。自动检测Unity版本、技术栈（URP/HDRP/DOTS/Netcode等）与第三方插件，并提供对应文档。当用户询问Unity项目开发、游戏开发、C#编程、项目初始化或构建时激活。",
       "source": "local"
     },
     {
       "name": "unity-plugin-development",
-      "description": "\"用于Unity插件和Package开发，包括Package结构设计、程序集定义、编辑器扩展、自定义Inspector、ScriptableObject等。自动检测项目Unity版本、技术栈和第三方插件，提供官方文档下载或在线查阅。当用户询问Unity插件开发、Package开发、编辑器扩展、自定义工具时激活。\"",
-      "source": "local"
-    },
-    {
-      "name": "SmileKnow-Collector",
-      "description": "收集和整理用户在使用过程中遇到的问题、解决方式和查找方法，提炼出通用的工作方式和习惯，形成个人知识库。当用户说\"记录这个问题\"、\"添加解决方案\"、\"查找类似问题\"、\"知识收集\"、\"整理知识库\"、\"提炼方式\"、\"总结习惯\"、\"SmileKnow\"等时激活。",
+      "description": "用于Unity插件和Package开发：Package结构设计、程序集定义(.asmdef)、编辑器扩展、自定义Inspector、ScriptableObject等。自动检测Unity版本、技术栈与第三方插件，并提供对应文档。当用户询问Unity插件/Package开发、编辑器扩展、自定义工具时激活。",
       "source": "local"
     }
   ]

@@ -3,6 +3,8 @@ name: unity-plugin-development
 description: "用于Unity插件和Package开发：Package结构设计、程序集定义(.asmdef)、编辑器扩展、自定义Inspector、ScriptableObject等。自动检测Unity版本、技术栈与第三方插件，并提供对应文档。当用户询问Unity插件/Package开发、编辑器扩展、自定义工具时激活。"
 metadata:
   version: "v2"
+  short-description: Unity 插件与 Package 开发指南
+  category: 游戏开发
 ---
 
 # Unity插件/Package开发指南

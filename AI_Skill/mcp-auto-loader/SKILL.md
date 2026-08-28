@@ -1,10 +1,11 @@
 ---
-name: McpAutoLoader
+name: mcp-auto-loader
 description: 按需自动加载 MCP 服务器：当用户需要调用 GitHub/GitLab、浏览器自动化(playwright)、代码搜索、Firebase、Telegram、Discord 等服务时，自动检测并启用对应的 MCP 服务器。支持 context7、github、gitlab、playwright 等 15+ 个 MCP。当用户说「启动 github」「加载 playwright」「启用 MCP」等时激活。
 metadata:
   short-description: MCP 按需自动加载器
   version: "v3"
   author: AI Development Team
+  category: Agent 管理
 ---
 
 # MCP 按需自动加载器

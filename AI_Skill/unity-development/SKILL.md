@@ -3,6 +3,8 @@ name: unity-development
 description: "用于Unity项目开发：C#编程、场景设计、项目结构、构建配置与部署。自动检测Unity版本、技术栈（URP/HDRP/DOTS/Netcode等）与第三方插件，并提供对应文档。当用户询问Unity项目开发、游戏开发、C#编程、项目初始化或构建时激活。"
 metadata:
   version: "v2"
+  short-description: Unity 项目开发指南
+  category: 游戏开发
 ---
 
 # Unity 开发指南

@@ -1,10 +1,11 @@
 ---
-name: SmileGlobalConfig
+name: smile-global-config
 description: 全局中文设置：确保所有项目、会话交流、文档、代码注释等都使用简体中文。安装后自动激活，全局适用，无需关键词触发。
 metadata:
   short-description: 全局中文交互设置
-  version: "v12"
+  version: "v13"
   last-updated: "2026-08-24"
+  category: 全局配置
 ---
 
 # 全局中文设置
@@ -133,6 +134,7 @@ def calculate_total(items):
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-08-28 | v13 | 技能名改为 kebab-case（smile-global-config），符合 DSH 加载规范 |
 | 2026-08-27 | v12 | 优化触发条件：明确全局自动激活、无需关键词，补充优先级与冲突处理说明 |
 | 2026-08-22 | v1 | 初始版本 |
 | 2026-08-22 | v2 | 新增技能集成、技能遵循规则 |

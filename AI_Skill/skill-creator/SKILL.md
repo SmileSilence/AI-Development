@@ -2,8 +2,9 @@
 name: skill-creator
 description: 创建和开发 AI_Skill 技能：SKILL.md 编写、agents/openai.yaml、目录结构与安装测试。当用户要求创建新技能、开发 skill、添加 AI 能力时使用。技能源目录 D:\Work\AI-Development\AI_Skill。
 metadata:
-  version: "v2"
+  version: "v4"
   short-description: AI 技能开发工具
+  category: 技能开发
 ---
 
 # Skill Creator — AI 技能开发工具
@@ -43,7 +44,7 @@ metadata:
 
 ### 2.2 命名规范
 
-- **目录名**：PascalCase（如 SmileGlobalConfig）或 kebab-case（如 ai-coding-workflow）
+- **目录名**：kebab-case 小写（如 ai-coding-workflow、smile-global-config）；DSH 仅加载 kebab-case 小写技能名，PascalCase 无法在 DSH 中加载
 - **SKILL.md 中的 name**：与目录名一致
 - **描述**：简短说明功能和触发条件
 
@@ -87,6 +88,29 @@ interface:
   hidden: true          # 是否在界面中隐藏
 invocation: auto        # auto（自动）或 explicit（显式）
 `
+
+### 2.5 修改规范
+
+修改已有技能时，必须遵守以下规则：
+
+1. **先读后改**：修改前必须先查看整个 Skill（完整阅读 SKILL.md 及 agents/、references/ 等相关文件），判断本次改动属于哪个部分（触发条件 / 功能 / 使用方法 / 注意事项 / 配置等），确认归属后再进行针对性修改，避免破坏其他部分。
+2. **局部修改**：仅修改目标部分，不重写无关内容；修改后检查整体结构是否仍完整一致。
+
+### 2.6 分类规范
+
+创建和修改技能时，需按分类（功能模块）组织技能：
+
+1. 明确技能所属分类（如 游戏开发、编码开发、代码规范、Agent 管理 等），在 SKILL.md 的 description 或 metadata 中标注分类。
+2. 同类技能命名、结构保持一致，便于检索与复用。
+3. 新技能或修改时先确认分类归属，避免与其他技能功能重叠。
+
+### 2.7 措辞规范
+
+创建和修改技能时，需优化措辞：
+
+1. 表述准确、简洁、无歧义，使用规范中文。
+2. 术语前后统一，避免口语化、冗余和重复表达。
+3. 修改已有内容时，对涉及部分的措辞一并优化，保持全文风格一致。
 
 ---
 
@@ -158,6 +182,8 @@ metadata:                     # 可选
 - **准确**：触发条件描述准确
 - **中文**：所有文档使用中文
 - **示例**：提供使用示例
+- **分类**：明确所属分类（功能模块），避免与其他技能重叠
+- **措辞**：优化措辞，准确简洁、术语统一、无歧义
 
 ---
 
@@ -193,6 +219,8 @@ A: 删除 C:/Users/19163/.codex/skills/<skill-name> 目录即可。
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-08-28 | v4 | 命名规范收紧为 kebab-case：DSH 仅加载 kebab-case 小写技能名，PascalCase 无法加载 |
+| 2026-08-28 | v3 | 新增修改规范（先读后改、判断改动所属部分）、分类规范（按功能模块分类）、措辞规范（优化措辞）；编写原则补充分类与措辞 |
 | 2026-08-27 | v2 | 优化触发条件：补充不触发场景，技能自包含（不引用其他技能）；修正技能源目录路径 |
 | 2026-08-22 | v1 | 初始版本 |
 

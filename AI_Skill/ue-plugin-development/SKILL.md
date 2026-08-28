@@ -3,6 +3,8 @@ name: ue-plugin-development
 description: "用于Unreal Engine插件和扩展开发：插件结构设计、模块创建、蓝图函数库、编辑器扩展、自定义资产类型定义。自动检测项目UE版本并提供对应文档。当用户询问UE插件开发、模块/编辑器扩展、自定义资产、蓝图函数库时激活。"
 metadata:
   version: "v2"
+  short-description: UE 插件与扩展开发指南
+  category: 游戏开发
 ---
 
 # UE插件/扩展开发指南

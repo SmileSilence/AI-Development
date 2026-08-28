@@ -1,9 +1,10 @@
 ---
-name: SmileKnow-Collector
+name: smile-know-collector
 description: 个人知识库工具：记录问题/解决方案/查找方式，查询检索、分析整理、提炼方法与习惯、导出统计、定时整理、备份恢复。当用户说「记录问题」「添加解决方案」「查找问题」「整理知识库」「提炼方式」「SmileKnow」等时激活。
 metadata:
-  version: "v3.4"
+  version: "v3.5"
   short-description: 个人知识收集、分析、整理与习惯提炼
+  category: 知识管理
 ---
 
 # SmileKnow-Collector — 个人知识收集器
@@ -577,7 +578,7 @@ SmileKnowXXX 查找 Python错误
 
 **默认位置（未配置时）：**
 ```
-SmileKnow-Collector/
+smile-know-collector/
 ├── data/               # 数据存储
 │   ├── records.json    # 所有记录
 │   ├── tags.json       # 标签索引
@@ -729,8 +730,8 @@ if config["first_run"] == true:
 ```
 快速配置中...
 
-✅ 数据目录：$CODEX_HOME/skills/SmileKnow-Collector/data
-✅ 导出目录：$CODEX_HOME/skills/SmileKnow-Collector/exports
+✅ 数据目录：$CODEX_HOME/skills/smile-know-collector/data
+✅ 导出目录：$CODEX_HOME/skills/smile-know-collector/exports
 ✅ 定时整理：已启用（每周一次，02:00）
 ✅ 快速记录：已启用
 ✅ 自动备份：已启用（每天）
@@ -1734,8 +1735,8 @@ JavaScript ██████ 18次
 
 **助手**：快速配置中...
 
-✅ 数据目录：$CODEX_HOME/skills/SmileKnow-Collector/data
-✅ 导出目录：$CODEX_HOME/skills/SmileKnow-Collector/exports
+✅ 数据目录：$CODEX_HOME/skills/smile-know-collector/data
+✅ 导出目录：$CODEX_HOME/skills/smile-know-collector/exports
 ✅ 定时整理：已启用（每周一次，02:00）
 ✅ 快速记录：已启用
 ✅ 自动备份：已启用（每天）
@@ -2212,6 +2213,7 @@ D:/MyKnowledgeBase/logs/cleanup_20260822.log
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-08-28 | v3.5 | 技能名改为 kebab-case（smile-know-collector），符合 DSH 加载规范 |
 | 2026-08-27 | v3.4 | 优化触发条件：补充不触发场景，避免非记录意图误触发；修正版本表格式 |
 | 2026-08-22 | v3.3 | 新增覆盖模式导出功能，使用固定文件名避免重复 |
 | 2026-08-22 | v3.2 | 项目更名为SmileKnow-Collector，关键词设置为SmileKnow和SmileKnowXXX |

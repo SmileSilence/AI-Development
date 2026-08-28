@@ -1,0 +1,8 @@
+name: anget-manager
+description: 管理本机 AI Agent（anget，含 dsh/codex/claude/gemini 等）的启动、会话整理同步和临时文件清理；支持按工作区比较并合并 Claude/dsh 及反向导入会话
+interface:
+  display_name: "Anget管理"
+  short_description: "整理并合并正向与反向导入会话"
+  default_prompt: "使用 $anget-manager 按工作区比较 Claude/dsh 及反向导入会话，合并差异后安全同步到 Codex。"
+  hidden: true
+invocation: auto
