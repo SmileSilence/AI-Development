@@ -1,8 +1,0 @@
-name: smile-know-collector
-description: 收集和整理用户在使用过程中遇到的问题、解决方式和查找方法，形成个人知识库。
-interface:
-  display_name: "知识收集器"
-  short_description: "个人知识收集与检索"
-  default_prompt: "记录这个问题："
-  hidden: false
-invocation: auto

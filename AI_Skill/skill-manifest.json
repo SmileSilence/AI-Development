@@ -1,0 +1,98 @@
+{
+  "install_dir": "$USERPROFILE/.agents/skills",
+  "source_dir": "SmlieSkills",
+  "version": "3.1.1",
+  "skills": [
+    {
+      "name": "anget-manager",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "管理 AI Agent 启动、技能清单安装、会话同步与临时文件；涉及 anget、DSH、Codex、Claude 或 Gemini 时使用。",
+      "source": "local"
+    },
+    {
+      "name": "ai-coding-workflow",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "AI 辅助编码工作流；用户要求生成、审查、重构代码、修复 bug 或编写测试时使用。",
+      "source": "local"
+    },
+    {
+      "name": "code-style",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "提供通用代码风格、命名、注释与审查规范；编写、格式化、重构或审查代码时使用。",
+      "source": "local"
+    },
+    {
+      "name": "deepseek-harness-plugin-creator",
+      "publisher": "SmileXX",
+      "default_install": false,
+      "description": "创建、测试和发布 DeepSeek Harness（dsh）插件；涉及 plugin.json、命令或 dsh 扩展时使用。",
+      "source": "local"
+    },
+    {
+      "name": "mcp-auto-loader",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "按需搜索、安装或启用 MCP 服务器；需要 GitHub、浏览器自动化、代码搜索等外部服务时使用。",
+      "source": "local"
+    },
+    {
+      "name": "skill-creator",
+      "publisher": "SmileXX",
+      "default_install": false,
+      "description": "创建或维护 AI_Skill 技能；涉及 SKILL.md、openai.yaml、目录结构或安装测试时使用。",
+      "source": "local"
+    },
+    {
+      "name": "smile-global-config",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "全局简体中文配置；安装后自动生效，适用于交流、文档和代码注释。",
+      "source": "local"
+    },
+    {
+      "name": "smile-know-collector",
+      "publisher": "SmileXX",
+      "default_install": false,
+      "description": "管理个人知识库；用户要求记录、检索、整理、提炼、导出或备份知识，以及提到 SmileKnow 时使用。",
+      "source": "local"
+    },
+    {
+      "name": "smile-project-config",
+      "publisher": "SmileXX",
+      "default_install": false,
+      "description": "管理 D:\\Work\\Project 项目结构、Git 和文档模板；初始化项目或维护项目配置时使用。",
+      "source": "local"
+    },
+    {
+      "name": "ue-development",
+      "publisher": "SmileXX",
+      "default_install": false,
+      "description": "开发 Unreal Engine 项目；涉及 C++、蓝图、场景、构建、部署或 UE 版本文档时使用。",
+      "source": "local"
+    },
+    {
+      "name": "ue-plugin-development",
+      "publisher": "SmileXX",
+      "default_install": false,
+      "description": "开发 Unreal Engine 插件与扩展；涉及模块、编辑器扩展、蓝图函数库或自定义资产时使用。",
+      "source": "local"
+    },
+    {
+      "name": "unity-development",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "开发 Unity 项目；涉及 C#、场景、构建、部署、技术栈或 Unity 版本文档时使用。",
+      "source": "local"
+    },
+    {
+      "name": "unity-plugin-development",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "开发 Unity 插件或 Package；涉及 asmdef、编辑器扩展、Inspector 或 ScriptableObject 时使用。",
+      "source": "local"
+    }
+  ]
+}

@@ -1,8 +1,0 @@
-name: ai-coding-workflow
-description: 用于AI辅助编码的完整工作流程：需求分析、提示设计、代码生成、代码审查、测试与迭代优化。
-interface:
-  display_name: "AI编码流程"
-  short_description: "AI辅助编码的完整工作流程"
-  default_prompt: "请按 AI 编码流程完成这个编码任务"
-  hidden: true
-invocation: auto

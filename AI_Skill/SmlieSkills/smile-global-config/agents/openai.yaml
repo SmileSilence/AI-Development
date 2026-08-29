@@ -1,0 +1,8 @@
+name: smile-global-config
+description: 全局简体中文配置，适用于交流、文档和代码注释。
+interface:
+  display_name: "全局中文设置"
+  short_description: "全局简体中文交互设置"
+  default_prompt: "请始终使用简体中文交互"
+  hidden: true
+invocation: auto

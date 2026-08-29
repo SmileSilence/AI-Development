@@ -1,8 +1,0 @@
-name: smile-project-config
-description: 项目配置规范 - 通用项目开发规范（结构、Git、文档模板、配置管理）。
-interface:
-  display_name: "项目配置规范"
-  short_description: "通用项目开发规范"
-  default_prompt: "请按项目配置规范组织项目结构与文档"
-  hidden: true
-invocation: auto

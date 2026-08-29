@@ -38,17 +38,28 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# SmileKnow 运行时数据与导出文件不上传
+AI_Skill/SmlieSkills/smile-know-collector/data/
+AI_Skill/SmlieSkills/smile-know-collector/exports/
+
 # 临时文件
 *.tmp
 *.temp
 *.log
 
+# 第三方技能源码与本地适配文档不上传，仅保留公开清单
+AI_Skill/OtherSkills/*
+!AI_Skill/OtherSkills/skill-manifest.json
+!AI_Skill/OtherSkills/OtherSkills.xlsx
+
+# 第三方插件源码包不上传，仅保留分类说明和公开索引
+AI_Plugins/**/OtherPlugin/*.zip
+
+# 独立 Git 仓库仅在 AI-Development 中保留索引，避免形成未配置的嵌套仓库
+AI_Plugins/DSH/SmilePlugin/ClaudeSettingsEditor/
+AI_Plugins/DSH/SmilePlugin/dsh-desktop/
+
 # 环境变量
 .env
 .env.local
 .env.*.local
-
-# 系统文件
-*.swp
-*.swo
-*~

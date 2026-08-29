@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "description": "第三方技能索引。仓库仅保存本清单，不保存第三方源码或本地适配文档。",
+  "skills": [
+    {
+      "name": "book-to-skill",
+      "publisher": "virgiliojr94",
+      "description": "将 PDF、EPUB、DOCX、HTML、Markdown 等书籍或文档转换为结构化、按需加载的 Agent 技能。",
+      "repository": "https://github.com/virgiliojr94/book-to-skill.git",
+      "homepage": "https://github.com/virgiliojr94/book-to-skill",
+      "license": "MIT",
+      "downloaded_version": "1.4.0",
+      "install_hint": "npx skills add virgiliojr94/book-to-skill"
+    }
+  ]
+}

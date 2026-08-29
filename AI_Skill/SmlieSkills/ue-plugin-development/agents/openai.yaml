@@ -1,0 +1,17 @@
+name: ue-plugin-development
+description: Unreal Engine 插件、模块与编辑器扩展开发支持。
+interface:
+  display_name: "UE插件开发助手"
+  short_description: "UE插件/扩展开发支持"
+  default_prompt: "请按 UE 插件开发规范协助完成插件开发"
+  hidden: true
+  icon: "puzzle-piece"
+  color: "#4CAF50"
+  tags: ["unreal-engine", "plugin", "editor-extension", "blueprint", "lua", "third-party", "module"]
+  examples:
+    - "创建一个UE插件"
+    - "检测项目第三方插件"
+    - "如何创建蓝图函数库？"
+    - "Lua插件绑定开发"
+    - "与Advanced Sessions集成"
+invocation: auto
