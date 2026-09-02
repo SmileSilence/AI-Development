@@ -1,10 +1,13 @@
-# 检测或同步 Claude Code、dsh 会话到 Codex
+﻿# 检测或同步会话到指定目标 Agent（默认 Codex）
 param(
     [ValidateSet('Detect', 'Import')]
     [string]$Mode = 'Detect',
 
-    [ValidateSet('All', 'Claude', 'Dsh')]
-    [string]$Source = 'All'
+    [ValidateSet('All', 'Codex', 'Claude', 'Dsh')]
+    [string]$Source = 'All',
+
+    [ValidateSet('Codex', 'Dsh', 'Claude')]
+    [string]$Target = 'Codex'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -44,7 +47,7 @@ try {
     }
 
     $env:PYTHONIOENCODING = 'utf-8'
-    $scriptOutput = @(& $pythonCommand.Source $pythonScript --mode $Mode.ToLowerInvariant() --source $Source.ToLowerInvariant() --temp-dir $taskDir 2>&1)
+    $scriptOutput = @(& $pythonCommand.Source $pythonScript --mode $Mode.ToLowerInvariant() --source $Source.ToLowerInvariant() --target $Target.ToLowerInvariant() --temp-dir $taskDir 2>&1)
     $scriptExitCode = $LASTEXITCODE
     if ($scriptOutput.Count -gt 0) {
         Write-Output ($scriptOutput -join [Environment]::NewLine)

@@ -1,4 +1,4 @@
-"""按工作区整理、合并并同步 Claude Code、dsh 会话到 Codex。"""
+"""按通用规则整理会话并同步到指定目标 Agent（分 Agent 规则见 references/AGENT_RULES.md）。"""
 
 from __future__ import annotations
 
@@ -34,9 +34,10 @@ ACTIVE_SESSION_WINDOW_SECONDS = 60
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="按工作区整理、合并并同步 Claude Code、dsh 会话到 Codex")
+    parser = argparse.ArgumentParser(description="按通用规则整理会话并同步到指定目标 Agent（分 Agent 规则见 references/AGENT_RULES.md）")
     parser.add_argument("--mode", choices=("detect", "import"), default="detect", help="检测或正式导入")
-    parser.add_argument("--source", choices=("all", "claude", "dsh"), default="all", help="会话来源")
+    parser.add_argument("--source", choices=("all", "codex", "claude", "dsh"), default="all", help="会话来源 Agent")
+    parser.add_argument("--target", choices=("codex", "dsh", "claude"), default="codex", help="同步目标 Agent（默认 codex）")
     parser.add_argument("--temp-dir", type=Path, required=True, help="下载目录中的任务临时目录")
     return parser.parse_args()
 
@@ -377,7 +378,7 @@ def legacy_dsh_identity(session: dict[str, Any]) -> tuple[str, set[str]]:
 def session_is_imported(session: dict[str, Any], registry: dict[str, set[str]]) -> bool:
     if session["source"] == "dsh-reverse" and session.get("reverse_relation") in {"exact", "subset"}:
         return True
-    if session["source"] == "claude":
+    if session["source"] in {"claude", "codex"}:
         path = Path(session["source_path"])
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         return digest in registry.get(normalize_path(path), set())
@@ -388,7 +389,7 @@ def session_is_imported(session: dict[str, Any], registry: dict[str, set[str]]) 
 def superseded_threads(
     session: dict[str, Any], records_by_path: dict[str, list[dict[str, Any]]]
 ) -> list[dict[str, str]]:
-    if session["source"] == "claude":
+    if session["source"] in {"claude", "codex"}:
         identity_path = normalize_path(session["source_path"])
     elif session["source"] == "dsh":
         identity_path, _ = legacy_dsh_identity(session)
@@ -408,6 +409,8 @@ def session_lineage(session: dict[str, Any]) -> str:
         return f"claude:{normalize_path(session['source_path'])}"
     if session["source"] == "dsh-reverse":
         return f"codex-reverse:{session.get('origin_codex_id') or session['original_id']}"
+    if session["source"] == "codex":
+        return f"codex:{normalize_path(session['source_path'])}"
     return f"dsh:{session['original_id']}"
 
 
@@ -507,6 +510,35 @@ def collect_dsh_sessions() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             session["reverse_relation"] = relation
             stats["reverse_imported"][relation] += 1
         sessions.append(session)
+    return sessions, stats
+
+
+def collect_codex_sessions() -> tuple[list[dict[str, Any]], dict[str, int]]:
+    sessions: list[dict[str, Any]] = []
+    stats = {"source_files": 0, "empty": 0, "active": 0, "unreadable": 0}
+    codex_root = HOME / ".codex" / "sessions"
+    if not codex_root.exists():
+        return sessions, stats
+    for path in codex_root.rglob("*.jsonl"):
+        stats["source_files"] += 1
+        try:
+            source_stat = path.stat()
+            if time.time() - source_stat.st_mtime < ACTIVE_SESSION_WINDOW_SECONDS:
+                stats["active"] += 1
+                continue
+            messages, cwd = messages_from_codex(path)
+        except OSError:
+            stats["unreadable"] += 1
+            continue
+        if not any(role == "user" for role, _, _ in messages):
+            stats["empty"] += 1
+            continue
+        sessions.append({
+            "source": "codex", "source_path": str(path),
+            "original_id": str(path.stem), "cwd": cwd, "workspace": canonical_workspace(cwd),
+            "messages": messages, "malformed_lines": 0,
+            "mtime": iso_time(int(source_stat.st_mtime * 1000)),
+        })
     return sessions, stats
 
 
@@ -762,7 +794,9 @@ def count_source_files() -> dict[str, int]:
     if CLAUDE_ROOT.exists():
         claude = sum(1 for path in CLAUDE_ROOT.rglob("*.jsonl") if not normalize_path(path).startswith(normalize_path(STAGING_ROOT)))
     dsh = len(list(DSH_ROOT.rglob("session.jsonl.zstd"))) if DSH_ROOT.exists() else 0
-    return {"claude": claude, "dsh": dsh}
+    codex_root = HOME / ".codex" / "sessions"
+    codex = len(list(codex_root.rglob("*.jsonl"))) if codex_root.exists() else 0
+    return {"claude": claude, "dsh": dsh, "codex": codex}
 
 
 def main() -> int:
@@ -785,7 +819,38 @@ def main() -> int:
             found, stats = collect_dsh_sessions()
             sessions.extend(found)
             source_scan["dsh"] = stats
+        if args.source in {"all", "codex"}:
+            found, stats = collect_codex_sessions()
+            sessions.extend(found)
+            source_scan["codex"] = stats
         manifest, staged_index = organize_and_stage(sessions, temp_dir)
+
+        # dsh / claude 目标：本脚本作为编排层，按 AGENT_RULES 分 Agent 规则输出整理结果，
+        # 目标写入由执行方按对应 Agent 的「作为目标」规则落地（dsh 走 workspace RPC，见
+        # references/AGENT_RULES.md 第二节 B；claude 走带安全标记的暂存目录导入）。
+        if args.target != "codex":
+            summary = {
+                "mode": args.mode, "source": args.source, "target": args.target,
+                "source_scan": source_scan,
+                "organization": {
+                    "workspaces": len(manifest["workspaces"]),
+                    "input_sessions": manifest["input_sessions"],
+                    "organized_sessions": manifest["organized_sessions"],
+                    "output_sessions": manifest["output_sessions"],
+                    "already_imported": manifest["already_imported"],
+                    "duplicates_merged": manifest["duplicates_merged"],
+                    "workspace_details": manifest["workspaces"],
+                },
+                "candidates": [
+                    {k: c[k] for k in ("session_id", "workspace", "title", "messages", "sources", "source_paths")}
+                    for c in manifest["sessions"]
+                ],
+                "status": "organized-for-" + args.target,
+                "note": "目标写入按 references/AGENT_RULES.md 分 Agent 规则执行（非 codex 目标不直接写目标私有数据库）",
+            }
+            print(json.dumps(summary, ensure_ascii=False, indent=2))
+            return 0
+
         client = AppServerClient(find_codex())
         client.initialize()
         detected = client.request("externalAgentConfig/detect", {

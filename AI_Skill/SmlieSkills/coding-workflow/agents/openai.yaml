@@ -1,0 +1,8 @@
+name: coding-workflow
+description: AI 辅助编码工作流与通用代码规范，覆盖代码生成、审查、重构、修复、测试及命名、注释、格式与错误处理标准。
+interface:
+  display_name: "AI编码工作流与代码规范"
+  short_description: "AI辅助编码的完整工作流程与通用代码规范"
+  default_prompt: "请按编码工作流与代码规范完成这个编码任务"
+  hidden: true
+invocation: auto

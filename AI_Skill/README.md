@@ -75,18 +75,16 @@ metadata:
 
 ---
 
-## 三、现有自有技能清单（13 个）
+## 三、现有自有技能清单（11 个）
 
 | 技能 | 发布者 | 版本 | 分类 | 说明 |
 |------|--------|------|------|------|
-| ai-coding-workflow | SmileXX | v6 | 编码开发 | AI 辅助编码完整工作流 |
-| anget-manager | SmileXX | v7 | Agent 管理 | Agent 启动、清单安装、会话同步与临时文件清理 |
-| code-style | SmileXX | v8 | 代码规范 | 代码规范与代码风格指南 |
+| coding-workflow | SmileXX | v1 | 编码开发 | AI 辅助编码工作流与通用代码规范（合并 ai-coding-workflow + code-style） |
+| auto-context-splitter | SmileXX | v1 | Agent 工具 | 自动检测上下文超限并智能分段处理长文本任务 |
 | deepseek-harness-plugin-creator | SmileXX | v3 | 插件开发 | dsh 插件开发 |
-| mcp-auto-loader | SmileXX | v4 | Agent 管理 | 按需自动加载 MCP 服务器 |
+| design-execution-document | SmileXX | v2 | 文档开发 | 创建设计+执行综合文档 |
 | skill-creator | SmileXX | v6 | 技能开发 | 技能开发工具（本规范） |
-| smile-global-config | SmileXX | v14 | 全局配置 | 全局简体中文设置（自动激活） |
-| smile-know-collector | SmileXX | v3.6 | 知识管理 | 个人知识库收集整理 |
+| smile-global-config | SmileXX | v16 | 全局配置 | 全局简体中文设置 + AI Agent 管理（合并 anget-manager） |
 | smile-project-config | SmileXX | v7 | 项目规范 | 通用项目配置规范 |
 | ue-development | SmileXX | v3 | 游戏开发 | Unreal Engine 项目开发 |
 | ue-plugin-development | SmileXX | v3 | 游戏开发 | UE 插件/扩展开发 |
@@ -116,7 +114,7 @@ metadata:
 
 | 章节 | 内容 |
 |------|------|
-| 核心原则 | 语言、文档同步、版本记录遵循 smile-global-config；代码风格遵循 code-style |
+| 核心原则 | 语言、文档同步、版本记录遵循 smile-global-config；代码风格遵循 coding-workflow |
 | 项目结构 | 统一目录结构约定（语言无关） |
 | 通用规范 | 日志、界面素材获取 |
 | Git 规范 | 主分支、分支命名、提交规范 |
@@ -261,6 +259,7 @@ pwsh -File .\AI_Skill\install-skills.ps1 -RecommendedOnly
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-02 | v11 | 技能合并与清理：ai-coding-workflow + code-style → coding-workflow；anget-manager 并入 smile-global-config（v16）；删除 mcp-auto-loader、smile-know-collector；清单更新为 11 项 |
 | 2026-08-29 | v10 | 删除重复的 skill-catalog.json；总览与默认推荐统一由 Excel 维护，自有技能安装由 skill-manifest.json 驱动 |
 | 2026-08-29 | v9 | 技能相关文档、表格、JSON 清单与安装脚本统一归入 AI_Skill 目录 |
 | 2026-08-29 | v8 | 新增全部技能总清单与默认推荐安装模式 |

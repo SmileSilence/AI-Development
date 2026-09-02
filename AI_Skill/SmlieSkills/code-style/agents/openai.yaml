@@ -1,8 +1,0 @@
-name: code-style
-description: 提供通用代码风格、命名、注释、格式化与审查规范。
-interface:
-  display_name: "代码规范"
-  short_description: "代码规范、编码标准和代码风格指南"
-  default_prompt: "请按代码规范检查并整理这份代码"
-  hidden: true
-invocation: auto

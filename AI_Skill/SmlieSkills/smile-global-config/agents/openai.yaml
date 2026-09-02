@@ -1,5 +1,5 @@
 name: smile-global-config
-description: 全局简体中文配置，适用于交流、文档和代码注释。
+description: 全局简体中文配置与 AI Agent 管理，涵盖交流、文档、代码注释、Agent 启动、临时文件卫生与会话同步。
 interface:
   display_name: "全局中文设置"
   short_description: "全局简体中文交互设置"

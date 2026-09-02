@@ -1,27 +1,20 @@
 {
   "install_dir": "$USERPROFILE/.agents/skills",
   "source_dir": "SmlieSkills",
-  "version": "3.1.1",
+  "version": "5.0.0",
   "skills": [
     {
-      "name": "anget-manager",
+      "name": "coding-workflow",
       "publisher": "SmileXX",
       "default_install": true,
-      "description": "管理 AI Agent 启动、技能清单安装、会话同步与临时文件；涉及 anget、DSH、Codex、Claude 或 Gemini 时使用。",
+      "description": "AI 辅助编码工作流与通用代码规范；覆盖代码生成、审查、重构、修复、测试，以及命名、注释、格式与错误处理等编码标准。",
       "source": "local"
     },
     {
-      "name": "ai-coding-workflow",
+      "name": "auto-context-splitter",
       "publisher": "SmileXX",
       "default_install": true,
-      "description": "AI 辅助编码工作流；用户要求生成、审查、重构代码、修复 bug 或编写测试时使用。",
-      "source": "local"
-    },
-    {
-      "name": "code-style",
-      "publisher": "SmileXX",
-      "default_install": true,
-      "description": "提供通用代码风格、命名、注释与审查规范；编写、格式化、重构或审查代码时使用。",
+      "description": "自动检测上下文超限并智能分段处理长文本任务",
       "source": "local"
     },
     {
@@ -32,10 +25,10 @@
       "source": "local"
     },
     {
-      "name": "mcp-auto-loader",
+      "name": "design-execution-document",
       "publisher": "SmileXX",
-      "default_install": true,
-      "description": "按需搜索、安装或启用 MCP 服务器；需要 GitHub、浏览器自动化、代码搜索等外部服务时使用。",
+      "default_install": false,
+      "description": "创建包含设计和执行部分的综合文档，确保文档完整可执行，无需额外参考资料",
       "source": "local"
     },
     {
@@ -49,14 +42,7 @@
       "name": "smile-global-config",
       "publisher": "SmileXX",
       "default_install": true,
-      "description": "全局简体中文配置；安装后自动生效，适用于交流、文档和代码注释。",
-      "source": "local"
-    },
-    {
-      "name": "smile-know-collector",
-      "publisher": "SmileXX",
-      "default_install": false,
-      "description": "管理个人知识库；用户要求记录、检索、整理、提炼、导出或备份知识，以及提到 SmileKnow 时使用。",
+      "description": "全局简体中文配置与 AI Agent 管理；安装后自动生效，涵盖交流、文档、代码注释、Agent 启动、临时文件卫生与会话同步。",
       "source": "local"
     },
     {

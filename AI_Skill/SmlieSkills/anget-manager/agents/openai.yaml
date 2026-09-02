@@ -1,8 +1,0 @@
-name: anget-manager
-description: 管理 AI Agent 启动、技能清单安装、会话同步、历史版本合并与临时文件清理。
-interface:
-  display_name: "Anget管理"
-  short_description: "按清单安装技能并整理同步 Agent 会话"
-  default_prompt: "使用 $anget-manager 按总清单安装默认推荐技能，或按工作区整理并同步 Agent 会话。"
-  hidden: true
-invocation: auto
