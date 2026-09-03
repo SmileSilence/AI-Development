@@ -38,9 +38,9 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
-# SmileKnow 运行时数据与导出文件不上传
-AI_Skill/SmlieSkills/smile-know-collector/data/
-AI_Skill/SmlieSkills/smile-know-collector/exports/
+# 本仓库未纳管的应用与临时目录（不属于技能/插件源码）
+AI_App/
+.dsh-filess/
 
 # 临时文件
 *.tmp
@@ -54,10 +54,6 @@ AI_Skill/OtherSkills/*
 
 # 第三方插件源码包不上传，仅保留分类说明和公开索引
 AI_Plugins/**/OtherPlugin/*.zip
-
-# 独立 Git 仓库仅在 AI-Development 中保留索引，避免形成未配置的嵌套仓库
-AI_Plugins/DSH/SmilePlugin/ClaudeSettingsEditor/
-AI_Plugins/DSH/SmilePlugin/dsh-desktop/
 
 # 环境变量
 .env
