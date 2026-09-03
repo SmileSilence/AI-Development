@@ -3,9 +3,11 @@ name: ue-plugin-development
 description: "开发 Unreal Engine 插件与扩展；涉及模块、编辑器扩展、蓝图函数库或自定义资产时使用。"
 metadata:
   publisher: SmileXX
-  version: "v3"
+  version: "v3.1"
   short-description: UE 插件与扩展开发指南
   category: 游戏开发
+  platforms: [DSH, Claude, OpenAI/Codex]
+  keywords: [Unreal, UE, plugin, development, blueprint]
 ---
 
 # UE插件/扩展开发指南
@@ -592,6 +594,7 @@ python scripts/doc_manager.py --mode cloud --topic editorextensions --version [�
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-03 | v3.1 | 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范 |
 | 2026-08-29 | v3 | 精简技能目录描述，保留 UE 插件开发触发条件 |
 | 2026-08-27 | v2 | 优化触发条件：删除重复的触发条件小节，补充不触发场景，技能自包含（不引用其他技能） |
 | 2026-08-22 | v1 | 初始版本 |

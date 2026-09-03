@@ -1,7 +1,7 @@
 {
   "install_dir": "$USERPROFILE/.agents/skills",
   "source_dir": "SmlieSkills",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "skills": [
     {
       "name": "coding-workflow",
@@ -18,10 +18,10 @@
       "source": "local"
     },
     {
-      "name": "deepseek-harness-plugin-creator",
+      "name": "dsh-plugin-creator",
       "publisher": "SmileXX",
       "default_install": false,
-      "description": "创建、测试和发布 DeepSeek Harness（dsh）插件；涉及 plugin.json、命令或 dsh 扩展时使用。",
+      "description": "创建、修改、调试和验证 DSH 可安装插件包与 Cordis 会话内动态插件；涉及插件打包、服务、工具、界面插槽或 cordis_define/run 时使用。",
       "source": "local"
     },
     {

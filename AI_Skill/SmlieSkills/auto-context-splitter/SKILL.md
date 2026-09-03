@@ -3,9 +3,11 @@ name: auto-context-splitter
 description: 自动检测上下文超限并智能分段处理长文本任务
 metadata:
   publisher: SmileXX
-  version: "v1"
+  version: "v1.1"
   short-description: 自动上下文分段处理器
   category: Agent 工具
+  platforms: [DSH, Claude, OpenAI/Codex]
+  keywords: [context, splitter, long-text, segmentation, AI]
 ---
 
 # Auto Context Splitter — 自动上下文分段处理器
@@ -181,4 +183,5 @@ const result = await handler.autoProcess(part1 + part2);
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-03 | v1.1 | 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范 |
 | 2026-08-31 | v1 | 初始版本，实现自动检测、智能分段、批量处理和结果合并 |

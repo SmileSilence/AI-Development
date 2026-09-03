@@ -3,9 +3,11 @@ name: design-execution-document
 description: 创建包含设计和执行部分的综合文档，确保文档完整可执行，无需额外参考资料
 metadata:
   publisher: SmileXX
-  version: "v2"
+  version: "v2.1"
   short-description: 创建设计+执行综合文档
   category: 文档开发
+  platforms: [DSH, Claude, OpenAI/Codex]
+  keywords: [design, document, execution, documentation, workflow]
 ---
 
 # 设计+执行文档创建技能
@@ -91,5 +93,6 @@ metadata:
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-03 | v2.1 | 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范 |
 | 2026-09-02 | v2 | 结构规范化：发布者统一为 SmileXX；install.ps1 移入 scripts/ 并改为基于脚本自身路径的安全安装方式（避免运行时自我复制嵌套） |
 | 2026-08-29 | v1 | 初始版本 |

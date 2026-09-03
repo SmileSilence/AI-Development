@@ -86,7 +86,7 @@ foreach ($installDir in $installDirs) {
         }
 
         try {
-            $useSkillSymlink = $UseSymlink -and $skillName -ne "smile-know-collector"
+            $useSkillSymlink = $UseSymlink
 
             if ($useSkillSymlink) {
                 if (Test-Path -LiteralPath $targetPath) {
@@ -99,12 +99,8 @@ foreach ($installDir in $installDirs) {
                     New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
                 }
                 $sourceItems = Get-ChildItem -LiteralPath $sourcePath -Force
-                if ($skillName -eq "smile-know-collector" -and $targetExisted) {
-                    $runtimeNames = @("config.json", "data", "exports", "logs", "backups")
-                    $sourceItems = $sourceItems | Where-Object { $_.Name -notin $runtimeNames }
-                }
                 $sourceItems | Copy-Item -Destination $targetPath -Recurse -Force
-                $mode = if ($UseSymlink -and $skillName -eq "smile-know-collector") { "已复制，保留运行时数据" } else { "已复制" }
+                $mode = "已复制"
                 Write-Host "✓ $skillName（$mode）" -ForegroundColor Green
             }
         } catch {
@@ -135,35 +131,6 @@ if (-not $KeepCodexCopies) {
         }
 
         if (Test-Path -LiteralPath $targetPath) {
-            if ($skill.name -eq "smile-know-collector") {
-                $sharedSkillPath = Join-Path $sharedInstallDir $skill.name
-                $runtimeNames = @("config.json", "data", "exports", "logs", "backups")
-                foreach ($runtimeName in $runtimeNames) {
-                    $runtimePath = Join-Path $targetPath $runtimeName
-                    if (-not (Test-Path -LiteralPath $runtimePath)) {
-                        continue
-                    }
-
-                    if ((Get-Item -LiteralPath $runtimePath).PSIsContainer) {
-                        Get-ChildItem -LiteralPath $runtimePath -File -Recurse | ForEach-Object {
-                            $relativePath = $_.FullName.Substring($targetPath.Length).TrimStart('\')
-                            $destinationPath = Join-Path $sharedSkillPath $relativePath
-                            $destinationParent = Split-Path -Parent $destinationPath
-                            if (-not (Test-Path -LiteralPath $destinationParent)) {
-                                New-Item -ItemType Directory -Path $destinationParent -Force | Out-Null
-                            }
-                            if (-not (Test-Path -LiteralPath $destinationPath) -or $_.LastWriteTimeUtc -gt (Get-Item -LiteralPath $destinationPath).LastWriteTimeUtc) {
-                                Copy-Item -LiteralPath $_.FullName -Destination $destinationPath -Force
-                            }
-                        }
-                    } else {
-                        $destinationPath = Join-Path $sharedSkillPath $runtimeName
-                        if (-not (Test-Path -LiteralPath $destinationPath) -or (Get-Item -LiteralPath $runtimePath).LastWriteTimeUtc -gt (Get-Item -LiteralPath $destinationPath).LastWriteTimeUtc) {
-                            Copy-Item -LiteralPath $runtimePath -Destination $destinationPath -Force
-                        }
-                    }
-                }
-            }
             Remove-Item -LiteralPath $targetPath -Recurse -Force
             Write-Host "已移除 Codex 重复副本：$($skill.name)" -ForegroundColor DarkGray
         }

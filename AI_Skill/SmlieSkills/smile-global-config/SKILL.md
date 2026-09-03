@@ -4,9 +4,11 @@ description: 全局简体中文配置与 AI Agent 管理；安装后自动生效
 metadata:
   publisher: SmileXX
   short-description: 全局中文配置与 Agent 管理
-  version: "v17"
+  version: "v17.1"
   last-updated: "2026-09-02"
   category: 全局配置
+  platforms: [DSH, Claude, OpenAI/Codex, Gemini]
+  keywords: [config, global, AI, agent, Chinese]
 ---
 
 # 全局配置与 Agent 管理
@@ -259,6 +261,7 @@ def calculate_total(items):
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-03 | v17.1 | 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范 |
 | 2026-09-02 | v17 | 新增任务拆分与并行协作规则：评估独立子任务、按需分派子代理、避免修改冲突，并由主代理统一整合验证 |
 | 2026-09-02 | v16 | 合并 anget-manager：新增 Agent 管理部分（启动、文件卫生、会话同步、技能清单安装、辅助脚本），随附 references/ 与 scripts/ |
 | 2026-08-31 | v15 | 新增交互行为准则：未找到用户指定内容时不虚构、如实告知、交由用户决策 |

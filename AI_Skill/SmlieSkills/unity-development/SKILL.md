@@ -3,9 +3,11 @@ name: unity-development
 description: "开发 Unity 项目；涉及 C#、场景、构建、部署、技术栈或 Unity 版本文档时使用。"
 metadata:
   publisher: SmileXX
-  version: "v3"
+  version: "v3.1"
   short-description: Unity 项目开发指南
   category: 游戏开发
+  platforms: [DSH, Claude, OpenAI/Codex]
+  keywords: [Unity, C#, game, development, CSharp]
 ---
 
 # Unity 开发指南
@@ -301,6 +303,7 @@ python scripts/doc_manager.py --mode cloud --topic urp --version 2022.3
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-03 | v3.1 | 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范 |
 | 2026-08-29 | v3 | 精简技能目录描述，保留 Unity 项目开发触发条件 |
 | 2026-08-27 | v2 | 优化触发条件：补充不触发场景，技能自包含（不引用其他技能） |
 | 2026-08-22 | v1 | 初始版本 |

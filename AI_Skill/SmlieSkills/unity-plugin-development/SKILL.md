@@ -3,9 +3,11 @@ name: unity-plugin-development
 description: "开发 Unity 插件或 Package；涉及 asmdef、编辑器扩展、Inspector 或 ScriptableObject 时使用。"
 metadata:
   publisher: SmileXX
-  version: "v3"
+  version: "v3.1"
   short-description: Unity 插件与 Package 开发指南
   category: 游戏开发
+  platforms: [DSH, Claude, OpenAI/Codex]
+  keywords: [Unity, plugin, development, asmdef, editor extension, ScriptableObject]
 ---
 
 # Unity插件/Package开发指南
@@ -446,6 +448,7 @@ python scripts/doc_manager.py --mode cloud --topic assembly-definition --version
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-03 | v3.1 | 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范 |
 | 2026-08-29 | v3 | 精简技能目录描述，保留 Unity 插件与 Package 触发条件 |
 | 2026-08-27 | v2 | 优化触发条件：补充不触发场景，技能自包含（不引用其他技能） |
 | 2026-08-22 | v1 | 初始版本 |

@@ -3,9 +3,11 @@ name: smile-project-config
 description: 管理 D:\Work\Project 项目结构、Git 和文档模板；初始化项目或维护项目配置时使用。
 metadata:
   publisher: SmileXX
-  version: "v7"
+  version: "v7.1"
   short-description: 通用项目配置规范
   category: 项目规范
+  platforms: [DSH, Claude, OpenAI/Codex]
+  keywords: [project, config, git, template, workflow]
 ---
 
 # SmileProjectConfig — 项目配置规范
@@ -132,6 +134,7 @@ metadata:
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-03 | v7.1 | 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范 |
 | 2026-08-29 | v7 | 精简技能目录描述，保留工作区与项目配置触发条件 |
 | 2026-08-28 | v6 | 技能名改为 kebab-case（smile-project-config），符合 DSH 加载规范 |
 | 2026-08-28 | v5 | 通用化改造：去除 Python 专属内容（PEP 8、pytest、PyInstaller 等）；删除与 SmileGlobalConfig 重复的语言/文档同步规则；命名、错误处理、防御编程、测试等编码规范移交 code-style 与 ai-coding-workflow；AI 助手行为指南移交 ai-coding-workflow；保留并优化项目结构、Git 规范、文档模板、配置管理 |

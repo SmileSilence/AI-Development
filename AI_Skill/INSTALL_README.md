@@ -15,7 +15,11 @@
 
 ### 方法一：一键安装（推荐）
 
-1. 克隆或下载本仓库
+1. 免认证克隆公开仓库：
+   ```powershell
+   git clone https://github.com/SmileSilence/AI-Development.git
+   cd AI-Development
+   ```
 2. 打开PowerShell，进入本目录
 3. 使用 PowerShell 7（`pwsh`）运行安装命令：
 
@@ -46,14 +50,12 @@
 
 | 技能名称 | 描述 |
 |----------|------|
-| ai-coding-workflow | AI辅助编码工作流程 |
-| anget-manager | Agent 启动、清单安装、会话同步与临时文件清理 |
-| code-style | 代码规范指南 |
-| deepseek-harness-plugin-creator | DeepSeek Harness插件创建 |
-| mcp-auto-loader | MCP服务器自动加载 |
+| coding-workflow | AI 辅助编码工作流与通用代码规范 |
+| auto-context-splitter | 长上下文自动检测与分段处理 |
+| dsh-plugin-creator | DSH 插件包与 Cordis 会话内动态插件开发（1.1.1） |
+| design-execution-document | 设计与执行综合文档创建 |
 | skill-creator | 技能创建工具 |
-| smile-global-config | 全局中文设置 |
-| smile-know-collector | 个人知识库收集与整理 |
+| smile-global-config | 全局中文配置与 Agent 管理 |
 | smile-project-config | 项目配置规范 |
 | ue-development | Unreal Engine开发 |
 | ue-plugin-development | UE插件开发 |
@@ -61,6 +63,8 @@
 | unity-plugin-development | Unity插件开发 |
 
 ## 注意事项
+
+DSH 技能已由 `deepseek-harness-plugin-creator` 更名为 `dsh-plugin-creator`。升级时先复制新目录到共享技能目录及 Claude 目录，确认文件完整后再移除同一加载目录中的旧名称副本。官方 `cordis-plugin-development` 原文只作参考，不单独安装。当前通用安装脚本不负责这项旧名称迁移。
 
 1. **安装目录**：默认同步到 `~/.agents/skills/` 与 `~/.claude/skills/`；`.codex/skills/.system` 保持不变
 2. **符号链接**：使用 `-UseSymlink` 参数需要管理员权限或开启开发者模式
@@ -81,6 +85,8 @@
 
 ## 更新日志
 
+- 2026-09-03：更新 DSH 插件开发技能名称、双流程和旧副本迁移说明；中文整合版为 1.1.1
+- 2026-09-02：仓库改为公开访问；移除私有仓库认证教程，更新为免认证克隆与拉取说明，并同步当前 11 个自有技能和 5 个默认推荐技能
 - 2026-08-29：删除重复的 skill-catalog.json；全部技能总览与默认推荐统一由 Excel 维护，自有技能安装由 skill-manifest.json 驱动
 - 2026-08-29：新增全部技能 Excel 总清单、默认安装字段及推荐安装模式
 - 2026-08-29：新增第三方技能 Excel 清单，并与第三方仓库索引同步维护
@@ -91,77 +97,25 @@
 - 2026-08-24：同步所有技能至最新版本，新增 SmileKnow-Collector，新增 QUICK_INSTALL.md 快速安装教程
 - 2026-08-22：初始版本，包含12个AI技能
 
-## 私有仓库认证配置
+## 公开仓库下载与更新
 
-本仓库为私有仓库，拉取时需要身份验证。以下是几种配置方式：
+本仓库已公开。通过 HTTPS 克隆、拉取或下载 ZIP 时，不需要 GitHub 登录、PAT 或 SSH 密钥。
 
-### 方式一：使用个人访问令牌（PAT）✅ 推荐
+```powershell
+# 首次克隆
+git clone https://github.com/SmileSilence/AI-Development.git
 
-1. **获取PAT**：
-   - 访问 https://github.com/settings/tokens
-   - 点击"Generate new token"
-   - 选择权限：`repo`（完整仓库访问权限）
-   - 生成并复制令牌
+# 更新已有仓库
+git -C .\AI-Development pull
 
-2. **配置认证**：
-   ```powershell
-   # 克隆时输入凭证
-   git clone https://github.com/SmileSilence/AI-Development.git
-   # 用户名：SmileSilence
-   # 密码：粘贴您的PAT令牌
-   
-   # 或者设置环境变量（推荐）
-   $env:GITHUB_PAT_TOKEN = "ghp_xxxxxxxxxxxx"
-   ```
+# 仅安装默认推荐技能
+pwsh -File .\AI-Development\AI_Skill\install-skills.ps1 -RecommendedOnly
+```
 
-### 方式二：使用SSH密钥
-
-1. **生成SSH密钥**（如果没有）：
-   ```powershell
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-
-2. **添加公钥到GitHub**：
-   - 复制 `~/.ssh/id_ed25519.pub` 内容
-   - 访问 https://github.com/settings/ssh/new 添加密钥
-
-3. **使用SSH URL克隆**：
-   ```powershell
-   git clone git@github.com:SmileSilence/AI-Development.git
-   ```
-
-### 方式三：使用GitHub CLI
-
-1. **安装GitHub CLI**：
-   ```powershell
-   winget install GitHub.cli
-   ```
-
-2. **登录并克隆**：
-   ```powershell
-   gh auth login
-   gh repo clone SmileSilence/AI-Development
-   ```
-
-### 自动认证检测
-
-安装脚本会自动检测认证配置：
-- ✅ 检查SSH密钥认证
-- ✅ 检查HTTPS凭证
-- ✅ 检查环境变量中的PAT令牌
-- ⚠️ 如果未检测到认证，会显示配置提示
+仓库主页：https://github.com/SmileSilence/AI-Development
 
 ### 故障排除
 
-1. **认证失败**：
-   - 检查PAT令牌是否过期
-   - 确认SSH密钥已添加到GitHub
-   - 验证网络连接
-
-2. **权限不足**：
-   - 确保PAT有 `repo` 权限
-   - 确保SSH密钥有读取权限
-
-3. **克隆缓慢**：
-   - 尝试使用SSH协议
-   - 检查网络代理设置
+1. **无法访问仓库**：确认仓库地址拼写正确，并检查网络与代理设置。
+2. **Git 不可用**：运行 `git --version` 检查安装状态，或直接从仓库主页下载 ZIP。
+3. **克隆缓慢**：检查网络代理设置，必要时稍后重试。

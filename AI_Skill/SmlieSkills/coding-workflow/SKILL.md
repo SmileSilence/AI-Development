@@ -3,9 +3,11 @@ name: coding-workflow
 description: "AI 辅助编码工作流与通用代码规范；覆盖代码生成、审查、重构、修复、测试，以及命名、注释、格式与错误处理等编码标准。"
 metadata:
   publisher: SmileXX
-  version: "v1"
+  version: "v1.1"
   short-description: AI 编码工作流与代码规范
   category: 编码开发
+  platforms: [DSH, Claude, OpenAI/Codex]
+  keywords: [coding, workflow, AI, development, code]
 ---
 
 # AI 编码工作流与代码规范
@@ -236,4 +238,5 @@ metadata:
 
 ## 版本记录
 
+- v1.1 (2026-09-03): 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范
 - v1 (2026-09-02): 合并 ai-coding-workflow 与 code-style 为新技能，保留完整编码工作流与通用代码规范（含语言特定规范）

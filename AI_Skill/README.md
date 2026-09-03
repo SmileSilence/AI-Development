@@ -47,7 +47,7 @@ AI_Skill/
 
 ### 2.2 命名与元数据规范
 
-- **目录名**：kebab-case 小写（如 `ai-coding-workflow`、`smile-global-config`）；DSH 仅加载 kebab-case 小写技能名，PascalCase 无法在 DSH 中加载
+- **目录名**：kebab-case 小写（如 `coding-workflow`、`smile-global-config`）；DSH 仅加载 kebab-case 小写技能名，PascalCase 无法在 DSH 中加载
 - **SKILL.md 中的 name**：与目录名一致
 - **metadata**：包含 `publisher`、`version`、`short-description`、`category`（分类）
 - **publisher**：`SmlieSkills` 下统一填写 `SmileXX`；`OtherSkills` 保留原作者或上游组织名
@@ -79,17 +79,17 @@ metadata:
 
 | 技能 | 发布者 | 版本 | 分类 | 说明 |
 |------|--------|------|------|------|
-| coding-workflow | SmileXX | v1 | 编码开发 | AI 辅助编码工作流与通用代码规范（合并 ai-coding-workflow + code-style） |
-| auto-context-splitter | SmileXX | v1 | Agent 工具 | 自动检测上下文超限并智能分段处理长文本任务 |
-| deepseek-harness-plugin-creator | SmileXX | v3 | 插件开发 | dsh 插件开发 |
-| design-execution-document | SmileXX | v2 | 文档开发 | 创建设计+执行综合文档 |
-| skill-creator | SmileXX | v6 | 技能开发 | 技能开发工具（本规范） |
-| smile-global-config | SmileXX | v16 | 全局配置 | 全局简体中文设置 + AI Agent 管理（合并 anget-manager） |
-| smile-project-config | SmileXX | v7 | 项目规范 | 通用项目配置规范 |
-| ue-development | SmileXX | v3 | 游戏开发 | Unreal Engine 项目开发 |
-| ue-plugin-development | SmileXX | v3 | 游戏开发 | UE 插件/扩展开发 |
-| unity-development | SmileXX | v3 | 游戏开发 | Unity 项目开发 |
-| unity-plugin-development | SmileXX | v3 | 游戏开发 | Unity 插件/Package 开发 |
+| coding-workflow | SmileXX | v1.1 | 编码开发 | AI 辅助编码工作流与通用代码规范（合并 ai-coding-workflow + code-style） |
+| auto-context-splitter | SmileXX | v1.1 | Agent 工具 | 自动检测上下文超限并智能分段处理长文本任务 |
+| dsh-plugin-creator | SmileXX | 1.1.1 | 插件开发 | DSH 可安装插件包与 Cordis 会话内动态插件开发、调试及验证 |
+| design-execution-document | SmileXX | v2.1 | 文档开发 | 创建设计+执行综合文档 |
+| skill-creator | SmileXX | v7 | 技能开发 | 技能开发工具（本规范） |
+| smile-global-config | SmileXX | v17.1 | 全局配置 | 全局简体中文设置 + AI Agent 管理（合并 anget-manager） |
+| smile-project-config | SmileXX | v7.1 | 项目规范 | 通用项目配置规范 |
+| ue-development | SmileXX | v3.1 | 游戏开发 | Unreal Engine 项目开发 |
+| ue-plugin-development | SmileXX | v3.1 | 游戏开发 | UE 插件/扩展开发 |
+| unity-development | SmileXX | v3.1 | 游戏开发 | Unity 项目开发 |
+| unity-plugin-development | SmileXX | v3.1 | 游戏开发 | Unity 插件/Package 开发 |
 
 ### 常用技能详情
 
@@ -134,18 +134,17 @@ metadata:
 | references/SKILL_TEMPLATE.md | SKILL.md 模板 |
 | references/OPENAI_YAML_TEMPLATE.yaml | openai.yaml 模板 |
 
-#### deepseek-harness-plugin-creator（DSH 插件开发工具）
+#### dsh-plugin-creator（DSH 插件开发工具）
 
-**位置**：AI_Skill/SmlieSkills/deepseek-harness-plugin-creator/
+**位置**：AI_Skill/SmlieSkills/dsh-plugin-creator/
 
-**功能**：创建、开发和发布 DeepSeek Harness 插件。
+**功能**：创建、修改、调试和验证 DSH 可安装插件包与 Cordis 会话内动态插件。
 
-**支持命令**：
-`bash
-dsh add https://github.com/<username>/<plugin-name>  # 从 GitHub 安装
-dsh add --local /path/to/plugin                       # 从本地安装
-dsh remove <plugin-name>                              # 卸载插件
-`
+**使用方式**：说“创建可安装的 DSH 插件”“添加会话临时界面”，或显式调用 `$dsh-plugin-creator`。技能根据交付形态分别读取插件包或动态插件参考，目标接口以实际 DSH 版本为准。
+
+**内容结构**：`SKILL.md` 提供场景选择与共同规范；`references/` 包含插件包开发、动态插件开发、故障定位、来源及 MIT 许可。动态流程涵盖 `cordis_inspect_*`、`cordis_define`、`cordis_run`、停止、更新与回滚；未提供这些工具的环境不能直接运行动态插件。
+
+**来源与安装**：官方 Cordis 原文保存在 `OtherSkills/cordis-plugin-development`，仅供追溯；安装中文整合版 `dsh-plugin-creator` 即可。旧称 `deepseek-harness-plugin-creator` 仅作为历史名称和自然语言别名保留；安装后应移除旧目录，避免重复发现。插件安装命令先查目标 CLI 帮助，不再提供未经版本核实的通用 `dsh add/remove` 示例。
 
 ---
 
@@ -259,7 +258,9 @@ pwsh -File .\AI_Skill\install-skills.ps1 -RecommendedOnly
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
-| 2026-09-02 | v11 | 技能合并与清理：ai-coding-workflow + code-style → coding-workflow；anget-manager 并入 smile-global-config（v16）；删除 mcp-auto-loader、smile-know-collector；清单更新为 11 项 |
+| 2026-09-03 | v14 | 版本号同步：11 个自有技能 SKILL.md 均补充 metadata.platforms/keywords（vX.1 系列），README / SKILL_LIST / SKILL_CATALOG.xlsx 台账统一到实际版本；清理过期引用（smile-know-collector 等）；dsh-plugin-creator 更新为 1.1.1 |
+| 2026-09-03 | v13 | dsh-plugin-creator 1.1.0：合入官方 Cordis 动态流程，中文化并分流插件包开发；修正元数据、安装指南和旧名称。官方来源仅指本次可核实的 Cordis 技能，既有包开发文本来源见技能记录。 |
+| 2026-09-03 | v12 | 插件开发技能升级：下载官方 dsh-plugin-development SKILL 并优化为 dsh-plugin-creator（v1）；原 deepseek-harness-plugin-creator 已删除。|
 | 2026-08-29 | v10 | 删除重复的 skill-catalog.json；总览与默认推荐统一由 Excel 维护，自有技能安装由 skill-manifest.json 驱动 |
 | 2026-08-29 | v9 | 技能相关文档、表格、JSON 清单与安装脚本统一归入 AI_Skill 目录 |
 | 2026-08-29 | v8 | 新增全部技能总清单与默认推荐安装模式 |

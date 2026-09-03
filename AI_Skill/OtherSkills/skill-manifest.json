@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "第三方技能索引。仓库仅保存本清单，不保存第三方源码或本地适配文档。",
   "skills": [
     {
@@ -11,6 +11,19 @@
       "license": "MIT",
       "downloaded_version": "1.4.0",
       "install_hint": "npx skills add virgiliojr94/book-to-skill"
+    },
+    {
+      "name": "cordis-plugin-development",
+      "publisher": "DeepSeek",
+      "description": "官方 Cordis 会话内动态插件开发技能；中文内容已合入 dsh-plugin-creator，原文仅用于来源追溯。",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness.git",
+      "homepage": "https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/preset/agent-presets/presets/cordis/skills/cordis-plugin-development",
+      "source_path": "packages/preset/agent-presets/presets/cordis/skills/cordis-plugin-development/SKILL.md",
+      "license": "MIT",
+      "downloaded_version": "49a606bc5b5934603f22a26957a07dc799ab0291",
+      "downloaded_at": "2026-09-03",
+      "sha256": "01811d3ee9c03a466abae12d54d229e7de7bd74ca6b730c54ce9d5e696b294aa",
+      "install_hint": "不单独安装；使用 SmlieSkills/dsh-plugin-creator 1.1.1 中文整合版"
     }
   ]
 }
