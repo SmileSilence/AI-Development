@@ -1,0 +1,345 @@
+/* dsh-workspace-tagger 标签弹窗 / 颜色选择器样式（DSH 设计 token 对齐）。 */
+
+.dialogBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 320px;
+  max-width: 380px;
+  padding: 4px 0;
+}
+
+/* ---- 第 1 行：标签选择（任务 A：单个下拉菜单，运行中标签不出现） ---- */
+.tagSelect {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--dsw-alias-border-l4);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dsw-alias-label-primary, inherit);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.tagSelect:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.tagSelect:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.tagSelectText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.tagSelectChevron {
+  flex: none;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.tagSwatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(127, 127, 127, 0.35);
+  flex: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* 胶囊内计数（任务 B 扩展1：折叠工作区「运行标签名×N」）。 */
+.pillCount {
+  margin-left: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- 第 2 行：管理模式（增加输入 / 删除二次确认） ---- */
+.managementRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+}
+
+.addInput {
+  flex: 1;
+  min-width: 0;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--dsw-alias-border-l4);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dsw-alias-label-primary, inherit);
+  font-size: 12px;
+}
+
+.addInput:focus {
+  outline: none;
+  border-color: var(--dsw-alias-accent, #4f7cff);
+}
+
+.managementHint {
+  flex: 1;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fieldError {
+  color: var(--dsw-alias-danger, #e5484d);
+  font-size: 12px;
+}
+
+.confirmRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.confirmText {
+  flex: 1;
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary);
+  line-height: 1.4;
+}
+
+/* ---- 第 3 行：颜色选择器 ---- */
+.colorSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--dsw-alias-border-l4);
+  padding-top: 10px;
+}
+
+.colorSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary);
+}
+
+.colorTarget {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+/* 颜色选择器主体 */
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hueBar {
+  position: relative;
+  height: 12px;
+  border-radius: 6px;
+  cursor: crosshair;
+  background: linear-gradient(
+    to right,
+    #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%
+  );
+  touch-action: none;
+}
+
+.hueHandle {
+  position: absolute;
+  top: -2px;
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.svSquare {
+  position: relative;
+  height: 120px;
+  border-radius: 6px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.svHandle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.valueInputs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.valueField {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary);
+}
+
+.valueInput {
+  width: 44px;
+  height: 22px;
+  padding: 0 4px;
+  border: 1px solid var(--dsw-alias-border-l4);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dsw-alias-label-primary, inherit);
+  font-size: 12px;
+  text-align: center;
+}
+
+.hexInput {
+  width: 72px;
+}
+
+.presetGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.presetSwatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1px solid rgba(127, 127, 127, 0.35);
+  cursor: pointer;
+  padding: 0;
+}
+
+.presetSwatchCurrent {
+  box-shadow: 0 0 0 2px var(--dsw-alias-accent, #4f7cff);
+}
+
+.customSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.previewSwatch {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(127, 127, 127, 0.35);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.customHint {
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary);
+}
+
+.saveCustomButton {
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--dsw-alias-border-l4);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dsw-alias-label-primary, inherit);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.saveCustomButton:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.saveCustomButton[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ---- 行内标签胶囊（行渲染共用） ---- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 1;
+  padding: 0 6px;
+  max-width: 120px;
+  overflow: hidden;
+  white-space: nowrap;
+  flex: none;
+}
+
+.pillText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dualPill {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 1;
+  overflow: hidden;
+  max-width: 140px;
+  flex: none;
+}
+
+.dualPillFront {
+  flex: none;
+  height: 100%;
+}
+
+.dualPillBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px 0 4px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.dualPillBackText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 行内胶囊嵌入行右侧（与行 actions 互斥出现） */
+.rowPillSlot {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 4px;
+  flex: none;
+}

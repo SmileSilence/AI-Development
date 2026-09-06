@@ -55,6 +55,16 @@ AI_Skill/OtherSkills/*
 # 第三方插件源码包不上传，仅保留分类说明和公开索引
 AI_Plugins/**/OtherPlugin/*.zip
 
+# SmileXX 自有 DSH 插件构建产物（tarball）不上传，仅保留源码/文档/测试
+AI_Plugins/DSH/SmilePlugin/**/*.tgz
+
+# 本地 DSH 插件开发环境目录（不属于插件源码）
+AI_Plugins/.pnpm-store/
+AI_Plugins/_stage/
+AI_Plugins/_backups/
+AI_Plugins/DSH/.m0-iso-home/
+AI_Plugins/DSH/.tagger-iso-home/
+
 # 环境变量
 .env
 .env.local

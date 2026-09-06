@@ -1,0 +1,484 @@
+.projectRow,
+.sessionRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 0 8px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--dsw-alias-label-primary);
+}
+
+/* 批量模式（需求 5）行首勾选框。 */
+.bulkCheckbox {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.bulkCheckbox input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--dsw-alias-interactive-accent, var(--dsw-alias-label-primary));
+  cursor: pointer;
+}
+
+.projectRow:hover,
+.sessionRow:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.sessionRow.selected {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.searchResultRow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--dsw-alias-label-primary);
+}
+
+.searchResultRow:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.searchResultRow.selected {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.searchResultHeading {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.searchResultTitle {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.searchResultMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-left: 20px;
+}
+
+.searchResultWorkspace,
+.searchResultSnippet {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.searchResultWorkspace {
+  flex: none;
+  max-width: 40%;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.searchResultSnippet {
+  flex: 1;
+  min-width: 0;
+  color: var(--dsw-alias-label-secondary);
+}
+
+/* Compact one-line Workspace row after removing the session-count subtitle. */
+.projectRow {
+  height: 34px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.projectRow .rowActions {
+  height: 20px;
+}
+
+/* Session cell (figma): pad 8, a 16px status slot, then a 4px title gap. */
+.sessionRow {
+  height: 32px;
+  gap: 0;
+  /* Mount fade: session rows appear by unfolding a group (or the tree
+     mounting). Stable row keys keep already-visible rows from replaying it. */
+  animation: row-in 150ms var(--ds-ease-in-out);
+}
+
+.sessionRow .title {
+  margin: 0 6px 0 4px;
+}
+
+.flatSessionRowWithoutStatus .title {
+  margin-left: 0;
+}
+
+@keyframes row-in {
+  from { opacity: 0; }
+}
+
+.slot {
+  flex: none;
+  width: 16px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.folderActive {
+  color: var(--dsw-alias-state-business-primary);
+}
+
+
+/* Project leading slot: folder by default, expand arrow on row hover. */
+.projectRow .chevron { display: none; }
+.projectRow:hover .chevron { display: inline-flex; }
+.projectRow:hover .folder { display: none; }
+
+/* Expand arrow (filled triangle): points right closed, rotates to point down open. */
+.arrow {
+  transition: transform 150ms var(--ds-ease-in-out);
+}
+
+.arrowOpen {
+  transform: rotate(90deg);
+}
+
+.projectText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* 标签胶囊行内槽（集成自 dsh-workspace-tagger）：固定置于名称左侧，
+   不占满，弹性收缩让位给名称与操作区。 */
+.rowPillSlot {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  flex: none;
+  max-width: 96px;
+  overflow: hidden;
+}
+
+.title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.renameInput {
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 0 2px;
+  border: 0.5px solid var(--dsw-alias-border-l4);
+  border-radius: 4px;
+  background: var(--dsw-alias-button-elevated-fill);
+  color: inherit;
+  outline: none;
+}
+
+.sessionRow .title {
+  flex: 1;
+}
+
+.meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.time {
+  flex: none;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.scheduleIndicator {
+  display: inline-flex;
+  flex: none;
+  width: 16px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.searchScheduleIndicator {
+  margin-right: 0;
+  margin-left: 4px;
+}
+
+.dot {
+  flex: none;
+}
+
+/* Trailing action buttons surface on hover only (figma 27:4668 / 27:4656):
+   bare 16px glyphs, gap 12, tertiary grey. */
+.rowActions {
+  flex: none;
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+
+.projectRow:hover .rowActions,
+.sessionRow:hover .rowActions,
+.projectRow.menuOpen .rowActions,
+.sessionRow.menuOpen .rowActions {
+  display: inline-flex;
+}
+
+.sessionRow:hover .time,
+.sessionRow.menuOpen .time {
+  display: none;
+}
+
+/* An open row menu pins the hover affordances (figma: the row keeps its
+   hover fill while its dropdown is up). */
+.projectRow.menuOpen,
+.sessionRow.menuOpen {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+/* Session drag insert marker: a leading chevron and 2px rule between rows,
+   absolutely positioned so it neither resembles a row border nor changes layout. */
+.sessionRow.dropBefore,
+.sessionRow.dropAfter {
+  position: relative;
+}
+
+.sessionRow.dropBefore::before,
+.sessionRow.dropAfter::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 4px;
+  height: 12px;
+  background:
+    linear-gradient(
+      55deg,
+      transparent calc(50% - 1px),
+      var(--dsw-alias-state-business-primary) calc(50% - 1px) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ) 0 0 / 5px 7px no-repeat,
+    linear-gradient(
+      125deg,
+      transparent calc(50% - 1px),
+      var(--dsw-alias-state-business-primary) calc(50% - 1px) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ) 0 5px / 5px 7px no-repeat,
+    linear-gradient(
+      var(--dsw-alias-state-business-primary) 0 0
+    ) 4px 5px / calc(100% - 4px) 2px no-repeat;
+  pointer-events: none;
+}
+
+.sessionRow.dropBefore::before {
+  top: -7px;
+}
+
+.sessionRow.dropAfter::after {
+  bottom: -7px;
+}
+
+/* Hover-card body（需求 2 修改）：深度契合 dsh 配色——改用 dsw-alias 语义令牌，
+   三行布局：标题栏 / 路径 / 日期。 */
+.hoverCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+  max-width: 320px;
+}
+
+/* 行1 标题栏：名称 + 悬停显示编辑图标（双击改名）。 */
+.hoverTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.hoverTitle {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary);
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.hoverEditIcon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  color: var(--dsw-alias-label-tertiary);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.hoverTitleRow:hover .hoverEditIcon {
+  opacity: 1;
+}
+
+.hoverRenameInput {
+  flex: none;
+  width: 100%;
+  padding: 2px 6px;
+  border: 1px solid var(--dsw-alias-interactive-accent, var(--dsw-alias-border-default, var(--dsw-alias-border)));
+  border-radius: 6px;
+  background: var(--dsw-alias-input-bg, var(--dsw-alias-bg-secondary));
+  color: var(--dsw-alias-label-primary);
+  font-size: 13px;
+  line-height: 20px;
+  outline: none;
+}
+
+.hoverRenameInput:focus {
+  box-shadow: 0 0 0 2px var(--dsw-alias-focus-ring, color-mix(in srgb, var(--dsw-alias-interactive-accent) 30%, transparent));
+}
+
+.hoverRenameError {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--dsw-alias-text-danger, var(--dsw-alias-label-danger, #F3B7B7));
+}
+
+/* 行2 路径：单击复制（✓ 反馈），双击打开目录。 */
+.hoverPathButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  margin: 0 -4px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--dsw-alias-label-secondary);
+  max-width: 100%;
+}
+
+.hoverPathButton:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-primary);
+}
+
+.hoverPathButton:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.hoverPath {
+  font-size: 12px;
+  line-height: 16px;
+  word-break: break-all;
+  color: inherit;
+}
+
+.hoverPathFailed .hoverPath {
+  color: var(--dsw-alias-text-danger, var(--dsw-alias-label-danger, #F3B7B7));
+}
+
+.hoverOpenError {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--dsw-alias-text-danger, var(--dsw-alias-label-danger, #F3B7B7));
+}
+
+/* 行3 日期：纯展示。 */
+.hoverTime {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.hoverStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 20px;
+  color: #ADB2B8;
+}
+
+.iconButton {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.iconButton:hover {
+  color: var(--dsw-alias-label-primary);
+}
+
+/* Chevrons ride the caption grey (#ADB2B8); the folder glyph stays one step
+   darker (tertiary, #81858C) per the cell spec. */
+.chevron {
+  color: var(--dsw-alias-label-caption);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sessionRow,
+  .arrow {
+    animation: none;
+    transition: none;
+  }
+}
