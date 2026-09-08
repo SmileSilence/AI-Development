@@ -2,9 +2,9 @@
 
 > 本文档是项目的规范说明与 AI 助手行为指南。
 > **工作区通用规范**参见父目录的 CLAUDE.md（语言、命名、错误处理、Git、AI 行为等基础规范）。
-> **项目特殊规范**参见本项目的 PROJECT_SPEC.md（差异、配置、已知问题）。
+> **项目特殊规范**参见本项目的 docs/PROJECT_SPEC.md（差异、配置、已知问题）。
 >
-> **优先级**：PROJECT_SPEC.md > 本文档 > ../CLAUDE.md
+> **优先级**：docs/PROJECT_SPEC.md > 本文档 > ../CLAUDE.md
 
 ---
 
@@ -19,11 +19,13 @@ _在此描述项目的功能定位、目标用户和技术栈。_
 `
 {项目名}/
 ├── <入口文件>             # 程序入口（如 main.py、src/index.ts）
-├── CLAUDE.md              # 项目规范（本文档）
-├── PROJECT_SPEC.md        # 项目特殊规范
-├── README.md              # 使用说明
+├── README.md              # 使用说明（根目录下唯一文档）
 ├── <依赖清单>             # 依赖声明（如 requirements.txt、package.json）
 ├── .gitignore             # Git 忽略规则
+│
+├── docs/                  # 项目文档（除 README 外统一存放）
+│   ├── CLAUDE.md          # 项目规范（本文档）
+│   └── PROJECT_SPEC.md    # 项目特殊规范
 │
 ├── src/ 或 app/ 或 core/  # 源代码
 ├── <打包脚本>             # 打包/构建脚本（如 build.py、build.js，如适用）

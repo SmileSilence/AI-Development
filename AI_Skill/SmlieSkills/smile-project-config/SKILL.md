@@ -3,7 +3,7 @@ name: smile-project-config
 description: 管理 D:\Work\Project 项目结构、Git 和文档模板；初始化项目或维护项目配置时使用。
 metadata:
   publisher: SmileXX
-  version: "v7.1"
+  version: "v7.3"
   short-description: 通用项目配置规范
   category: 项目规范
   platforms: [DSH, Claude, OpenAI/Codex]
@@ -37,7 +37,7 @@ metadata:
 - **语言与沟通**：遵循 SmileGlobalConfig（中文交互、英文标识符、沟通风格）
 - **代码风格**：遵循 code-style（命名、注释、错误处理、防御编程等）
 - **编码流程**：遵循 ai-coding-workflow（需求分析、编码、测试、交付等）
-- **文档同步**：项目功能/UI/流程变更后，同步更新 AGENTS.md / PROJECT_SPEC.md / README.md 并追加版本记录；工作区级规范变更更新本文档
+- **文档同步**：项目功能/UI/流程变更后，同步更新 docs/ 下文档（AGENTS.md、PROJECT_SPEC.md 等）与 README.md 并追加版本记录；工作区级规范变更更新本文档
 - **版本记录**：项目文档版本号使用顺序号（v1、v2、v3...）递增，每次实质性修改后 +1 并追加变更记录
 
 ## 二、项目结构约定
@@ -48,18 +48,26 @@ metadata:
 <项目名>/
 ├── <入口文件>          # 程序入口（如 main.py、src/index.ts）
 ├── <依赖清单>          # 依赖声明（如 requirements.txt、package.json）
-├── AGENTS.md           # 项目规范（AI 助手行为指南）
-├── PROJECT_SPEC.md     # 项目特殊规范（差异、已知问题、变更记录）
-├── README.md           # 使用说明
+├── README.md           # 使用说明（项目根目录下的唯一文档）
 ├── .gitignore          # Git 忽略规则
+│
+├── docs/                   # 项目文档（README 除外，统一存放于此）
+│   ├── AGENTS.md           # 项目规范（AI 助手行为指南）
+│   ├── PROJECT_SPEC.md     # 项目特殊规范（差异、已知问题、变更记录）
+│   └── reports/            # 报告文档（评审、分析、修改后的报告等）
 │
 ├── src/ 或 app/ 或 core/   # 源代码
 ├── ui/                     # 界面代码（如有）
 ├── dist/                   # 构建产物（不提交 Git）
 ├── build/                  # 构建临时文件（不提交 Git）
+├── Temp/                   # 运行时临时文件（任务结束自动删除，不提交 Git）
 ├── resources/ 或 assets/   # 静态资源
 └── output/                 # 运行时输出
 `
+
+**文档存放规则**：新建项目时，除 README.md 保留在项目根目录外，其余所有项目文档（AGENTS.md、PROJECT_SPEC.md、CHANGELOG 及后续新增文档）统一放入 docs/ 目录；新增文档也一律写入 docs/，不在根目录散落文档。**报告文档**（评审、分析、修改后的报告等）统一归档到 `docs/reports/`。
+
+**临时文件规则**：任务运行过程中产生的临时文件、脚本、中间产物一律放入项目根目录的 `Temp/` 目录（任务结束后自动删除，不提交 Git）；禁止散落到源码、docs 等正式目录。
 
 ## 三、通用规范
 
@@ -93,7 +101,7 @@ metadata:
 
 创建新项目或补充项目文档时，参考 references/ 目录下的模板生成：
 
-1. 复制模板中的对应章节到 AGENTS.md / PROJECT_SPEC.md / README.md / .gitignore
+1. 复制模板中的对应章节到 docs/AGENTS.md、docs/PROJECT_SPEC.md、README.md、.gitignore（除 README 外的文档均放在 docs/ 目录）
 2. 将 {项目名} 等占位符替换为实际内容
 3. 按项目实际情况（技术栈、平台）填写各章节
 4. 删除不适用的部分和占位说明
@@ -125,8 +133,8 @@ metadata:
 
 - 工作区项目面向 **Windows 平台**，部分功能依赖 Windows API
 - 使用 Git Bash 作为 shell 环境，路径分隔符使用正斜杠 /
-- 虚拟环境（venv/、.venv/）、依赖目录（node_modules/）、构建产物（dist/、build/）、缓存目录（__pycache__/ 等）不纳入版本控制
-- 具体技术栈的依赖、环境要求以项目文档（README.md / PROJECT_SPEC.md）为准
+- 虚拟环境（venv/、.venv/）、依赖目录（node_modules/）、构建产物（dist/、build/）、运行时临时目录（Temp/）、缓存目录（__pycache__/ 等）不纳入版本控制
+- 具体技术栈的依赖、环境要求以项目文档（README.md / docs/PROJECT_SPEC.md）为准
 
 ---
 
@@ -134,6 +142,8 @@ metadata:
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-06 | v7.3 | 新增两条规范：任务运行中的临时文件统一放入项目 `Temp/` 目录并在结束后自动删除（不提交 Git）；报告文档统一归档到 `docs/reports/`；更新项目结构图与 openai.yaml 默认提示词 |
+| 2026-09-05 | v7.2 | 新增文档存放规则：新建项目时，除 README.md 保留在根目录外，其余项目文档（AGENTS.md、PROJECT_SPEC.md 等）统一放入 docs/ 目录；更新项目结构图、文档模板与 openai.yaml 默认提示词 |
 | 2026-09-03 | v7.1 | 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范 |
 | 2026-08-29 | v7 | 精简技能目录描述，保留工作区与项目配置触发条件 |
 | 2026-08-28 | v6 | 技能名改为 kebab-case（smile-project-config），符合 DSH 加载规范 |

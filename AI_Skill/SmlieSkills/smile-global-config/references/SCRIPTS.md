@@ -1,20 +1,20 @@
 # Anget管理 — 辅助脚本说明
 
 ## new-task-dir.ps1
-创建任务临时目录：`%USERPROFILE%\Downloads\anget-tmp\<任务名>`
+在项目目录内创建任务临时目录：`<项目目录>\Temp\<任务名>`
 
 ```powershell
-powershell -File new-task-dir.ps1 -TaskName <任务名>
+powershell -File new-task-dir.ps1 -ProjectPath <项目目录> -TaskName <任务名>
 ```
 
 ## cleanup-task-dir.ps1
-删除任务临时目录（递归、强制）并确认结果。
+删除项目目录内的任务临时目录（递归、强制）并确认结果。
 
 ```powershell
-powershell -File cleanup-task-dir.ps1 -TaskName <任务名>
+powershell -File cleanup-task-dir.ps1 -ProjectPath <项目目录> -TaskName <任务名>
 ```
 
-> 安全说明：脚本只删除 `%USERPROFILE%\Downloads\anget-tmp\` 下的指定子目录；`-TaskName` 为空或含路径穿越（`..`）时拒绝执行。
+> 安全说明：脚本只在 `<项目目录>\Temp\` 下操作指定子目录；`-TaskName` 为空或含路径穿越（`..`）时拒绝执行，`-ProjectPath` 为空或指向盘符根目录时拒绝执行。
 
 ## sync-agent-sessions.ps1
 

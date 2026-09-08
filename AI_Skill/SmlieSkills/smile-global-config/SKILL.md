@@ -4,8 +4,8 @@ description: 全局简体中文配置与 AI Agent 管理；安装后自动生效
 metadata:
   publisher: SmileXX
   short-description: 全局中文配置与 Agent 管理
-  version: "v17.1"
-  last-updated: "2026-09-02"
+  version: "v19"
+  last-updated: "2026-09-06"
   category: 全局配置
   platforms: [DSH, Claude, OpenAI/Codex, Gemini]
   keywords: [config, global, AI, agent, Chinese]
@@ -26,7 +26,7 @@ metadata:
 - 用户说「启动 codex / claude / dsh / gemini」「用 anget 做 XXX」「anget 管理」
 - 用户要求运行某个 agent 执行任务（编码、审查、查询等）
 - 用户说「同步会话」「整理会话」「合并重复会话」「合并反向导入」「导入 Claude 会话」「导入 dsh 会话」
-- 用户提到「脚本放下载文件夹」「临时文件清理」「用完删除」
+- 用户提到「脚本放项目 Temp」「临时文件清理」「用完删除」
 
 ### 优先级与不触发
 - 具体技能规范优先于本技能通用规则（见「技能遵循」）
@@ -56,6 +56,7 @@ metadata:
 - **文档同步**：修改代码时，若项目存在相关文档，必须同步更新
 - **更新要求**：新增功能添加说明，修改接口更新文档，修复问题记录到 CHANGELOG
 - **文档内容**：表格、PPT、Word等文档型文件内容使用中文，专业术语除外；专业术语需附带中文翻译或描述
+- **报告归档**：修改后的报告文档（评审、分析、报告等）统一放入项目 `<项目目录>\docs\reports\`（目录规范见 smile-project-config）
 
 ### B. 项目管理
 
@@ -94,6 +95,7 @@ metadata:
 
 **技能遵循：**
 - **操作前检查**：执行任何操作前，先检查是否有相关 Skill 对该操作有要求
+- **规划先检查**：创建计划（plan 模式）前，先检查是否存在相关技能或相关文档；计划必须满足技能/文档要求
 - **规范遵循**：若有相关 Skill，必须遵循该 Skill 的规范和要求
 - **优先级**：Skill 规范优先级高于一般规则
 - **冲突处理**：多个 Skill 规范冲突时，优先遵循与当前操作最相关的 Skill
@@ -130,17 +132,17 @@ metadata:
 
 ### F. 文件卫生规则（必须遵守）
 
-1. **建临时目录**：开始任何 agent 任务前，先创建：
+1. **建临时目录**：开始任何 agent 任务前，先在**对应项目目录**内创建任务临时目录：
    ```powershell
-   New-Item -ItemType Directory -Path "$env:USERPROFILE\Downloads\anget-tmp\<任务名>" -Force
+   New-Item -ItemType Directory -Path "<项目目录>\Temp\<任务名>" -Force
    ```
-   `<任务名>` 用简短英文 kebab-case，如 `codex-review-api`、`claude-fix-bug`。
-2. **产物入下载目录**：agent 执行中生成的一切脚本（.ps1/.py/.sh/.js 等）、临时文件、中间产物、可执行文件，一律写到上述临时目录；**禁止**散落写入工作目录、项目目录或系统目录。
-3. **工作目录隔离**：运行 agent 时优先把其工作目录（cwd）指到临时目录，或把输出重定向到临时目录。
+   `<项目目录>` 为当前任务对应的项目根目录（不存在时向用户确认或选择合适工作区目录）；`<任务名>` 用简短英文 kebab-case，如 `ue-fix-bug`、`unity-build-test`。
+2. **产物入项目 Temp**：agent 执行中生成的一切脚本（.ps1/.py/.sh/.js 等）、临时文件、中间产物、可执行文件，一律写到上述 `Temp` 目录；**禁止**散落写入项目源码、docs 等正式目录或系统目录。
+3. **临时目录隔离**：运行 agent 时优先把其工作目录（cwd）指到临时目录，或把输出重定向到临时目录。
 4. **使用完自动删除**：任务完成（成功/失败/中断）后立即执行：
    ```powershell
-   Remove-Item -Recurse -Force "$env:USERPROFILE\Downloads\anget-tmp\<任务名>"
-   Test-Path "$env:USERPROFILE\Downloads\anget-tmp\<任务名>"   # 应返回 False，确认已删
+   Remove-Item -Recurse -Force "<项目目录>\Temp\<任务名>"
+   Test-Path "<项目目录>\Temp\<任务名>"   # 应返回 False，确认已删
    ```
 5. **保留例外**：用户明确要求保留的成果（如最终交付脚本），先询问放置位置或移到用户指定目录，并告知用户；仍不得留在临时目录。
 
@@ -195,17 +197,17 @@ powershell -File scripts/sync-agent-sessions.ps1 -Mode Import -Source Codex -Tar
 
 ## 配置说明
 
-- 临时目录根：`%USERPROFILE%\Downloads\anget-tmp\`
-- 下载文件夹：`%USERPROFILE%\Downloads`（默认存在）
+- 项目临时目录：`<项目目录>\Temp\`（任务开始创建、结束自动删除）
+- 下载文件夹：`%USERPROFILE%\Downloads`（默认存在，非临时产物默认存放位置）
 - 各 agent 的配置/会话数据目录（`~\.codex`、`~\.claude`、`~\.dsh`、`~\.gemini`）**不属于临时产物，不得删除**。
-- 会话同步临时目录：`%USERPROFILE%\Downloads\anget-tmp\session-sync\`
+- 会话同步临时目录：`%USERPROFILE%\Downloads\anget-tmp\session-sync\`（会话同步专用，同步结束必须清理）
 - 规范会话暂存目录：`%USERPROFILE%\.claude\projects\Agent-Import\`（同步结束必须删除）
 - 分 Agent 同步规则表：`references/AGENT_RULES.md`；执行约定：`references/SESSION_SYNC.md`
 
 ## 注意事项
 
-1. **只删自己的临时目录**：`Remove-Item` 前必须核对完整路径，禁止删除下载文件夹下其他内容或用户文件。
-2. **不污染工作目录**：脚本/中间文件绝不落到 `D:\Work\AI-Development` 等正常工作区。
+1. **只删自己的临时目录**：`Remove-Item` 前必须核对完整路径，禁止删除项目目录下其他内容或用户文件。
+2. **临时文件只在项目 Temp**：脚本/中间文件绝不落到项目源码、docs 等正式目录或其他工作区位置。
 3. **失败也要清理**：任务异常中断时，agent 同样执行删除，不留垃圾。
 4. **保留需显式确认**：只有用户明确说"保留"，才移动产物到指定位置，并明确告知最终路径。
 5. **遵守平台边界**：本技能只负责"启动外部 agent + 文件卫生"，不代理外部 agent 的内部权限决策。
@@ -261,6 +263,8 @@ def calculate_total(items):
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-06 | v19 | 技能遵循规则新增「规划先检查」：创建计划（plan 模式）前，先检查是否存在相关技能或相关文档，计划必须满足技能/文档要求 |
+| 2026-09-06 | v18 | 文件卫生规则改为项目内临时目录：任务运行中产生的临时文件统一放入对应项目目录内 `Temp\` 文件夹并在结束后自动删除（替换原 Downloads\anget-tmp 方案，会话同步等专项临时目录保留）；文档规范补充报告文档归档到 `<项目目录>\docs\reports\` |
 | 2026-09-03 | v17.1 | 补充 metadata.platforms 与 metadata.keywords 字段，符合 skill-creator v7 元数据规范 |
 | 2026-09-02 | v17 | 新增任务拆分与并行协作规则：评估独立子任务、按需分派子代理、避免修改冲突，并由主代理统一整合验证 |
 | 2026-09-02 | v16 | 合并 anget-manager：新增 Agent 管理部分（启动、文件卫生、会话同步、技能清单安装、辅助脚本），随附 references/ 与 scripts/ |
