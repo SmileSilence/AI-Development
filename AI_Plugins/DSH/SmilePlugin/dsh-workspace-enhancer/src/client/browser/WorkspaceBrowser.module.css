@@ -87,6 +87,46 @@
   transition-delay: 0s, 0s, 0s, 0s, 180ms;
 }
 
+/* 一键折叠/展开按钮（需求 7 v0.6.0）：挂在标题（sectionLabel）右侧、紧挨标题，
+   与标题同高的小尺寸图标按钮；搜索展开时随标题一起淡出。 */
+.sectionCollapseToggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 0;
+  border: none;
+  border-radius: 50%;
+  corner-shape: round;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--dsw-alias-label-secondary);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    background 120ms var(--ds-ease-in-out),
+    color 120ms var(--ds-ease-in-out),
+    opacity 120ms var(--ds-ease-in-out),
+    transform 180ms var(--ds-ease-in-out),
+    visibility 0s linear;
+}
+
+.sectionCollapseToggle:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-primary);
+}
+
+/* 搜索展开时与标题同步隐藏，避免孤悬在标题位置（保留占位宽度避免布局跳动）。 */
+.sectionCollapseToggleHidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition-delay: 0s, 0s, 0s, 0s, 180ms;
+}
+
 .searchSlot {
   flex: 1;
   max-width: 28px;

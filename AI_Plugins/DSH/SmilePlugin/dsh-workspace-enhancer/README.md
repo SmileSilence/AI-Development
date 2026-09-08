@@ -13,6 +13,7 @@ DSH (DeepSeek Harness) right-side workspace enhancement plugin.
 7. **Workspace/session tags** — integrated dsh-workspace-tagger: tags, dual-color pills, row tinting, tag-management settings page (toggleable via `tags.enabled`)
 8. **Tag dialog dropdown + running-tag enhancements** — the tag dialog is now a single dropdown (the running-tag is excluded and configured only on the settings page); collapsed workspaces show "running-tag-name ×N"; running sessions and workspaces with running sessions auto-pin to the top
 9. **Tag filter (Feishu-style, 7 operators)** — a funnel button on the right of the workspace title bar (wide sidebar only) opens a filter panel: multiple condition rows combined with AND, each row picks its own scope (all / workspaces / sessions) and one of 7 Feishu-style operators — equals / not equals / contains (any) / not contains / contains all / is empty / is not empty — with tag selection (single for equals/not-equals, multi for the contains family, none for is-empty/is-not-empty), add / remove rows, clear all, and a live "N item(s) filtered" counter; the button highlights while a filter is active; the search input and action buttons stay in one tight group
+10. **Collapse / expand all workspaces (two-way)** — a small chevron button right beside the "Workspaces" title (wide sidebar, grouped view only): when not all collapsed it shows ▼ and collapses everything; once everything is collapsed it flips to ▶ and expands all instead (tooltip "Collapse all" / "Expand all"); hidden with no workspaces or in flat mode
 
 ## Install
 
@@ -21,7 +22,7 @@ DSH (DeepSeek Harness) right-side workspace enhancement plugin.
 dsh plugin --profile web add dsh-workspace-enhancer
 
 # offline tarball
-dsh plugin --profile web add ./dsh-workspace-enhancer-0.5.0.tgz
+dsh plugin --profile web add ./dsh-workspace-enhancer-0.6.0.tgz
 
 # git (requires pnpm allowBuilds for the prepare script)
 dsh plugin --profile web add github:user/dsh-workspace-enhancer#<sha>

@@ -13,6 +13,7 @@ DSH (DeepSeek Harness) 右侧工作区增强插件。
 7. **工作区/会话标签** — 集成 dsh-workspace-tagger：标签显示在工作区/会话名称左侧，并支持双色胶囊、行内微着色和标签管理设置页；标签管理页和行内标签弹窗都可修改标签颜色（配置 `tags.enabled` 可开关）
 8. **标签弹窗下拉 + 运行标签增强** — 设置标签改为单个下拉菜单（运行中标签不出现，只在设置页配置）；折叠工作区显示「运行标签名×N」；运行中会话/有运行会话的工作区自动置顶
 9. **标签筛选（飞书式 7 种操作符）** — 工作区标题栏右侧「筛选」漏斗按钮（仅宽侧栏）弹出筛选面板：多条件行、行间 AND，每行独立选择范围（全部/工作区/会话）与条件（等于/不等于/包含/不包含/包含全部/为空/不为空 7 种操作符），标签选择（等于/不等于单选、包含族多选、为空/不为空无值），支持添加/删除条件行、清除全部，实时显示「已筛选 N 项」；筛选生效时按钮高亮 + 角标；搜索框与图标按钮保持同一组紧挨
+10. **一键折叠/展开所有工作区（双向）** — 「工作区」标题右侧紧挨着一个小箭头按钮（仅宽侧栏、分组视图）：未全部折叠时显示 ▼ 点击一键折叠全部；全部折叠后翻转为 ▶ 点击一键展开全部（tooltip「折叠全部」/「展开全部」）；无工作区或 flat 视图不显示
 
 ## 安装
 
@@ -21,7 +22,7 @@ DSH (DeepSeek Harness) 右侧工作区增强插件。
 dsh plugin --profile web add dsh-workspace-enhancer
 
 # tarball 离线
-dsh plugin --profile web add ./dsh-workspace-enhancer-0.5.0.tgz
+dsh plugin --profile web add ./dsh-workspace-enhancer-0.6.0.tgz
 
 # git（需 pnpm allowBuilds 授权 prepare 脚本）
 dsh plugin --profile web add github:user/dsh-workspace-enhancer#<sha>

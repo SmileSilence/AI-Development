@@ -1,7 +1,7 @@
 {
   "name": "dsh-workspace-enhancer",
-  "version": "0.5.0",
-  "description": "DSH 右侧工作区增强：工作区/会话置顶、悬停 Codex 式信息卡（目录点击打开）、右键菜单、空白区右键、批量归档/删除、会话默认模式选择器、标签筛选（飞书式 7 种操作符，多条件 AND）。",
+  "version": "0.6.0",
+  "description": "DSH 右侧工作区增强：工作区/会话置顶、悬停 Codex 式信息卡（目录点击打开）、右键菜单、空白区右键、批量归档/删除、会话默认模式选择器、标签筛选（飞书式 7 种操作符，多条件 AND）、一键折叠/展开全部（图标随状态）。",
   "keywords": [
     "deepseek",
     "deepseek-harness",

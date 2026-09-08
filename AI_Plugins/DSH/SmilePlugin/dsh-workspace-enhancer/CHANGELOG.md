@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.6.0
+
+### 一键折叠/展开所有工作区（任务：collapse-v4）
+- 「一键折叠所有工作区」扩展为**双向功能**：全部折叠时按钮变「一键展开全部」，否则「一键折叠全部」。
+- **图标随状态**：全部折叠时图标朝右（▶ `IconChevronRightOutline14`），未全部折叠时朝下（▼ `IconChevronDownOutline14`）。
+- **判定「全部折叠」**：`allWorkspacesCollapsed` 纯函数——`workspaces.length > 0 && workspaces.every(ws => !groupExpansion[ws.workspaceId])`；混合状态（部分折叠部分展开）按未全部折叠处理（▼，点击折叠全部）；无工作区不显示按钮。
+- 新增 `toggleAllWorkspaces` 替代 `collapseAllWorkspaces`：按当前 allCollapsed 状态决定展开/折叠全部。
+- **位置调整**：按钮从 `headerActions`（右侧按钮组）移到 `sectionLabel`（工作区标题）右侧、紧挨标题（在标题之后、搜索框之前）；新增 `sectionCollapseToggle` 小尺寸样式（20×20，与标题同高），搜索展开时与标题同步淡出。
+- 按钮显隐判定 `shouldShowCollapseToggle`：仅分组视图（groupBy === 'workspace'）且存在工作区时显示，flat 模式不显示（保持现状）。
+- locales：新增 `expandAll.aria`（展开全部，中英文各一套），保留 `collapseAll.aria`（折叠全部）；tooltip/aria-label 随状态切换。
+- 单元测试：新增 `collapse-toggle.spec.ts`（12 项）覆盖全折叠判定、全展开、混合状态、无工作区、flat 模式。
+
+### 其他
+- 版本 0.5.0 → 0.6.0。
+
 ## 0.5.0
 
 ### 筛选条件补全为飞书式 7 种操作符（任务：filter-v3）

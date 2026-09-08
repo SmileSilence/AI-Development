@@ -617,3 +617,26 @@ export function applyTagFilterToGroups(
   }
   return result
 }
+
+/**
+ * 判定「全部工作区已折叠」（v0.6.0 一键折叠/展开按钮）：
+ *  - 无工作区：不算「全部折叠」；
+ *  - 每个工作区的 groupExpansion 记录均非 true（缺失 = 折叠）才算全部折叠。
+ */
+export function allWorkspacesCollapsed(
+  workspaceIds: readonly string[],
+  groupExpansion: Readonly<Record<string, boolean>>,
+): boolean {
+  return workspaceIds.length > 0 && workspaceIds.every(id => !groupExpansion[id])
+}
+
+/**
+ * 一键折叠/展开按钮是否显示：仅分组视图（workspace）且存在工作区时显示；
+ * flat 模式或无工作区不显示。
+ */
+export function shouldShowCollapseToggle(
+  groupBy: 'workspace' | 'flat',
+  workspaceIds: readonly string[],
+): boolean {
+  return groupBy === 'workspace' && workspaceIds.length > 0
+}

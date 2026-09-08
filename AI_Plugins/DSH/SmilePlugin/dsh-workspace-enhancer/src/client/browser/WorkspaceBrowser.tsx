@@ -12,7 +12,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import clsx from 'clsx'
 import {
-  Button, IconAgentPresetOutline16, IconChevronDownOutline14, IconChevronUpOutline14, IconCloseFill14, IconNewChatOutline16, IconPersonalizationOutline16,
+  Button, IconAgentPresetOutline16, IconChevronDownOutline14, IconChevronRightOutline14, IconCloseFill14, IconNewChatOutline16, IconPersonalizationOutline16,
   IconProjectAddOutline16, IconChecklistOutline14, IconSearchOutline16, Menu, Modal, Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type {
@@ -22,7 +22,7 @@ import type { WorkspaceId, WorkspaceView } from '@deepseek-ai/dsh-api-workspace-
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { WorkspaceBrowserInjected, WorkspaceBrowserProps } from '../contract/slots.ts'
 import type { SessionNode, SessionOrderBy, TagFilter } from '../tree.ts'
-import { applyTagFilterToGroups, deriveFlat, deriveGroups, deriveSearchResults, isTagFilterInactive, UNGROUPED_KEY } from '../tree.ts'
+import { applyTagFilterToGroups, allWorkspacesCollapsed, deriveFlat, deriveGroups, deriveSearchResults, isTagFilterInactive, shouldShowCollapseToggle, UNGROUPED_KEY } from '../tree.ts'
 import { ProjectRowItem, SearchResultItem, SessionNodeItem, type RowTaggerProps, type TagTarget } from './Rows.tsx'
 import { TagDialog } from '../tags/ui/TagDialog.tsx'
 import { tagById } from '../tags/tag-store.ts'
@@ -1116,10 +1116,13 @@ export function WorkspaceBrowser({
     setBulkError(null)
     setBulkConfirmOpen(false)
   }
-  // 一键折叠所有工作区（需求 7）：遍历真实 Workspace，将各自 groupExpansion 置 false。
-  const collapseAllWorkspaces = (): void => {
+  // 一键折叠/展开所有工作区（需求 7 v0.6.0）：全部折叠时点击展开全部，否则折叠全部。
+  // 判定「全部折叠」：有工作区且每个工作区都未展开（缺失记录 = 折叠）。
+  const allCollapsed = allWorkspacesCollapsed(workspaces.map(ws => ws.workspaceId), groupExpansion)
+  const toggleAllWorkspaces = (): void => {
     if (groupBy === 'flat') return
-    for (const ws of workspaces) actions.setGroupExpanded(ws.workspaceId, false)
+    // 目标状态：全部折叠时展开全部（true），否则折叠全部（false）。
+    for (const ws of workspaces) actions.setGroupExpanded(ws.workspaceId, allCollapsed)
   }
   const sessionSelection = [...bulkSelection.entries()]
     .filter(([, kind]) => kind === 'session').map(([key]) => key)
@@ -1365,6 +1368,26 @@ export function WorkspaceBrowser({
             {groupBy === 'flat' ? t('section.sessions') : t('section.workspaces')}
           </span>
         )}
+        {/* 需求 7（v0.6.0）：一键折叠/展开所有工作区，紧挨标题右侧（仅分组视图且有工作区）。
+            全部折叠：图标朝右 ▶ 点击展开全部；否则图标朝下 ▼ 点击折叠全部。 */}
+        {wide && shouldShowCollapseToggle(groupBy, workspaces.map(ws => ws.workspaceId)) && (
+          <Tooltip
+            label={allCollapsed ? t('expandAll.aria') : t('collapseAll.aria')}
+            side="bottom"
+            delayMs={500}
+          >
+            <button
+              type="button"
+              className={clsx(css.sectionCollapseToggle, searchExpanded && css.sectionCollapseToggleHidden)}
+              aria-label={allCollapsed ? t('expandAll.aria') : t('collapseAll.aria')}
+              onClick={toggleAllWorkspaces}
+            >
+              {allCollapsed
+                ? <IconChevronRightOutline14 size={14} />
+                : <IconChevronDownOutline14 size={14} />}
+            </button>
+          </Tooltip>
+        )}
         {wide && (
           <div className={clsx(css.searchSlot, searchExpanded && css.searchSlotExpanded)}>
             <div
@@ -1423,19 +1446,6 @@ export function WorkspaceBrowser({
           </div>
         )}
         <div className={clsx(css.headerActions, wide && searchExpanded && css.headerActionsHidden)}>
-          {/* 需求 7：一键折叠所有工作区（仅分组视图）。 */}
-          {wide && groupBy === 'workspace' && (
-            <Tooltip label={t('collapseAll.aria')} side="bottom" delayMs={500}>
-              <button
-                type="button"
-                className={css.iconButton}
-                aria-label={t('collapseAll.aria')}
-                onClick={collapseAllWorkspaces}
-              >
-                <IconChevronUpOutline14 size={14} />
-              </button>
-            </Tooltip>
-          )}
           {/* 需求 5（v3）：批量图标点击弹菜单——批量操作工作区 / 批量操作会话。 */}
           {wide && (
             <Menu
