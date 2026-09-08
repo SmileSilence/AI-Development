@@ -1,0 +1,7 @@
+# Hermes 协作桥：给 headless profile 装配 agent-presets，默认 standard 模式
+# 用法: dsh --profile headless --patch <本文件> "任务"
+- insert:
+    - id: agent-presets
+      name: '@deepseek-ai/dsh-agent-presets'
+      config:
+        default: standard

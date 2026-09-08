@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# 运行时产物
+logs/
+*.pid
+*.log
+
+# 测试/交接产物（不上传）
+outbox/
+shared/dsh-watchdog.pid
+shared/dsh-watchdog.log
+shared/task-*.md
+shared/hermes-export.jsonl
+
+# 系统
+.DS_Store
+Thumbs.db
