@@ -1378,7 +1378,7 @@ export function WorkspaceBrowser({
           >
             <button
               type="button"
-              className={clsx(css.sectionCollapseToggle, searchExpanded && css.sectionCollapseToggleHidden)}
+              className={clsx(css.iconButton, searchExpanded && css.sectionCollapseToggleHidden)}
               aria-label={allCollapsed ? t('expandAll.aria') : t('collapseAll.aria')}
               onClick={toggleAllWorkspaces}
             >
