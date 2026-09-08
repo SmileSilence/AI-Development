@@ -56,7 +56,7 @@ export type TaggerKey =
   | 'settings.tagUsage'
   | 'settings.previewSession'
   | 'error.saveFailed'
-  // —— v0.4.0：标题栏筛选按钮 + 多条件面板 ——
+  // —— v0.5.0：标题栏筛选按钮 + 多条件面板（飞书式 7 种操作符）——
   | 'filter.title'
   | 'filter.empty'
   | 'filter.addRule'
@@ -65,9 +65,13 @@ export type TaggerKey =
   | 'filter.filtered'
   | 'filter.allTags'
   | 'filter.tagsCount'
-  | 'filter.conditionInclude'
-  | 'filter.conditionExclude'
   | 'filter.conditionEquals'
+  | 'filter.conditionNotEquals'
+  | 'filter.conditionContains'
+  | 'filter.conditionNotContains'
+  | 'filter.conditionContainsAll'
+  | 'filter.conditionIsEmpty'
+  | 'filter.conditionIsNotEmpty'
   | 'filter.scopeAll'
   | 'filter.scopeWorkspace'
   | 'filter.scopeSession'
@@ -122,7 +126,7 @@ export const zh: Record<TaggerKey, string> = {
   'settings.tagUsage': '工作区 {workspaces} · 会话 {sessions}',
   'settings.previewSession': '会话',
   'error.saveFailed': '保存失败：{error}',
-  // —— v0.4.0：标题栏筛选按钮 + 多条件面板 ——
+  // —— v0.5.0：标题栏筛选按钮 + 多条件面板（飞书式 7 种操作符）——
   'filter.title': '筛选',
   'filter.empty': '暂无筛选条件，点击下方「添加条件」开始',
   'filter.addRule': '添加条件',
@@ -131,9 +135,13 @@ export const zh: Record<TaggerKey, string> = {
   'filter.filtered': '已筛选 {n} 项',
   'filter.allTags': '全部标签',
   'filter.tagsCount': '{n} 个标签',
-  'filter.conditionInclude': '包含',
-  'filter.conditionExclude': '不包含',
   'filter.conditionEquals': '等于',
+  'filter.conditionNotEquals': '不等于',
+  'filter.conditionContains': '包含',
+  'filter.conditionNotContains': '不包含',
+  'filter.conditionContainsAll': '包含全部',
+  'filter.conditionIsEmpty': '为空',
+  'filter.conditionIsNotEmpty': '不为空',
   'filter.scopeAll': '全部',
   'filter.scopeWorkspace': '工作区',
   'filter.scopeSession': '会话',
@@ -189,7 +197,7 @@ export const en: Record<TaggerKey, string> = {
   'settings.tagUsage': '{workspaces} workspace(s) · {sessions} session(s)',
   'settings.previewSession': 'Session',
   'error.saveFailed': 'Save failed: {error}',
-  // —— v0.4.0：标题栏筛选按钮 + 多条件面板 ——
+  // —— v0.5.0：标题栏筛选按钮 + 多条件面板（飞书式 7 种操作符）——
   'filter.title': 'Filter',
   'filter.empty': 'No filter conditions yet — click “Add condition” below.',
   'filter.addRule': 'Add condition',
@@ -198,9 +206,13 @@ export const en: Record<TaggerKey, string> = {
   'filter.filtered': '{n} item(s) filtered',
   'filter.allTags': 'All tags',
   'filter.tagsCount': '{n} tag(s)',
-  'filter.conditionInclude': 'Contains',
-  'filter.conditionExclude': 'Not contains',
   'filter.conditionEquals': 'Equals',
+  'filter.conditionNotEquals': 'Not equals',
+  'filter.conditionContains': 'Contains',
+  'filter.conditionNotContains': 'Not contains',
+  'filter.conditionContainsAll': 'Contains all',
+  'filter.conditionIsEmpty': 'Is empty',
+  'filter.conditionIsNotEmpty': 'Is not empty',
   'filter.scopeAll': 'All',
   'filter.scopeWorkspace': 'Workspaces',
   'filter.scopeSession': 'Sessions',

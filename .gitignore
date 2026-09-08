@@ -69,3 +69,6 @@ AI_Plugins/DSH/.tagger-iso-home/
 .env
 .env.local
 .env.*.local
+
+# DSH 插件 GUI 验证输出（截图/JSON 证据，本地留证不上传）
+AI_Plugins/DSH/SmilePlugin/**/.m*-evidence/

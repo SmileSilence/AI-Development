@@ -478,28 +478,39 @@ export function deriveSearchResults(
 // 标签筛选（任务 B 扩展4-6）
 // ---------------------------------------------------------------------------
 
-/** 「无标签」筛选选项的哨兵 id（与 nextTagId 的 tag-N 命名不冲突）。 */
-export const TAG_FILTER_NO_TAG = '__no_tag__'
-
-/** 筛选条件：包含（任一选中）/ 不包含（均未选中）/ 等于（单个指定标签）。 */
-export type TagFilterCondition = 'include' | 'exclude' | 'equals'
+/** 筛选条件：飞书式 7 种操作符（v0.5.0）。 */
+export type TagFilterCondition =
+  | 'equals' | 'notEquals'      // 单选：tagIds 恒为 0 或 1 个
+  | 'contains' | 'notContains'  // 多选 OR：命中任一选中
+  | 'containsAll'               // 多选 AND：命中全部选中
+  | 'isEmpty' | 'isNotEmpty'    // 无值：忽略 tagIds，只看生效标签有无
 
 /** 筛选作用范围：全部（工作区+会话）/ 仅工作区 / 仅会话。 */
 export type TagFilterScope = 'all' | 'workspace' | 'session'
 
-/** 标签筛选器状态（v0.4.0：多条件行 AND 组合；由浏览器本地维护，不持久化）。 */
+/** 单选操作符（equals / notEquals）：标签菜单单选，选新替换旧。 */
+export function isSingleSelectCondition(condition: TagFilterCondition): boolean {
+  return condition === 'equals' || condition === 'notEquals'
+}
+
+/** 无值操作符（isEmpty / isNotEmpty）：不渲染标签选择，忽略 tagIds。 */
+export function isNoValueCondition(condition: TagFilterCondition): boolean {
+  return condition === 'isEmpty' || condition === 'isNotEmpty'
+}
+
+/** 标签筛选器状态（v0.5.0：多条件行 AND 组合；由浏览器本地维护，不持久化）。 */
 export interface TagFilterRule {
   /** 条件行唯一 id（面板增删行时用于定位）。 */
   id: string
   /** 本行作用范围：全部（工作区+会话）/ 仅工作区 / 仅会话。 */
   scope: TagFilterScope
-  /** 本行条件：包含 / 不包含 / 等于。 */
+  /** 本行条件：7 种操作符之一。 */
   condition: TagFilterCondition
-  /** 本行选中的标签 id 集合；含 {@link TAG_FILTER_NO_TAG} 表示「无标签」。 */
+  /** 本行选中的标签 id 集合（equals/notEquals 恒 0 或 1 个；isEmpty/isNotEmpty 忽略）。 */
   tagIds: readonly string[]
 }
 
-/** 标签筛选器状态（v0.4.0：多条件行 AND 组合；由浏览器本地维护，不持久化）。 */
+/** 标签筛选器状态（v0.5.0：多条件行 AND 组合；由浏览器本地维护，不持久化）。 */
 export interface TagFilter {
   /** 主开关：关闭时不过滤（面板「清除全部」会连同规则一起清空）。 */
   enabled: boolean
@@ -507,28 +518,68 @@ export interface TagFilter {
   rules: readonly TagFilterRule[]
 }
 
-/** 空筛选：未启用、无规则、或所有规则都未选标签 → 不过滤。 */
-export function isTagFilterInactive(filter: TagFilter): boolean {
-  if (!filter.enabled || filter.rules.length === 0) return true
-  return filter.rules.every(rule => rule.tagIds.length === 0)
+/** 规则是否具备筛选内容：无值操作符恒有；其余需至少选中一个标签。 */
+export function tagFilterRuleActive(rule: TagFilterRule): boolean {
+  if (isNoValueCondition(rule.condition)) return true
+  return rule.tagIds.length > 0
 }
 
-/** 单个目标（工作区/会话）的生效标签是否匹配某一条条件行（空标签行恒匹配）。 */
-export function tagFilterMatches(rule: TagFilterRule, effectiveTagId: string | undefined): boolean {
-  if (rule.tagIds.length === 0) return true
-  const noneSelected = rule.tagIds.includes(TAG_FILTER_NO_TAG)
-  const match = (): boolean => {
-    if (effectiveTagId === undefined) return noneSelected
-    return rule.tagIds.includes(effectiveTagId)
+/** 空筛选：未启用、无规则、或所有规则都没有筛选内容 → 不过滤。 */
+export function isTagFilterInactive(filter: TagFilter): boolean {
+  if (!filter.enabled || filter.rules.length === 0) return true
+  return filter.rules.every(rule => !tagFilterRuleActive(rule))
+}
+
+/**
+ * 切换操作符时的规则状态迁移（供面板 onPick 与单元测试共用）：
+ *  - 切到无值（isEmpty/isNotEmpty）→ 清空 tagIds（标签选择不再有意义）；
+ *  - 切到单选（equals/notEquals）→ 截断为第一个（多选 → 单选）。
+ */
+export function migrateRuleCondition(rule: TagFilterRule, condition: TagFilterCondition): TagFilterRule {
+  if (isNoValueCondition(condition)) {
+    return { ...rule, condition, tagIds: [] }
   }
+  if (isSingleSelectCondition(condition)) {
+    return { ...rule, condition, tagIds: rule.tagIds.slice(0, 1) }
+  }
+  return { ...rule, condition }
+}
+
+/**
+ * 单个目标（工作区/会话）的生效标签是否匹配某一条条件行（空标签行恒匹配）。
+ *
+ * 语义约定（v0.5.0）：
+ *  - equals：生效标签 === 唯一选中标签（单选，tagIds 恒 0 或 1 个）；无标签不匹配。
+ *  - notEquals：生效标签 !== 选中标签；**无标签也算不等于指定标签 → 匹配 true**。
+ *  - contains：命中任一选中标签；无标签不匹配。
+ *  - notContains：不命中任一选中标签；**无标签不命中任一 → 匹配 true**。
+ *  - containsAll：生效标签是单个，须同时等于每个选中 → 仅单选集命中
+ *    （tagIds 多选时任何单标签行都无法同时等于多个标签，恒不匹配）。
+ *  - isEmpty：无标签（effectiveTagId === undefined）。
+ *  - isNotEmpty：有任意标签。
+ */
+export function tagFilterMatches(rule: TagFilterRule, effectiveTagId: string | undefined): boolean {
+  // 无值操作符：不看标签，直接按生效标签有无判断。
+  if (rule.condition === 'isEmpty') return effectiveTagId === undefined
+  if (rule.condition === 'isNotEmpty') return effectiveTagId !== undefined
+  // 有值操作符：未选任何标签 = 该行不筛选，恒匹配。
+  if (rule.tagIds.length === 0) return true
   switch (rule.condition) {
-    case 'exclude':
-      return !match()
-    case 'include':
     case 'equals':
+      return effectiveTagId !== undefined && effectiveTagId === rule.tagIds[0]
+    case 'notEquals':
+      // 无标签 ≠ 选中标签 → 匹配（语义约定：不等于指定标签的就算，含无标签）。
+      return effectiveTagId !== rule.tagIds[0]
+    case 'contains':
+      return effectiveTagId !== undefined && rule.tagIds.includes(effectiveTagId)
+    case 'notContains':
+      // 无标签不命中任一选中 → 匹配（语义约定同 notEquals）。
+      return effectiveTagId === undefined || !rule.tagIds.includes(effectiveTagId)
+    case 'containsAll':
+      // 生效标签是单个：包含全部 = 选中集全部命中该标签（多选时恒 false）。
+      return effectiveTagId !== undefined && rule.tagIds.every(id => id === effectiveTagId)
     default:
-      // 包含/等于：命中任一选中标签或「无标签」即视为匹配（等于 UI 强制单选）。
-      return match()
+      return true
   }
 }
 

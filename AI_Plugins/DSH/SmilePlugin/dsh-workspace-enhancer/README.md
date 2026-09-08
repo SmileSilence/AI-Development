@@ -12,7 +12,7 @@ DSH (DeepSeek Harness) right-side workspace enhancement plugin.
 6. **Default session mode selector** — permission-picker-style dropdown above the title bar, choosing the default agent preset for new sessions
 7. **Workspace/session tags** — integrated dsh-workspace-tagger: tags, dual-color pills, row tinting, tag-management settings page (toggleable via `tags.enabled`)
 8. **Tag dialog dropdown + running-tag enhancements** — the tag dialog is now a single dropdown (the running-tag is excluded and configured only on the settings page); collapsed workspaces show "running-tag-name ×N"; running sessions and workspaces with running sessions auto-pin to the top
-9. **Tag filter (multi-condition AND)** — a funnel button on the right of the workspace title bar (wide sidebar only) opens a Feishu-style filter panel: multiple condition rows combined with AND, each row picks its own scope (all / workspaces / sessions) and condition (contains / not-contains / equals), multi-tag selection (single when equals), add / remove rows, clear all, and a live "N item(s) filtered" counter; the button highlights while a filter is active; the search input and action buttons stay in one tight group
+9. **Tag filter (Feishu-style, 7 operators)** — a funnel button on the right of the workspace title bar (wide sidebar only) opens a filter panel: multiple condition rows combined with AND, each row picks its own scope (all / workspaces / sessions) and one of 7 Feishu-style operators — equals / not equals / contains (any) / not contains / contains all / is empty / is not empty — with tag selection (single for equals/not-equals, multi for the contains family, none for is-empty/is-not-empty), add / remove rows, clear all, and a live "N item(s) filtered" counter; the button highlights while a filter is active; the search input and action buttons stay in one tight group
 
 ## Install
 
@@ -21,7 +21,7 @@ DSH (DeepSeek Harness) right-side workspace enhancement plugin.
 dsh plugin --profile web add dsh-workspace-enhancer
 
 # offline tarball
-dsh plugin --profile web add ./dsh-workspace-enhancer-0.4.0.tgz
+dsh plugin --profile web add ./dsh-workspace-enhancer-0.5.0.tgz
 
 # git (requires pnpm allowBuilds for the prepare script)
 dsh plugin --profile web add github:user/dsh-workspace-enhancer#<sha>

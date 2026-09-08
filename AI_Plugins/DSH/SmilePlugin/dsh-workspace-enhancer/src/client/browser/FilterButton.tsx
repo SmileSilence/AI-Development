@@ -1,10 +1,12 @@
 /**
- * dsh-workspace-enhancer — 标签筛选器（v0.4.0 改造）。
+ * dsh-workspace-enhancer — 标签筛选器（v0.5.0 改造）。
  *
  * 由「标题栏右侧一个筛选图标按钮」+「点击弹出的筛选面板」组成（飞书多维表格式）：
  *  - 仅宽侧栏（wide）挂载；rail 窄侧栏保持现状不加筛选按钮。
  *  - 面板支持多条件行，行间 AND；每行独立选择范围（全部/工作区/会话）、
- *    条件（包含/不包含/等于）与标签（等于单选、包含/不包含多选），可增删行。
+ *    条件（飞书式 7 种操作符）与标签：
+ *      equals/notEquals 单选（选新替换旧）、contains/notContains/containsAll 多选、
+ *      isEmpty/isNotEmpty 无值（隐藏标签选择）；可增删行。
  *  - 面板打开时回显当前生效筛选，修改实时生效；筛选生效时按钮高亮。
  *  - 面板用 portal 固定定位（useAnchoredPosition），点击外部 / Esc 关闭。
  */
@@ -18,7 +20,8 @@ import {
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { WorkspaceTaggerSettings } from '../tags/settings-types.ts'
 import {
-  TAG_FILTER_NO_TAG, isTagFilterInactive,
+  isNoValueCondition, isSingleSelectCondition, isTagFilterInactive,
+  migrateRuleCondition, tagFilterRuleActive,
   type TagFilter, type TagFilterCondition, type TagFilterRule, type TagFilterScope,
 } from '../tree.ts'
 import css from './WorkspaceBrowser.module.css'
@@ -52,7 +55,7 @@ function nextRuleId(): string {
   return `r${ruleSeq}`
 }
 
-/** 标签选择锚点文案：空=全部标签；单选=该标签名（含「无标签」）；多选=计数。 */
+/** 标签选择锚点文案：空=全部标签；单选=该标签名；多选=计数。 */
 function tagSelectionLabel(
   rule: TagFilterRule,
   settings: WorkspaceTaggerSettings,
@@ -61,7 +64,6 @@ function tagSelectionLabel(
   if (rule.tagIds.length === 0) return t('filter.allTags')
   if (rule.tagIds.length === 1) {
     const tagId = rule.tagIds[0]
-    if (tagId === TAG_FILTER_NO_TAG) return t('dialog.noTag')
     return settings.tags.find(tag => tag.id === tagId)?.name ?? tagId
   }
   return t('filter.tagsCount', { n: String(rule.tagIds.length) })
@@ -104,6 +106,17 @@ function RuleSelect({ value, options, label, onPick, anchorClass }: {
   )
 }
 
+/** 7 种飞书式操作符选项（顺序即下拉展示序）。 */
+const CONDITION_OPTIONS: readonly { id: TagFilterCondition; labelKey: 'filter.conditionEquals' | 'filter.conditionNotEquals' | 'filter.conditionContains' | 'filter.conditionNotContains' | 'filter.conditionContainsAll' | 'filter.conditionIsEmpty' | 'filter.conditionIsNotEmpty' }[] = [
+  { id: 'equals', labelKey: 'filter.conditionEquals' },
+  { id: 'notEquals', labelKey: 'filter.conditionNotEquals' },
+  { id: 'contains', labelKey: 'filter.conditionContains' },
+  { id: 'notContains', labelKey: 'filter.conditionNotContains' },
+  { id: 'containsAll', labelKey: 'filter.conditionContainsAll' },
+  { id: 'isEmpty', labelKey: 'filter.conditionIsEmpty' },
+  { id: 'isNotEmpty', labelKey: 'filter.conditionIsNotEmpty' },
+]
+
 export function FilterButton({ settings, t, filter, onChange, resultCount }: FilterButtonProps) {
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -120,13 +133,13 @@ export function FilterButton({ settings, t, filter, onChange, resultCount }: Fil
 
   const active = !isTagFilterInactive(filter)
 
-  /** 规则编辑（实时生效；一旦任一行选入标签即视为启用筛选）。 */
+  /** 规则编辑（实时生效；任一行具备筛选内容即视为启用筛选）。 */
   const updateRule = (ruleId: string, patch: Partial<Omit<TagFilterRule, 'id'>>): void => {
     const rules = filter.rules.map(rule => rule.id === ruleId ? { ...rule, ...patch } : rule)
-    onChange({ enabled: rules.some(rule => rule.tagIds.length > 0), rules })
+    onChange({ enabled: rules.some(tagFilterRuleActive), rules })
   }
   const addRule = (): void => {
-    onChange({ ...filter, rules: [...filter.rules, { id: nextRuleId(), scope: 'all', condition: 'include', tagIds: [] }] })
+    onChange({ ...filter, rules: [...filter.rules, { id: nextRuleId(), scope: 'all', condition: 'contains', tagIds: [] }] })
   }
   const removeRule = (ruleId: string): void => {
     onChange({ ...filter, rules: filter.rules.filter(rule => rule.id !== ruleId) })
@@ -182,40 +195,33 @@ export function FilterButton({ settings, t, filter, onChange, resultCount }: Fil
                   onPick={(id) => { updateRule(rule.id, { scope: id as TagFilterScope }) }}
                   anchorClass={css.filterRuleSelect}
                 />
-                {/* 本行条件 */}
+                {/* 本行条件（7 种操作符；切换时做单选截断 / 无值清空迁移） */}
                 <RuleSelect
                   value={rule.condition}
-                  options={[
-                    { id: 'include', label: t('filter.conditionInclude') },
-                    { id: 'exclude', label: t('filter.conditionExclude') },
-                    { id: 'equals', label: t('filter.conditionEquals') },
-                  ]}
-                  label={t('filter.conditionInclude')}
-                  onPick={(id) => {
-                    // 「等于」只能指定单个标签：切换条件时截断多选。
-                    const condition = id as TagFilterCondition
-                    updateRule(rule.id, condition === 'equals'
-                      ? { condition, tagIds: rule.tagIds.slice(0, 1) }
-                      : { condition })
-                  }}
+                  options={CONDITION_OPTIONS.map(option => ({ id: option.id, label: t(option.labelKey) }))}
+                  label={t('filter.conditionContains')}
+                  onPick={(id) => { updateRule(rule.id, migrateRuleCondition(rule, id as TagFilterCondition)) }}
                   anchorClass={css.filterRuleSelect}
                 />
-                {/* 本行标签（等于单选 / 包含、不包含多选） */}
-                <TagRuleSelect
-                  rule={rule}
-                  settings={settings}
-                  t={t}
-                  onToggle={(tagId) => {
-                    if (rule.condition === 'equals') {
-                      updateRule(rule.id, { tagIds: [tagId] })
-                    } else {
-                      const has = rule.tagIds.includes(tagId)
-                      updateRule(rule.id, {
-                        tagIds: has ? rule.tagIds.filter(existing => existing !== tagId) : [...rule.tagIds, tagId],
-                      })
-                    }
-                  }}
-                />
+                {/* 本行标签：equals/notEquals 单选、contains 族多选、isEmpty/isNotEmpty 无值（隐藏） */}
+                {!isNoValueCondition(rule.condition) && (
+                  <TagRuleSelect
+                    rule={rule}
+                    settings={settings}
+                    t={t}
+                    onToggle={(tagId) => {
+                      if (isSingleSelectCondition(rule.condition)) {
+                        // 单选：选新标签替换旧标签（不追加）。
+                        updateRule(rule.id, { tagIds: [tagId] })
+                      } else {
+                        const has = rule.tagIds.includes(tagId)
+                        updateRule(rule.id, {
+                          tagIds: has ? rule.tagIds.filter(existing => existing !== tagId) : [...rule.tagIds, tagId],
+                        })
+                      }
+                    }}
+                  />
+                )}
                 {/* 删除本行 */}
                 <button
                   type="button"
@@ -244,7 +250,7 @@ export function FilterButton({ settings, t, filter, onChange, resultCount }: Fil
   )
 }
 
-/** 条件行内的标签下拉（含「无标签」+ 全部标签色块）。 */
+/** 条件行内的标签下拉（equals/notEquals 单选、contains 族多选；无「无标签」选项——由 isEmpty/isNotEmpty 表达）。 */
 function TagRuleSelect({ rule, settings, t, onToggle }: {
   rule: TagFilterRule
   settings: WorkspaceTaggerSettings
@@ -252,24 +258,22 @@ function TagRuleSelect({ rule, settings, t, onToggle }: {
   onToggle: (tagId: string) => void
 }) {
   const [open, setOpen] = useState(false)
+  const single = isSingleSelectCondition(rule.condition)
   const pick = (tagId: string): void => {
     onToggle(tagId)
-    if (rule.condition === 'equals') setOpen(false)
+    if (single) setOpen(false)
   }
   const anchorText = tagSelectionLabel(rule, settings, t)
   return (
     <Menu
       open={open}
       onClose={() => { setOpen(false) }}
-      items={[
-        { id: TAG_FILTER_NO_TAG, label: t('dialog.noTag') },
-        ...settings.tags.map(tag => ({
-          id: tag.id,
-          label: tag.name,
-          icon: <span className={css.filterSwatch} style={{ backgroundColor: tag.color }} />,
-        })),
-      ]}
-      selectedIds={rule.tagIds}
+      items={settings.tags.map(tag => ({
+        id: tag.id,
+        label: tag.name,
+        icon: <span className={css.filterSwatch} style={{ backgroundColor: tag.color }} />,
+      }))}
+      selectedIds={single ? rule.tagIds.slice(0, 1) : rule.tagIds}
       onSelect={pick}
       align="start"
       side="bottom"

@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.5.0
+
+### 筛选条件补全为飞书式 7 种操作符（任务：filter-v3）
+- `TagFilterCondition` 从 3 种扩展为 7 种：`equals` 等于、`notEquals` 不等于、`contains` 包含（=包含任一）、`notContains` 不包含、`containsAll` 包含全部、`isEmpty` 为空、`isNotEmpty` 不为空。
+- 操作符与标签选择语义：
+  - `equals` / `notEquals` 单选：标签菜单单选，选新标签替换旧标签（不追加）。
+  - `contains` / `notContains` 多选 OR：命中任一选中标签即匹配；`notContains` 对无标签行匹配为 true（不等于任一选中）。
+  - `containsAll` 多选 AND：生效标签是单个，须同时等于每个选中 → 单选集等价 equals，多选集恒不匹配（合理语义，见实现注释）。
+  - `isEmpty` / `isNotEmpty` 无值：忽略 tagIds，不渲染标签选择；按行有无标签匹配。
+- `tagFilterMatches` 重写：7 种操作符各自匹配（含无标签/有标签）；语义约定 `notEquals`/`notContains` 对无标签行匹配 true。
+- 新增 `migrateRuleCondition` 纯函数：切换操作符时状态迁移（多选→单选截断第一个；有值→无值清空 tagIds），FilterButton 与单测共用。
+- 新增 `isNoValueCondition` / `isSingleSelectCondition` / `tagFilterRuleActive` 辅助函数；`isTagFilterInactive` 改为按「规则是否具备筛选内容」判定（无值操作符即使未选标签也视为生效）。
+- `FilterButton.tsx`：操作符下拉扩到 7 项；无值操作符隐藏标签选择（行内只显示 [范围][操作符][删除]）；单选/多选切换走 `migrateRuleCondition`。
+- 标签下拉移除「无标签」哨兵选项（TAG_FILTER_NO_TAG）：无标签筛选统一由 `isEmpty` / `isNotEmpty` 操作符表达。
+- locales：条件文案扩到 7 项（中英文各一套），`conditionInclude`/`conditionExclude` 改名为 `conditionContains`/`conditionNotContains` 并清理旧键。
+- 单元测试重写：7 种操作符匹配、单选/多选/无值行为、操作符切换状态迁移、多条件 AND 组合、isEmpty/isNotEmpty 范围过滤。
+
+### 其他
+- 版本 0.4.0 → 0.5.0。
+
 ## 0.4.0
 
 ### 筛选器改造（任务 A：标题栏筛选按钮 + 多条件行面板）

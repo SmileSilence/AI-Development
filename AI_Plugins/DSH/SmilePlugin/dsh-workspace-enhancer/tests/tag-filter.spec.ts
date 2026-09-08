@@ -1,8 +1,9 @@
 /**
- * dsh-workspace-enhancer — 标签筛选（v0.4.0 多条件行 AND）单元测试。
- * 覆盖：tagFilterMatches 单条件行（包含/不包含/等于 + 无标签 + 空标签）、
- * applyTagFilterToGroups 多规则 AND（范围隔离、行间 AND、运行标签覆盖折叠）、
- * isTagFilterInactive 空筛选判定。
+ * dsh-workspace-enhancer — 标签筛选（v0.5.0 飞书式 7 种操作符）单元测试。
+ * 覆盖：tagFilterMatches 单条件行（equals/notEquals/contains/notContains/
+ * containsAll/isEmpty/isNotEmpty + 无标签 + 空标签）、migrateRuleCondition
+ * 操作符切换状态迁移（单选截断 / 无值清空）、applyTagFilterToGroups 多规则
+ * AND（范围隔离、行间 AND、运行标签覆盖折叠）、isTagFilterInactive 空筛选判定。
  */
 import { describe, expect, it } from 'vitest'
 import type { SessionListState, SessionSummary } from '@deepseek-ai/dsh-api-session-controller/client'
@@ -12,9 +13,12 @@ import type { TagDefinition, WorkspaceTaggerSettings } from '../src/client/tags/
 import {
   applyTagFilterToGroups,
   deriveGroups,
+  isNoValueCondition,
+  isSingleSelectCondition,
   isTagFilterInactive,
-  TAG_FILTER_NO_TAG,
+  migrateRuleCondition,
   tagFilterMatches,
+  tagFilterRuleActive,
   type TagFilter,
   type TagFilterRule,
 } from '../src/client/tree.ts'
@@ -74,53 +78,163 @@ function settings(patch: Partial<WorkspaceTaggerSettings> = {}): WorkspaceTagger
 let ruleSeq = 0
 const rule = (patch: Partial<Omit<TagFilterRule, 'id'>> = {}): TagFilterRule => {
   ruleSeq += 1
-  return { id: `r${ruleSeq}`, scope: 'all', condition: 'include', tagIds: ['tag-1'], ...patch }
+  return { id: `r${ruleSeq}`, scope: 'all', condition: 'contains', tagIds: ['tag-1'], ...patch }
 }
 
 /** 多条件筛选器（默认启用，含一条默认规则）。 */
 const filter = (rules: readonly TagFilterRule[] = [rule()], enabled = true): TagFilter => ({ enabled, rules })
 
-describe('tagFilterMatches（单条件行匹配）', () => {
-  it('包含：命中任一选中标签；无标签需选中「无标签」选项', () => {
-    expect(tagFilterMatches(rule(), 'tag-1')).toBe(true)
-    expect(tagFilterMatches(rule(), 'tag-2')).toBe(false)
-    expect(tagFilterMatches(rule(), undefined)).toBe(false)
-    expect(tagFilterMatches(rule({ tagIds: [TAG_FILTER_NO_TAG] }), undefined)).toBe(true)
-    expect(tagFilterMatches(rule({ tagIds: [TAG_FILTER_NO_TAG] }), 'tag-1')).toBe(false)
-    expect(tagFilterMatches(rule({ tagIds: ['tag-1', 'tag-2'] }), 'tag-2')).toBe(true)
+describe('操作符分类辅助函数', () => {
+  it('单选操作符只有 equals / notEquals', () => {
+    expect(isSingleSelectCondition('equals')).toBe(true)
+    expect(isSingleSelectCondition('notEquals')).toBe(true)
+    expect(isSingleSelectCondition('contains')).toBe(false)
+    expect(isSingleSelectCondition('notContains')).toBe(false)
+    expect(isSingleSelectCondition('containsAll')).toBe(false)
+    expect(isSingleSelectCondition('isEmpty')).toBe(false)
+    expect(isSingleSelectCondition('isNotEmpty')).toBe(false)
   })
 
-  it('不包含：未命中任一选中标签；选中「无标签」时排除无标签目标', () => {
-    const excl = rule({ condition: 'exclude', tagIds: ['tag-1'] })
-    expect(tagFilterMatches(excl, 'tag-2')).toBe(true)
-    expect(tagFilterMatches(excl, 'tag-1')).toBe(false)
-    expect(tagFilterMatches(excl, undefined)).toBe(true)
-    const exclNone = rule({ condition: 'exclude', tagIds: [TAG_FILTER_NO_TAG] })
-    expect(tagFilterMatches(exclNone, undefined)).toBe(false)
-    expect(tagFilterMatches(exclNone, 'tag-1')).toBe(true)
+  it('无值操作符只有 isEmpty / isNotEmpty', () => {
+    expect(isNoValueCondition('isEmpty')).toBe(true)
+    expect(isNoValueCondition('isNotEmpty')).toBe(true)
+    expect(isNoValueCondition('equals')).toBe(false)
+    expect(isNoValueCondition('contains')).toBe(false)
+    expect(isNoValueCondition('containsAll')).toBe(false)
   })
+})
 
-  it('等于：精确命中单个指定标签或「无标签」', () => {
+describe('tagFilterMatches（单条件行匹配，7 种操作符）', () => {
+  it('equals 等于：精确命中单个指定标签；无标签不匹配', () => {
     const eq = rule({ condition: 'equals' })
     expect(tagFilterMatches(eq, 'tag-1')).toBe(true)
     expect(tagFilterMatches(eq, 'tag-2')).toBe(false)
     expect(tagFilterMatches(eq, undefined)).toBe(false)
-    const eqNone = rule({ condition: 'equals', tagIds: [TAG_FILTER_NO_TAG] })
-    expect(tagFilterMatches(eqNone, undefined)).toBe(true)
-    expect(tagFilterMatches(eqNone, 'tag-1')).toBe(false)
   })
 
-  it('空标签行恒匹配；未启用或无规则 → 整体不过滤', () => {
+  it('notEquals 不等于：不等于指定标签即匹配，含无标签（语义约定）', () => {
+    const ne = rule({ condition: 'notEquals' })
+    expect(tagFilterMatches(ne, 'tag-2')).toBe(true)
+    expect(tagFilterMatches(ne, 'tag-1')).toBe(false)
+    // 无标签 ≠ 选中标签 → 匹配 true。
+    expect(tagFilterMatches(ne, undefined)).toBe(true)
+  })
+
+  it('contains 包含任一：命中任一选中标签；无标签不匹配', () => {
+    expect(tagFilterMatches(rule(), 'tag-1')).toBe(true)
+    expect(tagFilterMatches(rule(), 'tag-2')).toBe(false)
+    expect(tagFilterMatches(rule(), undefined)).toBe(false)
+    expect(tagFilterMatches(rule({ tagIds: ['tag-1', 'tag-2'] }), 'tag-2')).toBe(true)
+    expect(tagFilterMatches(rule({ tagIds: ['tag-1', 'tag-2'] }), 'tag-3')).toBe(false)
+  })
+
+  it('notContains 不包含：不命中任一选中标签即匹配，含无标签（语义约定）', () => {
+    const nc = rule({ condition: 'notContains', tagIds: ['tag-1', 'tag-2'] })
+    expect(tagFilterMatches(nc, 'tag-3')).toBe(true)
+    expect(tagFilterMatches(nc, 'tag-1')).toBe(false)
+    expect(tagFilterMatches(nc, 'tag-2')).toBe(false)
+    // 无标签不命中任一选中 → 匹配 true。
+    expect(tagFilterMatches(nc, undefined)).toBe(true)
+  })
+
+  it('containsAll 包含全部：生效标签是单个，须同时等于每个选中（多选恒不匹配）', () => {
+    // 单选集：等于该标签即命中（= equals）。
+    const all = rule({ condition: 'containsAll' })
+    expect(tagFilterMatches(all, 'tag-1')).toBe(true)
+    expect(tagFilterMatches(all, 'tag-2')).toBe(false)
+    expect(tagFilterMatches(all, undefined)).toBe(false)
+    // 多选集：单个生效标签无法同时等于多个标签 → 恒不匹配。
+    expect(tagFilterMatches(rule({ condition: 'containsAll', tagIds: ['tag-1', 'tag-2'] }), 'tag-1')).toBe(false)
+    expect(tagFilterMatches(rule({ condition: 'containsAll', tagIds: ['tag-1', 'tag-2'] }), undefined)).toBe(false)
+  })
+
+  it('isEmpty 为空：无标签匹配', () => {
+    const empty = rule({ condition: 'isEmpty', tagIds: [] })
+    expect(tagFilterMatches(empty, undefined)).toBe(true)
+    expect(tagFilterMatches(empty, 'tag-1')).toBe(false)
+  })
+
+  it('isNotEmpty 不为空：有任意标签匹配', () => {
+    const notEmpty = rule({ condition: 'isNotEmpty', tagIds: [] })
+    expect(tagFilterMatches(notEmpty, 'tag-1')).toBe(true)
+    expect(tagFilterMatches(notEmpty, undefined)).toBe(false)
+  })
+
+  it('空标签行恒匹配（有值操作符未选标签 = 不筛选）', () => {
     expect(tagFilterMatches(rule({ tagIds: [] }), 'anything')).toBe(true)
     expect(tagFilterMatches(rule({ tagIds: [] }), undefined)).toBe(true)
+    expect(tagFilterMatches(rule({ condition: 'notEquals', tagIds: [] }), 'anything')).toBe(true)
+    expect(tagFilterMatches(rule({ condition: 'containsAll', tagIds: [] }), undefined)).toBe(true)
+  })
+})
+
+describe('migrateRuleCondition（切换操作符状态迁移）', () => {
+  it('多选 → 单选（equals/notEquals）：截断为第一个', () => {
+    const multi = rule({ tagIds: ['tag-1', 'tag-2'] })
+    expect(migrateRuleCondition(multi, 'equals').tagIds).toEqual(['tag-1'])
+    expect(migrateRuleCondition(multi, 'notEquals').tagIds).toEqual(['tag-1'])
+    expect(migrateRuleCondition(multi, 'equals').condition).toBe('equals')
+    expect(migrateRuleCondition(multi, 'notEquals').condition).toBe('notEquals')
+  })
+
+  it('有值 → 无值（isEmpty/isNotEmpty）：清空 tagIds', () => {
+    const multi = rule({ tagIds: ['tag-1', 'tag-2'] })
+    expect(migrateRuleCondition(multi, 'isEmpty').tagIds).toEqual([])
+    expect(migrateRuleCondition(multi, 'isEmpty').condition).toBe('isEmpty')
+    expect(migrateRuleCondition(multi, 'isNotEmpty').tagIds).toEqual([])
+    expect(migrateRuleCondition(multi, 'isNotEmpty').condition).toBe('isNotEmpty')
+  })
+
+  it('单选 ↔ 单选：保留唯一选中', () => {
+    const single = rule({ condition: 'equals', tagIds: ['tag-1'] })
+    const next = migrateRuleCondition(single, 'notEquals')
+    expect(next.condition).toBe('notEquals')
+    expect(next.tagIds).toEqual(['tag-1'])
+  })
+
+  it('无值 → 有值：tagIds 保持空（用户重新选择）', () => {
+    const noValue = rule({ condition: 'isEmpty', tagIds: [] })
+    const next = migrateRuleCondition(noValue, 'contains')
+    expect(next.condition).toBe('contains')
+    expect(next.tagIds).toEqual([])
+  })
+
+  it('多选 ↔ 多选（contains/notContains/containsAll）：保留全部选中', () => {
+    const multi = rule({ tagIds: ['tag-1', 'tag-2'] })
+    expect(migrateRuleCondition(multi, 'notContains').tagIds).toEqual(['tag-1', 'tag-2'])
+    expect(migrateRuleCondition(multi, 'containsAll').tagIds).toEqual(['tag-1', 'tag-2'])
+    expect(migrateRuleCondition(multi, 'contains').tagIds).toEqual(['tag-1', 'tag-2'])
+  })
+
+  it('单选标签替换语义：UI 层选新替换旧（tagIds 恒 0 或 1 个）', () => {
+    const single = rule({ condition: 'equals', tagIds: ['tag-1'] })
+    // 单选时选新标签 → 替换为 [tag-2]（不追加）。
+    const next = migrateRuleCondition(single, 'equals')
+    expect(next.tagIds).toEqual(['tag-1'])
+    expect(next.tagIds.length).toBeLessThanOrEqual(1)
+  })
+})
+
+describe('tagFilterRuleActive / isTagFilterInactive（空筛选判定）', () => {
+  it('无值操作符即使未选标签也视为有效规则', () => {
+    expect(tagFilterRuleActive(rule({ condition: 'isEmpty', tagIds: [] }))).toBe(true)
+    expect(tagFilterRuleActive(rule({ condition: 'isNotEmpty', tagIds: [] }))).toBe(true)
+    expect(tagFilterRuleActive(rule({ tagIds: [] }))).toBe(false)
+    expect(tagFilterRuleActive(rule({ tagIds: ['tag-1'] }))).toBe(true)
+  })
+
+  it('未启用或无规则 → 整体不过滤；isEmpty 规则算生效筛选', () => {
     expect(isTagFilterInactive(filter([], false))).toBe(true)
     expect(isTagFilterInactive(filter([], true))).toBe(true)
     expect(isTagFilterInactive(filter([rule()]))).toBe(false)
     expect(isTagFilterInactive(filter([rule({ tagIds: [] }), rule({ tagIds: [] })]))).toBe(true)
+    // 无值操作符：规则虽无 tagIds 但仍是生效筛选。
+    expect(isTagFilterInactive(filter([rule({ condition: 'isEmpty', tagIds: [] })]))).toBe(false)
+    expect(isTagFilterInactive(filter([rule({ condition: 'isNotEmpty', tagIds: [] })]))).toBe(false)
   })
 })
 
-describe('applyTagFilterToGroups（范围过滤）', () => {
+describe('applyTagFilterToGroups（范围过滤 + 多规则 AND）', () => {
   const sessions = [
     summary({ id: id('s1'), updatedAt: 100 }), // 工作区 w-1，会话标签 tag-1
     summary({ id: id('s2'), updatedAt: 200 }), // 工作区 w-1，会话标签 tag-2
@@ -151,6 +265,23 @@ describe('applyTagFilterToGroups（范围过滤）', () => {
     expect(groups.map(g => g.key)).toEqual(['w-1', 'w-2'])
     expect(groups[0].sessions.map(s => s.id)).toEqual([id('s2')])
     expect(groups[1].sessions.map(s => s.id)).toEqual([])
+  })
+
+  it('isEmpty 操作符：筛选出无标签行（会话范围）', () => {
+    const groups = applyTagFilterToGroups(
+      base(), settings(),
+      filter([rule({ scope: 'session', condition: 'isEmpty', tagIds: [] })]),
+    )
+    // s3 无会话标签 → 保留；s1/s2 有标签 → 淘汰。
+    expect(groups.flatMap(g => g.sessions.map(s => s.id))).toEqual([id('s3')])
+  })
+
+  it('isNotEmpty 操作符：筛选出有标签行（会话范围）', () => {
+    const groups = applyTagFilterToGroups(
+      base(), settings(),
+      filter([rule({ scope: 'session', condition: 'isNotEmpty', tagIds: [] })]),
+    )
+    expect(groups.flatMap(g => g.sessions.map(s => s.id))).toEqual([id('s1'), id('s2')])
   })
 
   it('多条件行 AND：同一范围的两条规则都须命中', () => {
