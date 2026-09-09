@@ -49,7 +49,7 @@
 
 | 技能名 | 发布者 | 版本 | 分类 | 描述 | 触发条件 | 安装状态 |
 |--------|--------|------|------|------|----------|----------|
-| coding-workflow | SmileXX | v1.1 | 编码开发 | AI 辅助编码工作流与通用代码规范（由 ai-coding-workflow + code-style 合并） | “生成代码”“审查重构”“编写测试”“代码规范” | ✅ 已安装 |
+| coding-workflow | SmileXX | v1.2 | 编码开发 | AI 辅助编码工作流与通用代码规范（由 ai-coding-workflow + code-style 合并） | “生成代码”“审查重构”“编写测试”“代码规范” | ✅ 已安装 |
 | auto-context-splitter | SmileXX | v1.1 | Agent 工具 | 自动检测上下文超限并智能分段处理长文本任务 | 上下文超限、长文本分段 | ✅ 已安装 |
 | dsh-plugin-creator | SmileXX | 1.2.0 | 插件开发 | DSH 可安装插件包与 Cordis 会话内动态插件开发、调试及验证 | “创建 dsh 插件”“添加会话临时界面”“修改 @pluginId” | ✅ 已安装 |
 | design-execution-document | SmileXX | v2.2 | 文档开发 | 创建设计+执行综合文档，确保完整可执行 | 需要设计+执行文档 | ✅ 已安装 |
@@ -80,6 +80,7 @@
 6. **版本号同步（2026-09-03）**：11 个自有技能均补充 `metadata.platforms` / `metadata.keywords`（vX.1 系列）；本清单、README 与 `SKILL_CATALOG.xlsx` 的版本号统一到各 SKILL.md 实际版本，dsh-plugin-creator 更新为 1.1.1。
 7. **复核对齐（2026-09-08）**：核对各 SKILL.md frontmatter，更新三处滞后版本号：smile-global-config v17.1→v19、smile-project-config v7.1→v7.3、design-execution-document v2.1→v2.2。源仓库、`~/.agents/skills` 与 `~/.claude/skills` 三处目录一致（各 11 个技能，无多余副本）。
 8. **兼容性规范（2026-09-10）**：dsh-plugin-creator 升级至 1.2.0，新增「保持横向兼容」共同工作规范第 7 条与 `references/compatibility.md`（开发/修改插件时不影响其他已装插件）。
+9. **编码新规（2026-09-10）**：coding-workflow 升级至 v1.2，新增「变更安全」（修改不影响其他功能）与「代码复用」（单一入口/DRY）通用规范。
 
 ## 七、技能管理工具
 
