@@ -1,0 +1,79 @@
+{
+  "name": "dsh-input-enhancer",
+  "version": "2.3.1",
+  "description": "增强 DSH Web GUI 输入栏：分类命令菜单、Plan 模式按钮与实时调整方向",
+  "author": "AI Development Team",
+  "license": "MIT",
+  "type": "module",
+  "main": "./lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "scripts",
+    "docs",
+    "README.md",
+    "SKILL.md",
+    "PROJECT_SPEC.md",
+    "DESIGN_EXECUTION.md",
+    "LICENSE",
+    "cordis.patch.yml"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "vitest run",
+    "test:e2e": "node scripts/e2e.mjs",
+    "pack": "npm pack"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-api-remotes",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-input-trigger",
+        "@deepseek-ai/dsh-plan-mode"
+      ],
+      "platform": "web"
+    }
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "plugin",
+    "input-bar",
+    "command-menu",
+    "plan-mode",
+    "steering"
+  ],
+  "dependencies": {
+    "@deepseek-ai/dsh-typert-protocol": "0.1.3-alpha.2"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
+    "esbuild": "^0.28.1",
+    "jsdom": "^29.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vitest": "^4.1.8"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  }
+}

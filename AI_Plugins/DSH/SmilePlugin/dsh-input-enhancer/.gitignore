@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+lib/
+*.bundle.js
+
+# Packed artifacts
+*.tgz
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage/
+.nyc_output/
+
+# OS
+Thumbs.db
+desktop.ini
+
+# DSH specific data (not part of source)
+.dsh-data/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
