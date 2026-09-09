@@ -9,6 +9,7 @@
 | `AI_Skill/` | AI 技能 | 管理 SmileXX 自有技能、第三方技能索引与跨 Agent 安装 | 设计文档、技能清单、Excel 表格、安装清单、安装脚本、具体技能源码 |
 | `AI_Mcp/` | MCP 服务 | 管理 MCP（模型上下文协议）服务、配置与接入资料 | 分类说明；后续可存放服务清单、配置文档、安装脚本和具体 MCP 项目 |
 | `AI_Plugins/` | AI 插件 | 按 Agent 平台管理 SmileXX 自有插件和第三方插件资料 | 平台说明、插件分类、本地第三方源码与后续插件清单 |
+| `hermes-dsh-bridge/` | 协作桥工具集 | Hermes⇄DSH 协作桥：RPC 客户端、任务流程、监管器与文档 | 共享任务文件、工具脚本、交接说明 |
 
 ## 仓库结构
 
@@ -27,12 +28,18 @@ AI-Development/
 │   └── OtherSkills/                # 第三方技能清单与本地工作区
 ├── AI_Mcp/
 │   └── README.md                   # MCP 分类用途与规划
-└── AI_Plugins/
-    ├── README.md                   # AI 插件分类用途与维护规则
-    └── DSH/                        # DeepSeek Harness 插件
-        ├── README.md               # DSH 插件分类说明
-        ├── OtherPlugin/            # 第三方插件本地工作区
-        └── SmilePlugin/            # SmileXX 自有插件源码
+├── AI_Plugins/
+│   ├── README.md                   # AI 插件分类用途与维护规则
+│   └── DSH/                        # DeepSeek Harness 插件
+│       ├── README.md               # DSH 插件分类说明
+│       ├── OtherPlugin/            # 第三方插件本地工作区
+│       └── SmilePlugin/            # SmileXX 自有插件源码
+└── hermes-dsh-bridge/              # Hermes⇄DSH 协作桥工具集
+    ├── README.md                   # 协作桥说明
+    ├── inbox/                      # 各代理待办任务
+    ├── outbox/                     # 各代理执行结果
+    ├── shared/                     # 任务文件与 DELEGATE.md
+    └── tools/                      # RPC/流程/监管工具脚本
 ```
 
 ## 使用入口
@@ -52,5 +59,6 @@ AI-Development/
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-09 | v10 | 根目录收录 hermes-dsh-bridge 协作桥工具集；同步 SmilePlugin 插件索引（dsh-input-enhancer / dsh-plugin-manager 纳入、enhancer 版本更新） |
 | 2026-08-29 | v9 | 新增 AI_Plugins 分类，并补充 DSH 自有插件与第三方插件的目录规范 |
 | 2026-08-29 | v8 | 根目录改为分类导航；技能相关文档、表格、清单和脚本统一归入 AI_Skill；补充 AI_Mcp 分类说明 |
