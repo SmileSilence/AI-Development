@@ -1,4 +1,4 @@
-// dsh-plugin-manager 版本门禁链（dsh-plugin-creator 要求）
+// dsh-plugin-manager 版本门禁链（smilexx-dsh-plugin-creator 要求）
 // 用法：node scripts/check.mjs [--expect <版本>]
 // 断言：package.json 版本 pin、结构检查（Host 入口/客户端产物/补丁文件）、CHANGELOG/README 版本同步。
 import { readFileSync, existsSync } from 'node:fs'

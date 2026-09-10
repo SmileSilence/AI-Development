@@ -7,7 +7,7 @@
  *     （kinds：missing-profile-manifest / dangling-dependency / loader-failed-entry /
  *      patch-write-failure / invalid-spec）。
  *   - 不携带旧版的操作历史与回滚功能。
- * 全部读环境函数只读取必要字段并构造自有 JSON（dsh-plugin-creator 四种表示规范）。
+ * 全部读环境函数只读取必要字段并构造自有 JSON（smilexx-dsh-plugin-creator 四种表示规范）。
  */
 import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";

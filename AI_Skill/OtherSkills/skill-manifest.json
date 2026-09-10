@@ -15,7 +15,7 @@
     {
       "name": "cordis-plugin-development",
       "publisher": "DeepSeek",
-      "description": "官方 Cordis 会话内动态插件开发技能；中文内容已合入 dsh-plugin-creator，原文仅用于来源追溯。",
+      "description": "官方 Cordis 会话内动态插件开发技能；中文内容已合入 smilexx-dsh-plugin-creator，原文仅用于来源追溯。",
       "repository": "https://github.com/deepseek-ai/deepseek-harness.git",
       "homepage": "https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/preset/agent-presets/presets/cordis/skills/cordis-plugin-development",
       "source_path": "packages/preset/agent-presets/presets/cordis/skills/cordis-plugin-development/SKILL.md",
@@ -23,7 +23,7 @@
       "downloaded_version": "49a606bc5b5934603f22a26957a07dc799ab0291",
       "downloaded_at": "2026-09-03",
       "sha256": "01811d3ee9c03a466abae12d54d229e7de7bd74ca6b730c54ce9d5e696b294aa",
-      "install_hint": "不单独安装；使用 SmlieSkills/dsh-plugin-creator 1.1.1 中文整合版"
+      "install_hint": "不单独安装；使用 SmlieSkills/smilexx-dsh-plugin-creator 1.3.0 中文整合版"
     }
   ]
 }

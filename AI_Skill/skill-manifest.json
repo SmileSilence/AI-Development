@@ -4,77 +4,63 @@
   "version": "6.0.0",
   "skills": [
     {
-      "name": "coding-workflow",
+      "name": "smilexx-coding-workflow",
       "publisher": "SmileXX",
       "default_install": true,
       "description": "AI 辅助编码工作流与通用代码规范；覆盖代码生成、审查、重构、修复、测试，以及命名、注释、格式与错误处理等编码标准。",
       "source": "local"
     },
     {
-      "name": "auto-context-splitter",
-      "publisher": "SmileXX",
-      "default_install": true,
-      "description": "自动检测上下文超限并智能分段处理长文本任务",
-      "source": "local"
-    },
-    {
-      "name": "dsh-plugin-creator",
+      "name": "smilexx-dsh-plugin-creator",
       "publisher": "SmileXX",
       "default_install": false,
       "description": "创建、修改、调试和验证 DSH 可安装插件包与 Cordis 会话内动态插件；涉及插件打包、服务、工具、界面插槽或 cordis_define/run 时使用。",
       "source": "local"
     },
     {
-      "name": "design-execution-document",
-      "publisher": "SmileXX",
-      "default_install": false,
-      "description": "创建包含设计和执行部分的综合文档，确保文档完整可执行，无需额外参考资料",
-      "source": "local"
-    },
-    {
-      "name": "skill-creator",
+      "name": "smilexx-skill-creator",
       "publisher": "SmileXX",
       "default_install": false,
       "description": "创建或维护 AI_Skill 技能；涉及 SKILL.md、openai.yaml、目录结构或安装测试时使用。",
       "source": "local"
     },
     {
-      "name": "smile-global-config",
+      "name": "smilexx-global-config",
       "publisher": "SmileXX",
       "default_install": true,
       "description": "全局简体中文配置与 AI Agent 管理；安装后自动生效，涵盖交流、文档、代码注释、Agent 启动、临时文件卫生与会话同步。",
       "source": "local"
     },
     {
-      "name": "smile-project-config",
+      "name": "smilexx-project-config",
       "publisher": "SmileXX",
       "default_install": false,
       "description": "管理 D:\\Work\\Project 项目结构、Git 和文档模板；初始化项目或维护项目配置时使用。",
       "source": "local"
     },
     {
-      "name": "ue-development",
+      "name": "smilexx-ue-development",
       "publisher": "SmileXX",
       "default_install": false,
       "description": "开发 Unreal Engine 项目；涉及 C++、蓝图、场景、构建、部署或 UE 版本文档时使用。",
       "source": "local"
     },
     {
-      "name": "ue-plugin-development",
+      "name": "smilexx-ue-plugin-development",
       "publisher": "SmileXX",
       "default_install": false,
       "description": "开发 Unreal Engine 插件与扩展；涉及模块、编辑器扩展、蓝图函数库或自定义资产时使用。",
       "source": "local"
     },
     {
-      "name": "unity-development",
+      "name": "smilexx-unity-development",
       "publisher": "SmileXX",
       "default_install": true,
       "description": "开发 Unity 项目；涉及 C#、场景、构建、部署、技术栈或 Unity 版本文档时使用。",
       "source": "local"
     },
     {
-      "name": "unity-plugin-development",
+      "name": "smilexx-unity-plugin-development",
       "publisher": "SmileXX",
       "default_install": true,
       "description": "开发 Unity 插件或 Package；涉及 asmdef、编辑器扩展、Inspector 或 ScriptableObject 时使用。",

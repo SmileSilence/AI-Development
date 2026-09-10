@@ -2,12 +2,12 @@
 
 > 文档版本：1.0.0 | 插件版本：0.2.0 | 形态：可安装插件包
 > 基座：dsh-skill-mcp-panel v2.0.2（重构）| 目标 DSH：v0.1.2-alpha.4（已核实）
-> 依据技能：dsh-plugin-creator（含 references/package-development.md）、dsh-plugin-dev-kb、design-execution-document、skill-creator、coding-workflow
+> 依据技能：smilexx-dsh-plugin-creator（含 references/package-development.md）、dsh-plugin-dev-kb、smilexx-skill-creator、smilexx-coding-workflow
 
 ## 0. 定位与合规
 
 - 以 dsh-skill-mcp-panel v2.0.2 为基座重构出统一 dsh-plugin-manager：新增插件管理模块（移植旧 dpm 核心，**不携带历史+回滚**），并把 Skill 分类 UI 从「工作区/分组横向滚动栏」改为「按类型下拉菜单」；MCP 面板保留。
-- 满足 dsh-plugin-creator 判定：插件包形态；运行时接口核实（§A.1）；职责定义（§6X）；生命周期与可选能力降级（§6X）；四种表示（§6Y）；LocalStorage 约定（§6Z）；独立安装 7 步 + 版本门禁链 + CDP e2e（§9）；项目标准（§6A.4）。
+- 满足 smilexx-dsh-plugin-creator 判定：插件包形态；运行时接口核实（§A.1）；职责定义（§6X）；生命周期与可选能力降级（§6X）；四种表示（§6Y）；LocalStorage 约定（§6Z）；独立安装 7 步 + 版本门禁链 + CDP e2e（§9）；项目标准（§6A.4）。
 - 参考源码归档：`doc\references\dsh-skill-mcp-panel-main\`（与本文档同目录）。
 
 ## 1. 需求映射（6 项）
@@ -37,7 +37,7 @@
 ## 4. 设计决策
 
 - **D1**：不移植 history/rollback（旧包归档保留）。
-- **D2**：Skill「类型」= `metadata.category`（skill-creator），缺失回退 `rel` 顶层目录段。
+- **D2**：Skill「类型」= `metadata.category`（smilexx-skill-creator），缺失回退 `rel` 顶层目录段。
 - **D3**：新插件替代 dsh-skill-mcp-panel（安装时卸载参考插件防 settings.section id 冲突）；MCP 受管块标记沿用 `dsh-skill-mcp-panel:mcp`。
 
 ## 5. 包结构

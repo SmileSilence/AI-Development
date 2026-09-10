@@ -50,21 +50,19 @@
 
 | 技能名称 | 描述 |
 |----------|------|
-| coding-workflow | AI 辅助编码工作流与通用代码规范 |
-| auto-context-splitter | 长上下文自动检测与分段处理 |
-| dsh-plugin-creator | DSH 插件包与 Cordis 会话内动态插件开发（1.1.1） |
-| design-execution-document | 设计与执行综合文档创建 |
-| skill-creator | 技能创建工具 |
-| smile-global-config | 全局中文配置与 Agent 管理 |
-| smile-project-config | 项目配置规范 |
-| ue-development | Unreal Engine开发 |
-| ue-plugin-development | UE插件开发 |
-| unity-development | Unity开发 |
-| unity-plugin-development | Unity插件开发 |
+| smilexx-coding-workflow | AI 辅助编码工作流与通用代码规范 |
+| smilexx-dsh-plugin-creator | DSH 插件包与 Cordis 会话内动态插件开发（1.3.0） |
+| smilexx-skill-creator | 技能创建工具 |
+| smilexx-global-config | 全局中文配置与 Agent 管理 |
+| smilexx-project-config | 项目配置规范 |
+| smilexx-ue-development | Unreal Engine开发 |
+| smilexx-ue-plugin-development | UE插件开发 |
+| smilexx-unity-development | Unity开发 |
+| smilexx-unity-plugin-development | Unity插件开发 |
 
 ## 注意事项
 
-DSH 技能已由 `deepseek-harness-plugin-creator` 更名为 `dsh-plugin-creator`。升级时先复制新目录到共享技能目录及 Claude 目录，确认文件完整后再移除同一加载目录中的旧名称副本。官方 `cordis-plugin-development` 原文只作参考，不单独安装。当前通用安装脚本不负责这项旧名称迁移。
+DSH 技能已由 `deepseek-harness-plugin-creator` 更名为 `smilexx-dsh-plugin-creator`。升级时先复制新目录到共享技能目录及 Claude 目录，确认文件完整后再移除同一加载目录中的旧名称副本。官方 `cordis-plugin-development` 原文只作参考，不单独安装。当前通用安装脚本不负责这项旧名称迁移。
 
 1. **安装目录**：默认同步到 `~/.agents/skills/` 与 `~/.claude/skills/`；`.codex/skills/.system` 保持不变
 2. **符号链接**：使用 `-UseSymlink` 参数需要管理员权限或开启开发者模式
@@ -85,6 +83,7 @@ DSH 技能已由 `deepseek-harness-plugin-creator` 更名为 `dsh-plugin-creator
 
 ## 更新日志
 
+- 2026-09-11：删除 2 个技能；自有技能统一 `smilexx-` 前缀（9 个）；安装第三方技能 book-to-skill
 - 2026-09-03：更新 DSH 插件开发技能名称、双流程和旧副本迁移说明；中文整合版为 1.1.1
 - 2026-09-02：仓库改为公开访问；移除私有仓库认证教程，更新为免认证克隆与拉取说明，并同步当前 11 个自有技能和 5 个默认推荐技能
 - 2026-08-29：删除重复的 skill-catalog.json；全部技能总览与默认推荐统一由 Excel 维护，自有技能安装由 skill-manifest.json 驱动
@@ -92,7 +91,7 @@ DSH 技能已由 `deepseek-harness-plugin-creator` 更名为 `dsh-plugin-creator
 - 2026-08-29：新增第三方技能 Excel 清单，并与第三方仓库索引同步维护
 - 2026-08-29：拆分 `SmlieSkills` 与 `OtherSkills`；自有技能发布者统一为 SmileXX；第三方技能仅上传索引清单
 - 2026-08-29：技能描述精简；改用 `.agents/skills` 共享目录；避免 Codex `skill-catalog` 重复注册
-- 2026-08-28：技能名统一为 kebab-case（mcp-auto-loader、smile-global-config、smile-project-config、smile-know-collector），技能总数调整为 13 个，全环境（DSH/Codex/Claude）同步
+- 2026-08-28：技能名统一为 kebab-case（mcp-auto-loader、smilexx-global-config、smilexx-project-config、smilexx-know-collector），技能总数调整为 13 个，全环境（DSH/Codex/Claude）同步
 - 2026-08-24：删除 mode-manager 技能，技能总数调整为 12 个
 - 2026-08-24：同步所有技能至最新版本，新增 SmileKnow-Collector，新增 QUICK_INSTALL.md 快速安装教程
 - 2026-08-22：初始版本，包含12个AI技能

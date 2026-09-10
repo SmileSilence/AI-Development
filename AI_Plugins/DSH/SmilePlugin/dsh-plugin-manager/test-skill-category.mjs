@@ -7,7 +7,7 @@ import { buildRoots, collectSkillEntries, parseFrontmatter } from "./lib/skill-f
 let passed = 0;
 function pass(name) { passed += 1; console.log("PASS  " + name); }
 
-// 1) parseFrontmatter 提取 skill-creator 元数据
+// 1) parseFrontmatter 提取 smilexx-skill-creator 元数据
 const skillMd = [
   "---",
   "name: my-nice-tool",

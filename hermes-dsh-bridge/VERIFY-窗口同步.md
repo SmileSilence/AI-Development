@@ -39,4 +39,4 @@ DSH 窗口的会话列表里（归入 hermes-dsh-bridge 工作区）。
 
 如果要「无需重启、实时同步」，需要给 DSH 写一个插件：
 监听 `~/.dsh/sessions/` 目录变化，自动把新会话注册到 workspace.json +
-投影缓存。这是 DSH 官方插件机制的活（DSH 有 dsh-plugin-creator 技能可参考）。
+投影缓存。这是 DSH 官方插件机制的活（DSH 有 smilexx-dsh-plugin-creator 技能可参考）。

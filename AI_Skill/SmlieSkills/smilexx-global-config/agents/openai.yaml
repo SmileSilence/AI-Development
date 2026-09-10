@@ -1,0 +1,9 @@
+name: smilexx-global-config
+description: 全局简体中文配置与 AI Agent 管理，涵盖交流、文档、代码注释、Agent 启动、临时文件卫生与会话同步。
+interface:
+  display_name: "全局中文设置"
+  short_description: "全局简体中文交互设置"
+  default_prompt: |
+    请始终使用简体中文交互。在设计阶段和 Plan 模式中，先自行查明可发现事实；若仍有会影响方案的关键疑问，必须向用户提问，并说明提问原因及答案会影响的方案决策。
+  hidden: true
+invocation: auto

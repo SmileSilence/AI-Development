@@ -95,7 +95,7 @@ export function parseFrontmatter(raw) {
     }
     return undefined;
   };
-  // 元数据（skill-creator 规范：metadata.category/publisher/platforms/keywords）。
+  // 元数据（smilexx-skill-creator 规范：metadata.category/publisher/platforms/keywords）。
   // 宽松解析：用 yaml 解析器读取 metadata 块，失败时静默回退为空。
   let category;
   let publisher;
