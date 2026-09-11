@@ -1,0 +1,8 @@
+{
+  "name": "smilexx-workspace-enhancer",
+  "version": "0.7.5",
+  "archive": "smilexx-workspace-enhancer-0.7.5.tgz",
+  "sizeBytes": 79402,
+  "sha256": "ec9e953b9cd3e78de6337630d1a6a6d3379bac89c58c9cce6bec17508accc2ea",
+  "profileDependency": "file:D:/Work/AI-Development/AI_Plugins/DSH/SmilePlugin/dsh-workspace-enhancer/smilexx-workspace-enhancer-0.7.5.tgz"
+}

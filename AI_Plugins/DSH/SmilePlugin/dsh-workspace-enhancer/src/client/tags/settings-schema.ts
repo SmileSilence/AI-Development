@@ -42,6 +42,15 @@ export const WorkspaceTaggerSettingsSchema = z.object({
   })).default([]),
   workspaceTags: z.dict(z.string()).default({}),
   sessionTags: z.dict(z.string()).default({}),
+  runningTag: z.union([z.object({
+    enabled: z.boolean(), name: z.string(), color: z.string(),
+    effect: z.object({
+      // marquee 仅用于读取旧配置；客户端解析后会迁移为 edge，不再提供保存入口。
+      preset: z.union([z.const('none'), z.const('edge'), z.const('marquee'), z.const('gradient')]),
+      color: z.string(), secondaryColor: z.string(),
+      speed: z.union([z.const('slow'), z.const('medium'), z.const('fast')]),
+    }),
+  }), z.const(null)]).default(null),
   runningTagId: z.union([z.string(), z.const(null)]).default(null),
   splitRatio: z.number().min(SPLIT_RATIO_MIN).max(SPLIT_RATIO_MAX).default(DEFAULT_SETTINGS.splitRatio),
   customColors: z.array(z.string()).default([]),

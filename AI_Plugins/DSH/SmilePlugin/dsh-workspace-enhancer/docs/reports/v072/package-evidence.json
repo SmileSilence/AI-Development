@@ -1,0 +1,20 @@
+{
+  "name": "dsh-workspace-enhancer",
+  "version": "0.7.2",
+  "filename": "dsh-workspace-enhancer-0.7.2.tgz",
+  "sizeBytes": 78413,
+  "sha1": "1a795c448f6d61402bac8fd0b74171ed01a0d0d5",
+  "sha256": "c5bd998152132379e85542afae386ebca9bdaaf630c8917c34e443969ce2247f",
+  "installedProfile": "web",
+  "installedVersion": "0.7.2",
+  "checks": {
+    "typecheck": "passed",
+    "testFiles": 10,
+    "tests": 126,
+    "build": "passed",
+    "versionCheck": "passed",
+    "packDryRun": "passed",
+    "isolatedBrowser": "passed",
+    "dailyCompatibility": "passed"
+  }
+}

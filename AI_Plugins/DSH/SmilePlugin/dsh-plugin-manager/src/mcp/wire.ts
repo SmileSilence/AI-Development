@@ -1,5 +1,5 @@
 /**
- * dsh-plugin-manager —— mcpManager Typert wire manifest。
+ * smilexx-skill-mcp-manager —— mcpManager Typert wire manifest。
  */
 import { z } from "zod";
 import { mcpServerInputSchema } from "./model.js";
@@ -83,71 +83,71 @@ export const mcpTestResultSchema = z.object({
 });
 
 export const MCP_MANIFEST = {
-  package: "dsh-plugin-manager",
+  package: "smilexx-skill-mcp-manager",
   face: "host",
   schemas: [],
   invocations: [
     {
-      id: "dsh-plugin-manager#mcpManager/list",
+      id: "smilexx-skill-mcp-manager#mcpManager/list",
       service: "mcpManager",
       namespace: "mcpManager",
       method: "list",
       invocation: { kind: "direct" },
       parameters: [],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpListResult", schema: mcpListResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpListResult", schema: mcpListResultSchema }
     },
     {
-      id: "dsh-plugin-manager#mcpManager/save",
+      id: "smilexx-skill-mcp-manager#mcpManager/save",
       service: "mcpManager",
       namespace: "mcpManager",
       method: "save",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpSavePayload", schema: mcpSavePayloadSchema } }
+        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpSavePayload", schema: mcpSavePayloadSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpSaveResult", schema: mcpSaveResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpSaveResult", schema: mcpSaveResultSchema }
     },
     {
-      id: "dsh-plugin-manager#mcpManager/removeServer",
+      id: "smilexx-skill-mcp-manager#mcpManager/removeServer",
       service: "mcpManager",
       namespace: "mcpManager",
       method: "removeServer",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpRemovePayload", schema: mcpRemovePayloadSchema } }
+        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpRemovePayload", schema: mcpRemovePayloadSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpRemoveResult", schema: mcpRemoveResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpRemoveResult", schema: mcpRemoveResultSchema }
     },
     {
-      id: "dsh-plugin-manager#mcpManager/setEnabled",
+      id: "smilexx-skill-mcp-manager#mcpManager/setEnabled",
       service: "mcpManager",
       namespace: "mcpManager",
       method: "setEnabled",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpSetEnabledPayload", schema: mcpSetEnabledPayloadSchema } }
+        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpSetEnabledPayload", schema: mcpSetEnabledPayloadSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpSaveResult", schema: mcpSaveResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpSaveResult", schema: mcpSaveResultSchema }
     },
     {
-      id: "dsh-plugin-manager#mcpManager/test",
+      id: "smilexx-skill-mcp-manager#mcpManager/test",
       service: "mcpManager",
       namespace: "mcpManager",
       method: "test",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpTestPayload", schema: mcpTestPayloadSchema } }
+        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpTestPayload", schema: mcpTestPayloadSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpTestResult", schema: mcpTestResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpTestResult", schema: mcpTestResultSchema }
     },
     {
-      id: "dsh-plugin-manager#mcpManager/reload",
+      id: "smilexx-skill-mcp-manager#mcpManager/reload",
       service: "mcpManager",
       namespace: "mcpManager",
       method: "reload",
       invocation: { kind: "direct" },
       parameters: [],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#McpListResult", schema: mcpListResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#McpListResult", schema: mcpListResultSchema }
     }
   ],
   model: { services: [], events: [], objects: [] }

@@ -1,7 +1,8 @@
 /**
  * 常驻 Plan 偏好存储：浏览器同源 LocalStorage。
  *
- * 键名保持 dsh-input-enhancer:defaultPlanMode（与旧版一致），值为 'true'/'false'。
+ * 键名改为 smilexx-input-enhancer:defaultPlanMode（包改名）。读取时回退旧键
+ * dsh-input-enhancer:defaultPlanMode（v2.3.1 及更早的偏好不丢），写入时写新键并清理旧键。
  * - 读取失败（隐私模式/被禁用）默认关闭；
  * - 写入失败返回 false，由调用方保持当前页选择并提示未持久化；
  * - 写入成功后同步通知本标签页订阅者（storage 事件只跨标签页，本页收不到——
@@ -9,8 +10,10 @@
  * - 同源多个标签页仍通过 storage 事件同步偏好。
  */
 
-/** 偏好存储键名（历史兼容，勿改）。 */
-export const PREFERENCE_KEY = 'dsh-input-enhancer:defaultPlanMode'
+/** 偏好存储键名（包改名后使用新前缀；读取时回退旧键）。 */
+export const PREFERENCE_KEY = 'smilexx-input-enhancer:defaultPlanMode'
+/** 旧键名（v2.3.1 及更早版本），仅用于读取回退迁移。 */
+const LEGACY_PREFERENCE_KEY = 'dsh-input-enhancer:defaultPlanMode'
 
 /** 本标签页订阅者集合（写入成功后同步通知）。 */
 const localListeners = new Set()
@@ -18,7 +21,9 @@ const localListeners = new Set()
 /** 读取常驻偏好；读取失败或非法值默认关闭。 @returns {boolean} */
 export function readPreference() {
   try {
-    return window.localStorage.getItem(PREFERENCE_KEY) === 'true'
+    const ls = window.localStorage
+    const v = ls.getItem(PREFERENCE_KEY) ?? ls.getItem(LEGACY_PREFERENCE_KEY)
+    return v === 'true'
   } catch {
     return false
   }
@@ -31,7 +36,9 @@ export function readPreference() {
  */
 export function writePreference(value) {
   try {
-    window.localStorage.setItem(PREFERENCE_KEY, value ? 'true' : 'false')
+    const ls = window.localStorage
+    ls.setItem(PREFERENCE_KEY, value ? 'true' : 'false')
+    ls.removeItem(LEGACY_PREFERENCE_KEY)
   } catch {
     return false
   }

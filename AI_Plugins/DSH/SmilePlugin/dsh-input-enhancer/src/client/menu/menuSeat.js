@@ -28,7 +28,7 @@ export function registerMenuSeat(scope, owners = {}) {
     inject: (sessionId) => {
       const actx = sessions.scope(sessionId)
       if (actx === undefined) {
-        throw new Error(`dsh-input-enhancer: 会话 "${String(sessionId)}" 解析不到 scope`)
+        throw new Error(`smilexx-input-enhancer: 会话 "${String(sessionId)}" 解析不到 scope`)
       }
       const controller = inputTriggers.sessionOf(actx)
       return {

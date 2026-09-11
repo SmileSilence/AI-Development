@@ -11,7 +11,7 @@
 
 | 导出 | 类型 | 说明 |
 | --- | --- | --- |
-| `name` | string | `'dsh-input-enhancer'`（配置行 id） |
+| `name` | string | `'smilexx-input-enhancer'`（配置行 id） |
 | `description` | string | 中文描述 |
 | `apply(ctx)` | function | 空挂载（宿主端无业务） |
 | `default` | object | `{ name, description, apply }` |
@@ -26,7 +26,7 @@
 ### Plan 功能（src/client/plan/）
 - `planSeat.js`：`registerPlanSeat(scope)` → `conversation.input.plan`（single, priority -100）；
   注入面 `{ execute(line) }` 绑定 `remote.commands.execute(sessionId, line, [])`。
-- `preference.js`：`PREFERENCE_KEY = 'dsh-input-enhancer:defaultPlanMode'`；
+- `preference.js`：`PREFERENCE_KEY = 'smilexx-input-enhancer:defaultPlanMode'`；
   `readPreference()` / `writePreference(value)`（成功后**同步通知本标签页**订阅者，v2.1.1）/ `subscribePreferenceSync(listener)`（本地通知 + 跨标签页 storage 事件）。
 - `PlanButton.jsx`：组件 props = 标准套件 + `execute`；三态、右键菜单、自动应用、防竞态。
 - `planStyles.js`（并入 style.js）：`injectStylesOnce()` 幂等注入 `dsh-ie-*` 样式。
@@ -34,7 +34,7 @@
 ### 菜单功能（src/client/menu/）
 - `owners.js`（v2.1.0）：`DEFAULT_COMMAND_OWNERS`（内置默认表）、`noteCommandOwner(name, label)`（运行时捕获，先到先得）、
   `capturedOwners()`、`ownerOf(name, { configOwners, capturedOwners })`（L3>L1>L2 查找）、
-  `readConfiguredOwners(storage?)`（localStorage `dsh-input-enhancer:commandOwners`，非法回空表）、
+  `readConfiguredOwners(storage?)`（localStorage `smilexx-input-enhancer:commandOwners`，非法回空表）、
   `entryLabelOf(ctx)`（沿 fiber 父链解析 Loader entry 的 name/id，异常安全）。
 - `menuSeat.js`：`registerMenuSeat(scope, { ownerResolver })` → `conversation.input.overlay`
   （list, id 'slash-menu', order 0, priority -100）；注入面暴露 menu/headers/launcher 快照
@@ -57,6 +57,6 @@ react, react/jsx-runtime, react-dom, react-dom/client,
 
 ```yaml
 - insert:
-    - id: dsh-input-enhancer
-      name: dsh-input-enhancer
+    - id: smilexx-input-enhancer
+      name: smilexx-input-enhancer
 ```

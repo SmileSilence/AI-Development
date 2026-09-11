@@ -1,5 +1,5 @@
 /**
- * dsh-workspace-enhancer — 标签筛选（v0.5.0 飞书式 7 种操作符）单元测试。
+ * smilexx-workspace-enhancer — 标签筛选（v0.5.0 飞书式 7 种操作符）单元测试。
  * 覆盖：tagFilterMatches 单条件行（equals/notEquals/contains/notContains/
  * containsAll/isEmpty/isNotEmpty + 无标签 + 空标签）、migrateRuleCondition
  * 操作符切换状态迁移（单选截断 / 无值清空）、applyTagFilterToGroups 多规则
@@ -12,6 +12,7 @@ import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { TagDefinition, WorkspaceTaggerSettings } from '../src/client/tags/settings-types.ts'
 import {
   applyTagFilterToGroups,
+  applyTagFilterToSessions,
   deriveGroups,
   isNoValueCondition,
   isSingleSelectCondition,
@@ -24,6 +25,21 @@ import {
 } from '../src/client/tree.ts'
 
 const id = (s: string) => s as SessionId
+
+describe('平铺与搜索的分类筛选', () => {
+  it('沿用工作区和会话范围的 AND 规则，运行状态不覆盖分类', () => {
+    const rows = [{ id: 's1', running: true }, { id: 's2', running: false }]
+    const config = settings({ workspaceTags: { w: 'tag-1' }, sessionTags: { s1: 'tag-2' }, runningTagId: 'tag-3' })
+    const result = applyTagFilterToSessions(rows, [workspace('w', [id('s1'), id('s2')])], config,
+      filter([rule({ scope: 'workspace', tagIds: ['tag-1'] }), rule({ scope: 'session', tagIds: ['tag-2'] })]))
+    expect(result.map(row => row.id)).toEqual(['s1'])
+  })
+  it('未分组会话不套用工作区条件，禁用筛选保留全部', () => {
+    const rows = [{ id: 'loose' }]
+    expect(applyTagFilterToSessions(rows, [], settings(), filter([rule({ scope: 'workspace', tagIds: ['tag-1'] })]))).toEqual(rows)
+    expect(applyTagFilterToSessions(rows, [], settings(), filter([], false))).toEqual(rows)
+  })
+})
 
 function summary(over: Partial<SessionSummary> & { id: SessionId; updatedAt: number }): SessionSummary {
   return {
@@ -323,7 +339,7 @@ describe('applyTagFilterToGroups（范围过滤 + 多规则 AND）', () => {
     expect(groups[0].sessions.map(s => s.id)).toEqual([id('s2')])
   })
 
-  it('折叠工作区按运行标签匹配（运行覆盖规则）', () => {
+  it('折叠运行工作区仍按普通标签筛选，不按运行覆盖匹配', () => {
     const running = settings({ runningTagId: 'tag-3' })
     const groups = applyTagFilterToGroups(
       deriveGroups(listState([summary({ id: id('s1'), updatedAt: 100, running: true })], id('s1')),
@@ -331,8 +347,19 @@ describe('applyTagFilterToGroups（范围过滤 + 多规则 AND）', () => {
       running,
       filter([rule({ scope: 'all', tagIds: ['tag-3'] })]),
     )
-    // 折叠 + 运行 → 工作区生效标签为运行标签 tag-3 → 匹配保留；会话行也匹配（运行标签）。
-    expect(groups.map(g => g.key)).toEqual(['w-1'])
+    expect(groups).toEqual([])
+  })
+
+  it('运行中的会话仍能按原分类找到，筛选不改变悬停总数', () => {
+    const derived = deriveGroups(listState([
+      summary({ id: id('s1'), updatedAt: 100, running: true }),
+      summary({ id: id('s2'), updatedAt: 50 }),
+    ]), [workspace('w-1', [id('s1'), id('s2')])], [], new Map(), { expandedGroups: ['w-1'] })
+    const groups = applyTagFilterToGroups(derived, settings({
+      runningTagId: 'tag-3', sessionTags: { s1: 'tag-1', s2: 'tag-2' },
+    }), filter([rule({ scope: 'session', tagIds: ['tag-1'] })]))
+    expect(groups[0].sessions.map(s => s.id)).toEqual(['s1'])
+    expect(groups[0].totalSessionCount).toBe(2)
   })
 
   it('未启用或无规则 → 原样返回', () => {

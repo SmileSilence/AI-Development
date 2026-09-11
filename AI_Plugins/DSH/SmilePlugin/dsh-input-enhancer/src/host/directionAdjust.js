@@ -15,20 +15,20 @@ const resultSchema = {
 const codec = (typeSymbol, schema) => ({ mode: 'strict', typeSymbol, schema })
 
 export const DIRECTION_ADJUST_MANIFEST = {
-  package: 'dsh-input-enhancer',
+  package: 'smilexx-input-enhancer',
   face: 'host',
   schemas: [],
   invocations: [{
-    id: 'dsh-input-enhancer#directionAdjust/adjust',
+    id: 'smilexx-input-enhancer#directionAdjust/adjust',
     service: 'directionAdjust',
     namespace: 'directionAdjust',
     method: 'adjust',
     invocation: { kind: 'direct' },
     parameters: [
-      { name: 'sessionId', wire: 'sessionId', source: 'json', codec: codec('dsh-input-enhancer#SessionId', stringSchema) },
-      { name: 'itemId', wire: 'itemId', source: 'json', codec: codec('dsh-input-enhancer#MessageId', stringSchema) },
+      { name: 'sessionId', wire: 'sessionId', source: 'json', codec: codec('smilexx-input-enhancer#SessionId', stringSchema) },
+      { name: 'itemId', wire: 'itemId', source: 'json', codec: codec('smilexx-input-enhancer#MessageId', stringSchema) },
     ],
-    result: codec('dsh-input-enhancer#DirectionAdjustResult', resultSchema),
+    result: codec('smilexx-input-enhancer#DirectionAdjustResult', resultSchema),
   }],
   model: { services: [], events: [], objects: [] },
 }

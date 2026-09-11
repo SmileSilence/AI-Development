@@ -1,7 +1,7 @@
-# dsh-input-enhancer bundle patch
+# smilexx-input-enhancer bundle patch
 # Client plugin for input bar enhancement
 # Applied when this bundle appears in a profile's dsh.profile.bundles list
 
 - insert:
-    - id: dsh-input-enhancer
-      name: 'dsh-input-enhancer'
+    - id: smilexx-input-enhancer
+      name: 'smilexx-input-enhancer'

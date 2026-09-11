@@ -1,5 +1,5 @@
 /**
- * dsh-skill-mcp-panel —— MCP 行运行时状态读取（loader entry + 工具计数）。
+ * smilexx-skill-mcp-manager —— MCP 行运行时状态读取（loader entry + 工具计数）。
  */
 const FIBER_PHASE: Record<number, string | null> = {
   0: "pending",

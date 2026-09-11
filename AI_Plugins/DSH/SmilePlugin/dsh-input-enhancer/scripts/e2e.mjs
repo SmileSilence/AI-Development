@@ -1,8 +1,8 @@
 /**
- * dsh-input-enhancer 端到端验收驱动（真实浏览器 / CDP）：node scripts/e2e.mjs --url <URL>
+ * smilexx-input-enhancer 端到端验收驱动（真实浏览器 / CDP）：node scripts/e2e.mjs --url <URL>
  * 依赖本机安装的 headless Edge/Chrome（--remote-debugging-port）与 Node 24+ 原生 WebSocket。
  * 通过项：
- *  - E1 只有一个 Plan 按钮（dsh-input-enhancer 座）
+ *  - E1 只有一个 Plan 按钮（smilexx-input-enhancer 座）
  *  - E2 “+”按钮弹出分类菜单（模式/模型/权限/会话/其他），原生候选被完全遮蔽
  *  - E3 点击 Plan 切换 /plan 三态（开启/关闭）
  *  - E4 右键菜单「默认 Plan」写入 localStorage
@@ -100,7 +100,7 @@ const stateBefore = await evaluate("(() => { const t = [...document.querySelecto
 const persistClicked = await evaluate("(() => { const t = [...document.querySelectorAll('[role=menuitem]')].find((n) => (n.textContent || '').includes('\u9ed8\u8ba4 Plan')); if (!t) return false; ['mousedown','mouseup','click'].forEach((ty) => t.dispatchEvent(new MouseEvent(ty, { bubbles: true, cancelable: true, view: window }))); return true })()")
 await sleep(1200)
 await sleep(1500)
-const ls = await evaluate("(() => { const k = 'dsh-input-enhancer:defaultPlanMode'; return { value: localStorage.getItem(k), present: localStorage.getItem(k) !== null } })()")
+const ls = await evaluate("(() => { const k = 'smilexx-input-enhancer:defaultPlanMode'; return { value: localStorage.getItem(k), present: localStorage.getItem(k) !== null } })()")
 await pass('E4-persist-write', persistClicked && ls.present && (ls.value === 'true' || ls.value === 'false'))
 // E4b 方框勾选状态即时同步：重开右键菜单读取 data-checked（初始 false → 勾选后 true）
 await evaluate("(() => { const b = document.querySelector('[data-plan-button]'); if (!b) return null; b.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, view: window })); return true })()")
@@ -112,7 +112,7 @@ await evaluate("document.body.dispatchEvent(new PointerEvent('pointerdown', { bu
 await sleep(800)
 
 // E6 每次打开置顶：滚动到底→外部点击关闭→重开 → scrollTop 回 0、首分类“模式”
-await evaluate("localStorage.setItem('dsh-input-enhancer:defaultPlanMode', 'false'); true")
+await evaluate("localStorage.setItem('smilexx-input-enhancer:defaultPlanMode', 'false'); true")
 const plusBtn = "[...document.querySelectorAll('button')].find((b) => (b.getAttribute('aria-label') || '').includes('\u6307\u4ee4'))"
 await clickEl(plusBtn)
 await sleep(1500)

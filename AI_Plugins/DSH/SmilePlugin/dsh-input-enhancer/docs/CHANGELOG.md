@@ -1,5 +1,15 @@
 # 变更日志
 
+## 2.3.2（2026-09-12）
+
+### 变更
+- 插件包改名 `dsh-input-enhancer` → `smilexx-input-enhancer`：包名、cordis.patch.yml
+  insert id/name、宿主/客户端 name 与 effect label、Typert package/typeSymbol、
+  LocalStorage 键前缀（`smilexx-input-enhancer:`）统一。
+- **LocalStorage 键兼容**：`defaultPlanMode` 与 `commandOwners` 读取时回退旧键
+  `dsh-input-enhancer:*`（2.3.1 及更早的偏好/命令归属不丢），写入使用新键并清理旧键。
+- 重装后需强制刷新浏览器客户端包。
+
 ## 2.3.1（2026-09-08）
 
 ### 变更
@@ -19,7 +29,7 @@
   右侧文本位置固定（icon 槽两态恒渲染）；移除 √ 文字前缀。测试桩同步支持 icon 渲染。
 - e2e 新增 E4b：方框勾选状态即时同步断言（data-checked false → true）。
 - 仓库整理：清理旧构建产物 tgz；补 .gitignore（lib/、*.tgz）；建立 GitHub 仓库
-  SmileSilence/dsh-input-enhancer（私有）并推送。
+  SmileSilence/smilexx-input-enhancer（私有）并推送。
 
 ## 2.1.1（2026-09-03）
 
@@ -39,7 +49,7 @@
 ### 新增
 - **命令按来源插件分类**：「其他」中的插件命令不再堆在一起，按来源插件各成一个分类
   （如 dsh-rewind-plugin），排在固定分类之后、「其他」之前。三层归属：
-  L3 用户配置（localStorage `dsh-input-enhancer:commandOwners`，JSON 命令名→插件显示名）
+  L3 用户配置（localStorage `smilexx-input-enhancer:commandOwners`，JSON 命令名→插件显示名）
   > L1 运行时拦截（包装 `CommandUiRuntime.prototype.register/decorate`，从调用方 ctx 沿
   fiber 链解析 Loader entry 名；只观察不改行为，全守卫，缺失静默跳过）
   > L2 内置默认表（rewind/undo → dsh-rewind-plugin）；归属失败回退「其他」（空则隐藏）。
@@ -54,7 +64,7 @@
 - 右键「常驻 Plan 模式」菜单项文案携带状态：「（已开启，点击关闭）/（未开启，点击开启）」，
   保留原生选中勾样式。
 - 测试增至 79 项（新增 owners 归属解析、插件分类视图模型、打开置顶同步、开关状态文案）；
-  打包物 dsh-input-enhancer-2.1.0.tgz
+  打包物 smilexx-input-enhancer-2.1.0.tgz
   （lib/client.js sha256 C568EABB6DABEC4607FD34B66C47F884FEB83CFB850F826B48D4BD682F1DBA58）。
 
 ## 2.0.0（2026-09-03）
@@ -64,7 +74,7 @@
 - 分类命令菜单：仅在输入栏 `+` 打开时显示，固定分类（模式/模型/权限/会话/其他）；
   数据来自原生控制器候选快照，选择/钻取/执行走原生管道；上下方向键接管与 IME 放行。
 - Plan 按钮三态：关闭 / 单次开启 / 常驻开启；右键菜单“常驻 Plan 模式”；偏好键
-  `dsh-input-enhancer:defaultPlanMode`；自动应用（每会话一次、可撤销、不无限重试）。
+  `smilexx-input-enhancer:defaultPlanMode`；自动应用（每会话一次、可撤销、不无限重试）。
 - 原生菜单兼容分支（`/`、`@` 来源），提取自目标 DSH 提交的 MenuView 行为（MIT 版权保留）。
 - 客户端/宿主分层：宿主空 `apply` + 客户端 `window.__ModuleLoader__.load` 注册。
 - 测试体系：53 项 vitest 单元/组件测试（含宿主 `useSession` 选择器契约回归）；静态验收脚本 `scripts/check.mjs`；

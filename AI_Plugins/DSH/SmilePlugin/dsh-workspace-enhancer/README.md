@@ -1,6 +1,10 @@
-# dsh-workspace-enhancer
+# smilexx-workspace-enhancer
 
 DSH (DeepSeek Harness) right-side workspace enhancement plugin.
+
+## 0.7.4 使用帮助
+
+完整中文说明见 [README.zh.md](./README.zh.md)。批量模式支持点击单选、Ctrl 增减、Shift 连选、Ctrl+Shift 追加范围及列表内 Ctrl+A；快捷操作获得列表焦点时不显示额外边框。运行状态标签提供无动效、沿圆角边缘顺时针循环的边缘流光，以及无缝渐变流动；旧跑马灯配置自动迁移为边缘流光。工作区侧栏采用后备优先级注册，其他工作区插件可正常接管同一宿主插槽而不会触发重复声明冲突。
 
 ## Features
 
@@ -11,7 +15,7 @@ DSH (DeepSeek Harness) right-side workspace enhancement plugin.
 5. **Bulk archive sessions + bulk delete workspaces** (archive semantics: hidden from UI, data kept on disk)
 6. **Default session mode selector** — permission-picker-style dropdown above the title bar, choosing the default agent preset for new sessions
 7. **Workspace/session tags** — integrated dsh-workspace-tagger: tags, dual-color pills, row tinting, tag-management settings page (toggleable via `tags.enabled`)
-8. **Tag dialog dropdown + running-tag enhancements** — the tag dialog is now a single dropdown (the running-tag is excluded and configured only on the settings page); collapsed workspaces show "running-tag-name ×N"; running sessions and workspaces with running sessions auto-pin to the top
+8. **Tag dialog dropdown + running-tag enhancements** — regular tags remain assignable; running status has independent settings. Collapsed workspaces show "running-tag-name ×N"; running sessions and workspaces with running sessions auto-pin to the top
 9. **Tag filter (Feishu-style, 7 operators)** — a funnel button on the right of the workspace title bar (wide sidebar only) opens a filter panel: multiple condition rows combined with AND, each row picks its own scope (all / workspaces / sessions) and one of 7 Feishu-style operators — equals / not equals / contains (any) / not contains / contains all / is empty / is not empty — with tag selection (single for equals/not-equals, multi for the contains family, none for is-empty/is-not-empty), add / remove rows, clear all, and a live "N item(s) filtered" counter; the button highlights while a filter is active; the search input and action buttons stay in one tight group
 10. **Collapse / expand all workspaces (two-way)** — a small chevron button right beside the "Workspaces" title (wide sidebar, grouped view only): when not all collapsed it shows ▼ and collapses everything; once everything is collapsed it flips to ▶ and expands all instead (tooltip "Collapse all" / "Expand all"); hidden with no workspaces or in flat mode
 
@@ -19,13 +23,13 @@ DSH (DeepSeek Harness) right-side workspace enhancement plugin.
 
 ```bash
 # npm (after publish)
-dsh plugin --profile web add dsh-workspace-enhancer
+dsh plugin --profile web add smilexx-workspace-enhancer
 
 # offline tarball
-dsh plugin --profile web add ./dsh-workspace-enhancer-0.6.0.tgz
+dsh plugin --profile web add ./smilexx-workspace-enhancer-0.7.4.tgz
 
 # git (requires pnpm allowBuilds for the prepare script)
-dsh plugin --profile web add github:user/dsh-workspace-enhancer#<sha>
+dsh plugin --profile web add github:user/smilexx-workspace-enhancer#<sha>
 ```
 
 Global install: append the patch row to `$DSH_HOME/cordis.patch.yml` (shared by all profiles).
@@ -33,7 +37,7 @@ Global install: append the patch row to `$DSH_HOME/cordis.patch.yml` (shared by 
 ## Uninstall
 
 ```bash
-dsh plugin --profile <name> remove dsh-workspace-enhancer
+dsh plugin --profile <name> remove smilexx-workspace-enhancer
 ```
 
 Verify the four manifests (dependencies, dsh.profile.bundles, node_modules, patch layer) for leftovers.

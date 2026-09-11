@@ -1,0 +1,63 @@
+{
+  "host": "0.1.3-alpha.1-d347e70",
+  "port": 13072,
+  "packageVersion": "0.7.2",
+  "results": [
+    {
+      "name": "workspace-fallback-rendered",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "direct-add-entry-rendered",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bulk-list-keeps-keyboard-focus",
+      "ok": true,
+      "detail": {
+        "focused": true,
+        "tabIndex": 0,
+        "activeTag": "DIV",
+        "activeClass": "listArea",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "selected": 3
+      }
+    },
+    {
+      "name": "ctrl-shift-selection-works",
+      "ok": true,
+      "detail": {
+        "focused": true,
+        "tabIndex": 0,
+        "activeTag": "DIV",
+        "activeClass": "listArea",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "selected": 3,
+        "rowCount": 3
+      }
+    },
+    {
+      "name": "focused-list-has-no-white-outline",
+      "ok": true,
+      "detail": {
+        "focused": true,
+        "tabIndex": 0,
+        "activeTag": "DIV",
+        "activeClass": "listArea",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "selected": 3
+      }
+    },
+    {
+      "name": "no-page-errors",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "errors": []
+}

@@ -2,9 +2,10 @@
  * 命令归属解析：把菜单里的命令名映射到来源插件显示名（v2.1.0）。
  *
  * 三层来源（优先级从高到低）：
- * - L3 用户配置：localStorage `dsh-input-enhancer:commandOwners`（JSON 对象，
+ * - L3 用户配置：localStorage `smilexx-input-enhancer:commandOwners`（JSON 对象，
  *   命令名 → 插件显示名；客户端启动图不向 apply 传配置，故沿用与
- *   defaultPlanMode 相同的浏览器存储通道）；
+ *   defaultPlanMode 相同的浏览器存储通道）。读取时回退旧键
+ *   `dsh-input-enhancer:commandOwners`（v2.3.1 及更早的配置不丢）；
  * - L1 运行时捕获：包装 ui-commands 的 CommandUiRuntime.prototype.register/
  *   decorate，在调用瞬间从 traceable 代理的 ctx 沿 fiber 父链解析调用方
  *   Loader entry（options.name 即插件包名）；
@@ -19,8 +20,10 @@ export const DEFAULT_COMMAND_OWNERS = Object.freeze({
   undo: 'dsh-rewind-plugin',
 })
 
-/** L3 用户配置的 localStorage 键。 */
-export const OWNERS_STORAGE_KEY = 'dsh-input-enhancer:commandOwners'
+/** L3 用户配置的 localStorage 键（包改名后新前缀）。 */
+export const OWNERS_STORAGE_KEY = 'smilexx-input-enhancer:commandOwners'
+/** 旧键名（v2.3.1 及更早），仅用于读取回退迁移。 */
+const LEGACY_OWNERS_STORAGE_KEY = 'dsh-input-enhancer:commandOwners'
 
 /** L1 运行时捕获表（模块级单例，拦截器经 noteCommandOwner 写入）。 */
 const captured = new Map()
@@ -47,7 +50,7 @@ export function capturedOwners() {
  */
 export function readConfiguredOwners(storage = globalThis.localStorage) {
   try {
-    const raw = storage?.getItem(OWNERS_STORAGE_KEY)
+    const raw = storage?.getItem(OWNERS_STORAGE_KEY) ?? storage?.getItem(LEGACY_OWNERS_STORAGE_KEY)
     if (typeof raw !== 'string' || raw.length === 0) return {}
     const parsed = JSON.parse(raw)
     if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) return {}

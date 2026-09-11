@@ -1,5 +1,5 @@
 /**
- * dsh-skill-mcp-panel —— profile cordis.patch.yml 受管块编辑器。
+ * smilexx-skill-mcp-manager —— profile cordis.patch.yml 受管块编辑器。
  *
  * 面板只读写 begin/end 标记之间的 MCP 行，标记之外的内容逐字节保留。
  * 写入使用同目录临时文件 + rename，并通过锁文件避免 Web 宿主与 CLI 并发写。
@@ -76,7 +76,7 @@ export function extractManagedRows(raw: string): PatchRow[] {
   const begin = raw.indexOf(PANEL_MCP_BLOCK_BEGIN);
   const end = raw.indexOf(PANEL_MCP_BLOCK_END);
   if (begin < 0 && end < 0) return [];
-  if (begin < 0 || end < 0 || end < begin) throw new Error("cordis.patch.yml 中 dsh-skill-mcp-panel 受管块标记不完整（begin/end 必须成对）");
+  if (begin < 0 || end < 0 || end < begin) throw new Error("cordis.patch.yml 中 smilexx-skill-mcp-manager 受管块标记不完整（begin/end 必须成对）");
   const blockStart = raw.indexOf("\n", begin);
   if (blockStart < 0) throw new Error("cordis.patch.yml 受管块格式损坏");
   const blockText = raw.slice(blockStart + 1, end);
@@ -112,7 +112,7 @@ export function replaceManagedBlock(raw: string, rows: PatchRow[]): string {
   const block = generateManagedBlock(rows);
 
   if (begin >= 0 || end >= 0) {
-    if (begin < 0 || end < 0 || end < begin) throw new Error("cordis.patch.yml 中 dsh-skill-mcp-panel 受管块标记不完整（begin/end 必须成对）");
+    if (begin < 0 || end < 0 || end < begin) throw new Error("cordis.patch.yml 中 smilexx-skill-mcp-manager 受管块标记不完整（begin/end 必须成对）");
     const lineStart = raw.lastIndexOf("\n", begin - 1) + 1;
     const afterEnd = raw.indexOf("\n", end);
     const lineEnd = afterEnd < 0 ? raw.length : afterEnd + 1;

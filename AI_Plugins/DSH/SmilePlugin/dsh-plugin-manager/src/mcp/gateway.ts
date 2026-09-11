@@ -1,5 +1,5 @@
 /**
- * dsh-skill-mcp-panel —— MCP 宿主服务（mcpManager）。
+ * smilexx-skill-mcp-manager —— MCP 宿主服务（mcpManager）。
  */
 import { TypertRemoteService } from "@deepseek-ai/dsh-typert-protocol";
 import { fileURLToPath } from "node:url";

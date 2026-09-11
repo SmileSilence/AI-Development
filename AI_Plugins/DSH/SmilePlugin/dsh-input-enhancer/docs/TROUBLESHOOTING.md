@@ -12,8 +12,8 @@
   `useSession` / `useSessions` / `useWorkspaces` 必须传选择器。
 
 ### 分类菜单不出现，还是原生菜单
-- 插件未生效：确认 `dsh` 配置中 `dsh.profile.bundles` 含 `dsh-input-enhancer`，
-  且 `cordis.yml` 有 `dsh-input-enhancer` 配置行；重载页面后再试。
+- 插件未生效：确认 `dsh` 配置中 `dsh.profile.bundles` 含 `smilexx-input-enhancer`，
+  且 `cordis.yml` 有 `smilexx-input-enhancer` 配置行；重载页面后再试。
 - 确认在**输入栏 `+`** 打开（`/`、`@` 保持原生菜单是预期行为）。
 
 ### Plan 按钮未见或出现两个 Plan
@@ -21,7 +21,7 @@
   请移除冲突插件后重载。
 
 ### 自动开启 Plan 不生效
-- 检查偏好：右键 Plan → “常驻 Plan 模式”是否勾选（LocalStorage 键 `dsh-input-enhancer:defaultPlanMode`）。
+- 检查偏好：右键 Plan → “常驻 Plan 模式”是否勾选（LocalStorage 键 `smilexx-input-enhancer:defaultPlanMode`）。
 - 会话必须：已加载完成、未锁定、无 pending（原生投影 pending 期间跳过）、无在途请求。
 - 本停留内已通过任何入口退出过 Plan 时不再自动重开（设计如此）；切换会话后按偏好重新判定。
 
@@ -40,7 +40,7 @@
 - 运行时捕获只对**晚于本插件启用**的插件生效（更早注册的插件靠内置表/用户配置补齐）；
   插件重载（HMR）后会被捕获。
 - 手工指定：控制台执行
-  `localStorage.setItem('dsh-input-enhancer:commandOwners', JSON.stringify({ 命令名: '插件显示名' }))`
+  `localStorage.setItem('smilexx-input-enhancer:commandOwners', JSON.stringify({ 命令名: '插件显示名' }))`
   后刷新页面；删除该键即恢复默认。
 - 固定分类名（plan/goal/model/permission/compact/retry/clear/new/fork/export）永远优先于归属映射。
 
@@ -57,7 +57,7 @@
 1. 停止 Web 服务；
 2. 恢复 `<profile>/package.json` 备份（移除本插件依赖、重新加入 `dsh-plan-switch` 依赖与 bundles 条目）；
 3. 重启并重载页面，确认恢复单个原生 Plan；
-4. 备份副本位于 `_backups/dsh-input-enhancer-2.0.0/`。
+4. 备份副本位于 `_backups/smilexx-input-enhancer-2.0.0/`。
 
 ## 诊断命令
 

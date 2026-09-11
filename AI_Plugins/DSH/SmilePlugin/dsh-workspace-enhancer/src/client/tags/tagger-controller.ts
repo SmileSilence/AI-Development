@@ -9,7 +9,7 @@
  */
 import type { SettingsScope, SettingsScopeSnapshot } from '@deepseek-ai/dsh-client-ui-settings/client'
 import type { SettingsPathOpView } from '@deepseek-ai/dsh-api-remotes/client'
-import type { TagDefinition, WorkspaceTaggerSettings } from './settings-types.ts'
+import type { TagDefinition, WorkspaceTaggerSettings, RunningTagConfig } from './settings-types.ts'
 import {
   appendTagOps,
   assignmentOps,
@@ -39,6 +39,7 @@ export interface TaggerController {
   deleteTag(tagId: string): Promise<void>
   /** 设置/清除运行会话标签。 */
   setRunningTag(tagId: string | null): Promise<void>
+  saveRunningTag(config: RunningTagConfig): Promise<void>
   /** 设置双色胶囊前段占比（0.1–0.9）。 */
   setSplitRatio(ratio: number): Promise<void>
   /** 保存一个自定义预设颜色（去重、上限）。 */
@@ -89,6 +90,10 @@ export function createTaggerController(scope: SettingsScope<WorkspaceTaggerSetti
       await mutate(tagId === null
         ? [{ op: 'set', path: ['runningTagId'], value: null }]
         : [{ op: 'set', path: ['runningTagId'], value: tagId }])
+    },
+
+    async saveRunningTag(config) {
+      await mutate([{ op: 'set', path: ['runningTag'], value: config as unknown as import('./tag-store.ts').TagJsonValue }])
     },
 
     async setSplitRatio(ratio) {

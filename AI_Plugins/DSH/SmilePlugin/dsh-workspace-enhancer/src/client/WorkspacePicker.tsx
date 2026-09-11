@@ -2,21 +2,18 @@
  * Workspace pick/add flow. WorkspacePickFlow is the reusable core (menu +
  * path error dialog) consumed directly by WorkspaceBrowser (same package) and
  * wrapped by WorkspacePicker for the conversation empty-state slot
- * registration. Directory picking itself lives in the composed flow package's
- * slot occupant (see the contract module doc): this core only opens the flow,
- * adopts the picked path, and owns the error surface. Adding a workspace has
- * exactly one route — pick a host directory, new or existing — because the
- * occupant's own create-folder affordance already covers creating one.
+ * registration. It supports either a composed directory-flow occupant or the
+ * host's direct picker, then adopts the picked path and owns the error surface.
+ * Adding a workspace has exactly one route: pick a host directory, new or existing.
  */
 import type { ReactNode, RefObject } from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Button, IconFolderClose16, IconPlusOutline16, Menu, Modal, type MenuEntry,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type {
   WorkspaceId, WorkspaceSnapshot, WorkspaceView,
 } from '@deepseek-ai/dsh-api-workspace-controller/client'
-import type { SnapshotSelectorHook } from '@deepseek-ai/dsh-client-ui-slots'
 import type { DirectoryFlowOwnerProps, WorkspacePickerProps } from './contract/slots.ts'
 import css from './WorkspacePicker.module.css'
 
@@ -34,10 +31,12 @@ export interface WorkspacePickFlowProps {
   useWorkspaces: <S>(selector: (state: WorkspaceSnapshot) => S) => S
   /** Adopt a picked host directory as a real Workspace. */
   createWorkspace: (input: { path: string }) => Promise<WorkspaceView>
-  /** Bound occupancy selector hook for this surface's directory-flow hole (empty leaves the surface with no add action). */
-  useDirectoryFlow: SnapshotSelectorHook<boolean>
-  /** Render this surface's directory-flow hole with the owner conversation (the entry's narrowed renderSlot). */
-  renderDirectoryFlow: (owner: DirectoryFlowOwnerProps) => ReactNode
+  /** 当前表面是否具备目录选择能力。 */
+  flowAvailable: boolean
+  /** 渲染组合式目录流程；侧栏后备界面改用 directPick，避免争抢公共子插槽。 */
+  renderDirectoryFlow?: ((owner: DirectoryFlowOwnerProps) => ReactNode) | undefined
+  /** 直接调用宿主目录选择器；仅后备工作区界面使用。 */
+  directPick?: (() => Promise<string | null>) | undefined
   /** A real Workspace was picked or created. */
   onPick: (workspaceId: WorkspaceId) => void
   /** Close the popover (outside click / Escape / post-pick). */
@@ -61,8 +60,9 @@ export function WorkspacePickFlow({
   anchorRef,
   useWorkspaces,
   createWorkspace,
-  useDirectoryFlow,
+  flowAvailable,
   renderDirectoryFlow,
+  directPick,
   onPick,
   onClose,
   addOnly = false,
@@ -77,6 +77,7 @@ export function WorkspacePickFlow({
   )
   const [errorOpen, setErrorOpen] = useState(false)
   const [modalError, setModalError] = useState<string | null>(null)
+  const directPickRequestRef = useRef<Promise<string | null> | null>(null)
   const [flowOpen, setFlowOpen] = useState(false)
   const [pickingFolder, setPickingFolder] = useState(false)
   // One picking interaction at a time: while the flow is open (native chooser
@@ -89,7 +90,6 @@ export function WorkspacePickFlow({
   // entry simply is not there (the seam's documented no-flow default). The
   // framework-bound hook keeps occupancy live: flow plugins activate (and
   // HMR-reload) independently of this menu's renders.
-  const flowAvailable = useDirectoryFlow(occupied => occupied)
   // An occupant that unloads mid-interaction leaves nobody to cancel: an
   // open flow over an empty hole withdraws so the menu actions come back.
   // flowOpen is a dependency because the flow can also OPEN over an already
@@ -172,6 +172,27 @@ export function WorkspacePickFlow({
     },
   }
 
+  // 后备工作区界面直接使用宿主能力，不声明公共 directoryFlow 子插槽，
+  // 因而可与任何其它 sidebar.workspaces 提供者按优先级共存。
+  useEffect(() => {
+    if (!flowOpen) {
+      directPickRequestRef.current = null
+      return
+    }
+    if (directPick === undefined) return
+    let active = true
+    const request = directPickRequestRef.current ?? directPick()
+    directPickRequestRef.current = request
+    void request.then(path => {
+      if (!active) return
+      if (path === null) flowOwner.onCancel()
+      else flowOwner.onPicked(path)
+    }).catch(reason => {
+      if (active) flowOwner.onError(reason instanceof Error ? reason.message : String(reason))
+    })
+    return () => { active = false }
+  }, [directPick, flowOpen])
+
   const handleSelect = (id: string): void => {
     if (id === ADD_WORKSPACE) {
       openDirectoryFlow()
@@ -195,7 +216,7 @@ export function WorkspacePickFlow({
         getAnchorRect={getAnchorRect}
       />
       {open && !addIsTheOnlyEntry && !menuIsEmpty && workspaceSnapshot.phase === 'pending' && <div className={css.menuStatus} role="status">{t('picker.loading')}</div>}
-      {renderDirectoryFlow(flowOwner)}
+      {renderDirectoryFlow?.(flowOwner)}
       <Modal
         open={errorOpen}
         onClose={closeModal}
@@ -234,6 +255,7 @@ export function WorkspacePicker({
   renderSlot,
   t,
 }: WorkspacePickerProps) {
+  const flowAvailable = useDirectoryFlow(occupied => occupied)
   return (
     <WorkspacePickFlow
       t={t}
@@ -241,7 +263,7 @@ export function WorkspacePicker({
       anchorRef={anchorRef}
       useWorkspaces={useWorkspaces}
       createWorkspace={createWorkspace}
-      useDirectoryFlow={useDirectoryFlow}
+      flowAvailable={flowAvailable}
       renderDirectoryFlow={owner => renderSlot('conversation.hero.workspace.directoryFlow', owner)}
       selectedId={selectedId}
       onPick={onPick}

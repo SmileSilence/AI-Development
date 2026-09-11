@@ -1,0 +1,81 @@
+{
+  "packageVersion": "0.7.5",
+  "sourceVideo": "屏幕录制 2026-09-11 230533.mp4",
+  "results": [
+    {
+      "name": "edge-svg-fills-real-row",
+      "ok": true,
+      "detail": {
+        "attributes": {
+          "width": "100%",
+          "height": "100%"
+        },
+        "svg": {
+          "x": 453,
+          "y": 317,
+          "width": 558,
+          "height": 32
+        },
+        "layer": {
+          "x": 453,
+          "y": 317,
+          "width": 558,
+          "height": 32
+        },
+        "row": {
+          "x": 452,
+          "y": 316,
+          "width": 560,
+          "height": 34
+        },
+        "rect": {
+          "x": 454,
+          "y": 318,
+          "right": 1010,
+          "bottom": 348
+        },
+        "total": 1159.6990966796875,
+        "points": [
+          {
+            "x": 8,
+            "y": 1
+          },
+          {
+            "x": 297.9247741699219,
+            "y": 1
+          },
+          {
+            "x": 549.9999389648438,
+            "y": 31
+          },
+          {
+            "x": 260.0751953125,
+            "y": 31
+          }
+        ],
+        "animationName": "dshRunningPerimeter"
+      }
+    },
+    {
+      "name": "edge-keeps-wide-row-aspect",
+      "ok": true,
+      "detail": {
+        "x": 453,
+        "y": 317,
+        "width": 558,
+        "height": 32
+      }
+    },
+    {
+      "name": "edge-animation-active",
+      "ok": true,
+      "detail": "dshRunningPerimeter"
+    },
+    {
+      "name": "no-page-errors",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "errors": []
+}

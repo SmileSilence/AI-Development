@@ -1,9 +1,9 @@
 const fs = require("fs");
-const code = fs.readFileSync("D:\\Work\\AI-Development\\AI_Plugins\\DSH\\SmilePlugin\\dsh-plugin-manager\\\\lib\\\\client.js", "utf8");
+const code = fs.readFileSync("D:\\Work\\AI-Development\\AI_Plugins\\DSH\\SmilePlugin\\dsh-plugin-manager\\lib\\client.js", "utf8");
 const stubRequire = (id) => {
-  if (id === "react/jsx-runtime") return { jsx: () => null, jsxs: () => null };
+  if (id === "react/jsx-runtime") return { jsx: () => null, jsxs: () => null, Fragment: () => null };
   if (id === "react") return { useState: () => [null, () => {}], useEffect: () => {}, useMemo: (f) => f(), useCallback: (f) => f, useRef: () => ({ current: null }) };
-  if (id === "@deepseek-ai/dsh-client-ui-primitives") return {};
+  if (id === "@deepseek-ai/dsh-client-ui-primitives") return { Modal: () => null, IconSkillOutline16: () => null, IconChevronDownOutline14: () => null, IconSearchOutline16: () => null };
   throw new Error("unexpected require: " + id);
 };
 let specOut = null;
@@ -30,9 +30,13 @@ const ctx = {
   try { await result.apply(ctx, {}); } catch (e) { console.error("APPLY FAILED:", e && e.stack ? e.stack : e); process.exit(1); }
   console.log("apply() OK; registrations:");
   for (const { name, reg } of registrations) console.log("  ", name, "->", reg.meta.id, "order=" + reg.meta.order, "label=" + (typeof reg.meta.label === "function" ? reg.meta.label() : reg.meta.label), "locale=" + reg.meta.locale, "hasInject=" + (typeof reg.meta.inject === "function"), "hasComponent=" + (typeof reg.Component === "function"));
-  const pluginReg = registrations.find((r) => r.name === "settings.plugins.tab");
-  if (!pluginReg) { console.error("FAIL: settings.plugins.tab not registered"); process.exit(1); }
-  const face = pluginReg.reg.meta.inject();
-  console.log("plugin face methods:", Object.keys(face).join(","));
+  const skillReg = registrations.find((r) => r.name === "settings.plugins.tab" && r.reg.meta.id === "skills");
+  if (!skillReg) { console.error("FAIL: settings.plugins.tab[skills] not registered"); process.exit(1); }
+  const mcpReg = registrations.find((r) => r.name === "settings.plugins.tab" && r.reg.meta.id === "mcp");
+  if (!mcpReg) { console.error("FAIL: settings.plugins.tab[mcp] not registered"); process.exit(1); }
+  const legacySection = registrations.find((r) => r.name === "settings.section");
+  if (legacySection) { console.error("FAIL: legacy settings.section registration remains"); process.exit(1); }
+  const face = skillReg.reg.meta.inject();
+  console.log("skills face methods:", Object.keys(face).join(","));
   console.log("SMOKE PASS");
 })().catch((e) => { console.error("FAIL:", e); process.exit(1); });

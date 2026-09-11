@@ -1,4 +1,4 @@
-# dsh-input-enhancer 项目规格（2.3.1）
+# smilexx-input-enhancer 项目规格（2.3.1）
 
 ## 目标
 
@@ -27,7 +27,7 @@
 - 仅 `launcher === 'command'`（点击 `+` 打开）且菜单打开时显示分类视图。
 - 固定分类：模式（plan, goal）/ 模型（model）/ 权限（permission）/ 会话（compact, retry, clear, new, fork, export）。
 - 插件分类（v2.1.0）：未知分类命令按来源插件归组（owners.js 三层：localStorage
-  `dsh-input-enhancer:commandOwners` > 运行时拦截 CommandUiRuntime.register/decorate >
+  `smilexx-input-enhancer:commandOwners` > 运行时拦截 CommandUiRuntime.register/decorate >
   内置默认表 rewind/undo → dsh-rewind-plugin），按行首次出现序排在固定分类之后。
 - 其他：三层归属都未命中的命令兜底，保留原始相对顺序；空分类（含其他与插件分类）隐藏。
 - 空分类隐藏；组内按原生候选顺序；行携带 (source, originalIndex)。
@@ -45,7 +45,7 @@
 - 右键菜单：仅「默认 Plan」开关项（Menu，side=top, align=start, portal）。样式（v2.2.0）：icon 槽渲染
   14px 方框勾选（勾选态 √、未勾选空框），右侧文本位置固定；状态即时同步（v2.1.1：writePreference
   本地通知 + 打开菜单前从存储兜底刷新，杜绝状态与实际不一致）。
-- 偏好键 `dsh-input-enhancer:defaultPlanMode`；读写失败提示且保持页面选择；storage 事件跨标签页同步。
+- 偏好键 `smilexx-input-enhancer:defaultPlanMode`；读写失败提示且保持页面选择；storage 事件跨标签页同步。
 - 自动应用：常驻且会话加载完成（未锁定、无 pending、无在途请求）时，每会话最多一次；
   意图先入列再于微任务复核（可撤销尚未发送的自动任务）；任一入口退出 Plan 后本停留不重开；
   失败不无限重试，显示中文提示并允许手动重试。

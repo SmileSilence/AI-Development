@@ -18,7 +18,6 @@ import {
 } from './subagent-lineage.ts'
 // ——— 标签子系统（集成自 dsh-workspace-tagger）：生效标签规则 + 筛选（任务 B）———
 import type { WorkspaceTaggerSettings } from './tags/settings-types.ts'
-import { effectiveSessionTagId, effectiveWorkspaceTagId } from './tags/tag-store.ts'
 
 /** Group key for Sessions outside every Workspace. */
 export const UNGROUPED_KEY = ''
@@ -63,6 +62,8 @@ export interface GroupNode {
   label: string
   /** Total visible sessions in the group. */
   sessionCount: number
+  /** 筛选前未归档、非空主会话总数，供悬停卡使用。 */
+  totalSessionCount: number
   /** 组内运行中的可见会话数（任务 B 扩展1/3：折叠计数与工作区自动置顶）。 */
   runningSessionCount: number
   expanded: boolean
@@ -208,7 +209,10 @@ function groupByWorkspace(
   const accounted = new Set<SessionId>()
   for (const workspace of workspaces) {
     const members: SessionSummary[] = []
+    const included = new Set<SessionId>()
     for (const id of workspace.sessionIds) {
+      if (included.has(id)) continue
+      included.add(id)
       const summary = list.byId[id]
       if (summary === undefined) continue // account may lead the list pull; the row appears when the summary lands
       accounted.add(id)
@@ -314,7 +318,7 @@ export function deriveGroups(
   const groups: GroupNode[] = []
   for (const g of groupByWorkspace(list, workspaces, archived, view.ungroupedOrder)) {
     const expanded = expandedGroups.has(g.key)
-    const runningSessionCount = g.sessions.filter(s => s.running).length
+    const runningSessionCount = g.sessions.filter(s => !s.blank && s.running).length
     groups.push({
       key: g.key,
       workspaceId: g.workspaceId,
@@ -322,6 +326,7 @@ export function deriveGroups(
       createdAt: g.createdAt,
       label: g.label,
       sessionCount: g.sessions.length,
+      totalSessionCount: g.sessions.filter(s => !s.blank).length,
       runningSessionCount,
       expanded,
       containsCurrent: g.key === currentGroup,
@@ -602,20 +607,36 @@ export function applyTagFilterToGroups(
   const result: GroupNode[] = []
   for (const group of groups) {
     if (group.workspaceId !== undefined && workspaceRules.length > 0) {
-      const effective = effectiveWorkspaceTagId(
-        settings, group.workspaceId, group.expanded, group.runningSessionCount > 0,
-      )
+      const effective = settings.workspaceTags[group.workspaceId]
       if (!workspaceRules.every(rule => tagFilterMatches(rule, effective))) continue
     }
     const sessions = sessionRules.length === 0
       ? group.sessions
       : group.sessions.filter(session => {
-          const effective = effectiveSessionTagId(settings, session.id, session.running)
+          const effective = settings.sessionTags[session.id]
           return sessionRules.every(rule => tagFilterMatches(rule, effective))
         })
     result.push({ ...group, sessions })
   }
   return result
+}
+
+/** 平铺和搜索使用同一分类规则；所属工作区先匹配工作区条件，再匹配会话条件。 */
+export function applyTagFilterToSessions<T extends { id: string }>(
+  rows: readonly T[], workspaces: readonly WorkspaceView[], settings: WorkspaceTaggerSettings,
+  filter: TagFilter,
+): T[] {
+  if (isTagFilterInactive(filter)) return [...rows]
+  const owner = new Map<string, string>()
+  for (const workspace of workspaces) {
+    for (const id of workspace.sessionIds) if (!owner.has(id)) owner.set(id, workspace.workspaceId)
+  }
+  return rows.filter(row => filter.rules.every(rule => {
+    const workspaceId = owner.get(row.id)
+    if (rule.scope !== 'session' && workspaceId !== undefined
+      && !tagFilterMatches(rule, settings.workspaceTags[workspaceId])) return false
+    return rule.scope === 'workspace' || tagFilterMatches(rule, settings.sessionTags[row.id])
+  }))
 }
 
 /**

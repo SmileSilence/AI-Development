@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 /**
- * dsh-panel —— dsh-skill-mcp-panel 的统一命令行。
+ * dsh-panel —— smilexx-skill-mcp-manager 的统一命令行。
  *
  *   dsh-panel skill ...      技能管理（原 dsh-skill 全部能力）
  *   dsh-panel mcp ...        MCP 服务器管理（list / add / remove / enable / disable / test / update）
- *   dsh-panel update         检查并更新整个 dsh-skill-mcp-panel 插件
+ *   dsh-panel update         检查并更新整个 smilexx-skill-mcp-manager 插件
  */
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { runSkillCli } from "./cli-skill.js";
 import { runMcpCli } from "./cli-mcp.js";
-import { runPluginCli } from "./plugin/cli.js";
 import { currentVersion } from "./version.js";
 
 function usage() {
@@ -18,9 +17,8 @@ function usage() {
     "用法:",
     "  dsh-panel skill <command> [args]    技能管理（list / enable / disable / delete / add / scope / migrate / update）",
     "  dsh-panel mcp <command> [args]      MCP 服务器管理（list / add / remove / enable / disable / test / update）",
-    "  dsh-panel plugin <command> [args]   插件管理（list / install / enable / disable / remove / report / duplicates / anomalies）",
     "  dsh-panel update [--yes] [--profile <name>]",
-    "                                      检查并更新 dsh-skill-mcp-panel",
+    "                                      检查并更新 smilexx-skill-mcp-manager",
     "  dsh-panel --version                 显示当前版本",
     "",
     "技能命令帮助：dsh-panel skill --help",
@@ -49,9 +47,6 @@ export async function runPanelCli(args: string[]): Promise<number> {
   }
   if (command === "mcp") {
     return runMcpCli(rest);
-  }
-  if (command === "plugin") {
-    return runPluginCli(rest);
   }
   console.error('未知命令 "' + command + '"');
   usage();

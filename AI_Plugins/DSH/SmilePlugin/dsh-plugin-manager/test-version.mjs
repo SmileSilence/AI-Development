@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { compareVersions, fetchUpdateCheck } from "./lib/version.js";
+import { compareVersions, fetchUpdateCheck, REPO_SLUG } from "./lib/version.js";
 
 let passed = 0;
 function pass(name) {
@@ -7,61 +7,29 @@ function pass(name) {
   console.log("PASS  " + name);
 }
 
-async function withFetch(response, fn) {
-  const original = globalThis.fetch;
-  globalThis.fetch = async () => response;
-  try {
-    return await fn();
-  } finally {
-    globalThis.fetch = original;
-  }
+// 本地分发（file: tgz）：REPO_SLUG 为空，fetchUpdateCheck 短路返回「无更新」，
+// 不发起任何网络请求（fetch 不应被调用）。
+assert.equal(REPO_SLUG, "");
+let fetchCalled = false;
+const original = globalThis.fetch;
+globalThis.fetch = async () => {
+  fetchCalled = true;
+  throw new Error("fetch should not be called for local distribution");
+};
+let info;
+try {
+  info = await fetchUpdateCheck();
+} finally {
+  globalThis.fetch = original;
 }
+assert.equal(fetchCalled, false, "fetch must not be called for local distribution");
+assert.equal(info.latest, null);
+assert.equal(info.updateAvailable, false);
+assert.equal(info.rateLimited, false);
+assert.match(info.error ?? "", /本地安装包/);
+pass("local distribution short-circuits update check without network");
 
-// 1. successful latest release
-const ok = await withFetch({
-  status: 200,
-  ok: true,
-  body: { cancel: async () => {} },
-  json: async () => ({ tag_name: "v9.9.9" })
-}, () => fetchUpdateCheck());
-assert.deepEqual(ok, { latest: "9.9.9", updateAvailable: true, rateLimited: false });
-pass("GitHub API success parses tag_name and reports update");
-
-// 2. rate limited
-const limited = await withFetch({
-  status: 403,
-  ok: false,
-  body: { cancel: async () => {} },
-  json: async () => ({})
-}, () => fetchUpdateCheck());
-assert.equal(limited.rateLimited, true);
-assert.equal(limited.latest, null);
-assert.equal(limited.updateAvailable, false);
-pass("GitHub API 403 reports rateLimited instead of up-to-date");
-
-// 3. 404
-const missing = await withFetch({
-  status: 404,
-  ok: false,
-  body: { cancel: async () => {} },
-  json: async () => ({})
-}, () => fetchUpdateCheck());
-assert.equal(missing.latest, null);
-assert.match(missing.error ?? "", /404/);
-pass("GitHub API 404 reports error");
-
-// 4. malformed body
-const malformed = await withFetch({
-  status: 200,
-  ok: true,
-  body: { cancel: async () => {} },
-  json: async () => ({})
-}, () => fetchUpdateCheck());
-assert.equal(malformed.latest, null);
-assert.match(malformed.error ?? "", /tag_name/);
-pass("missing tag_name reports error");
-
-// 5. compareVersions
+// compareVersions
 assert.ok(compareVersions("2.0.0", "1.9.9") > 0);
 assert.ok(compareVersions("v2", "2") === 0);
 assert.ok(compareVersions("2.0", "2.0.0") === 0);

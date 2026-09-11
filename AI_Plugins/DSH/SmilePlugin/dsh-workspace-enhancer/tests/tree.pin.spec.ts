@@ -46,6 +46,22 @@ function workspace(workspaceId: string, path: string, sessionIds: SessionId[]): 
 }
 
 describe('deriveGroups 置顶工作区排前', () => {
+  it('悬停总数去重且排除空白、归档、子代理和缺失会话，不受折叠影响', () => {
+    const sessions = [
+      summary({ id: id('main'), updatedAt: 100, running: true }),
+      summary({ id: id('blank'), updatedAt: 90, blank: true }),
+      summary({ id: id('archive'), updatedAt: 80, running: true }),
+      summary({ id: id('child'), updatedAt: 70, origin: 'subagent' }),
+    ]
+    const workspaces = [workspace('w', 'C:/w', [id('main'), id('main'), id('blank'), id('archive'), id('child'), id('missing')]), workspace('empty', 'C:/empty', [])]
+    for (const expandedGroups of [[], ['w']]) {
+      const groups = deriveGroups(listState(sessions, id('blank')), workspaces, [id('archive')], new Map(), { expandedGroups })
+      expect(groups.find(g => g.key === 'w')?.totalSessionCount).toBe(1)
+      expect(groups.find(g => g.key === 'w')?.runningSessionCount).toBe(1)
+      expect(groups.find(g => g.key === 'empty')?.totalSessionCount).toBe(0)
+    }
+  })
+
   it('置顶工作区排在最前，且组内相对顺序保持稳定', () => {
     const sessions = [
       summary({ id: id('s1'), updatedAt: 300 }),

@@ -1,18 +1,18 @@
 (window as any).__ModuleLoader__.load({
-	id: "dsh-plugin-manager",
+	id: "smilexx-skill-mcp-manager",
 	factory: (require: any) => {
 		const bundleModule = { exports: {} as any };
 		Object.defineProperty(bundleModule.exports, Symbol.toStringTag, { value: "Module" });
-		// 束契约：本文件由宿主以 /plugins/dsh-plugin-manager/client.js 提供，
+		// 束契约：本文件由宿主以 /plugins/smilexx-skill-mcp-manager/client.js 提供，
 		// 只能 require 外壳种子词（react、jsx-runtime、primitives）。
 		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
-		// ── LocalStorage 持久化（dsh-plugin-manager 命名空间）──────────────
+		// ── LocalStorage 持久化（smilexx-skill-mcp-manager 命名空间）──────────────
 		// 合规项：插件状态用 dsh-<plugin>:<key> 前缀读写；storage 事件只在
 		// 跨标签页触发，因此同一标签页内用 focus 重读兜底（打开面板前刷新）。
-		const LS_PREFIX = "dsh-plugin-manager:";
+		const LS_PREFIX = "smilexx-skill-mcp-manager:";
 		const lsRead = (key, fallback) => {
 			try {
 				const raw = window.localStorage.getItem(LS_PREFIX + key);
@@ -95,26 +95,23 @@
 		// 页面骨架：section / 状态文案 / 搜索框 / 标题行
 		const cssChrome = ".SKV_section{position:relative;width:100%;max-width:760px;color:var(--dsw-alias-label-primary);flex-direction:column;gap:14px;display:flex}.SKV_status{color:var(--dsw-alias-label-tertiary);font-size:13px;line-height:20px;margin:0}.SKV_failure{color:var(--dsw-alias-state-error-primary);align-items:center;gap:10px;display:flex}.SKV_failure p{margin:0}.SKV_failure button{border:1px solid var(--dsw-alias-border-l2);color:var(--dsw-alias-label-primary);font:inherit;cursor:pointer;background:0 0;border-radius:6px;padding:4px 10px}.SKV_catalog{flex-direction:column;gap:12px;display:flex}.SKV_catalogHeading{align-items:baseline;gap:7px;padding:0 2px;display:flex}.SKV_catalogHeading h3{font-size:13px;font-weight:600;line-height:20px;margin:0}.SKV_catalogHeading span{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums;font-size:12px;line-height:18px}.SKV_searchBox{position:relative;width:100%}.SKV_searchIcon{color:var(--dsw-alias-label-tertiary);position:absolute;left:12px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;pointer-events:none}.SKV_searchField::placeholder{color:var(--dsw-alias-label-tertiary)}.SKV_searchField:focus-visible{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent)}.SKV_searchField{box-sizing:border-box;width:100%;height:36px;border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:13px;line-height:34px;outline:0;padding:0 12px 0 38px}.SKV_iconButton{box-sizing:border-box;width:28px;height:28px;color:var(--dsw-alias-label-primary);font:inherit;cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;padding:0;display:inline-flex;align-items:center;justify-content:center}.SKV_iconButton:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.SKV_iconButton:disabled{cursor:default;opacity:.6}.SKV_notice{border-radius:8px;align-items:center;gap:10px;padding:8px 12px;display:flex;border:1px solid transparent}.SKV_notice[data-kind=error]{border-color:color-mix(in srgb, var(--dsw-alias-state-error-primary) 40%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 8%, transparent)}.SKV_notice[data-kind=error] .SKV_noticeText{color:var(--dsw-alias-state-error-primary)}.SKV_notice[data-kind=info]{border-color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 35%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 8%, transparent)}.SKV_notice[data-kind=info] .SKV_noticeText{color:var(--dsw-alias-state-business-primary)}.SKV_noticeText{font-size:12px;line-height:18px;flex:1;min-width:0}.SKV_noticeButton{font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;padding:2px 10px;font-size:12px;line-height:18px;flex:none}.SKV_noticeButton:hover{background:var(--dsw-alias-interactive-bg-hover-solid)}.SKV_deleteButton[data-confirm=true]{color:var(--dsw-alias-state-error-primary);border-color:color-mix(in srgb, var(--dsw-alias-state-error-primary) 50%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 8%, transparent)}";
 		// 卡片列表：卡片、状态标签、内容框、开关与删除操作
-		const cssCards = ".SKV_cards{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:10px;margin:0;padding:0;list-style:none;display:grid}.SKV_card{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:10px;min-width:0;overflow:hidden}.SKV_card[data-open=true]{border-color:var(--dsw-alias-border-l1);box-shadow:var(--dsw-shadow-lv1)}.SKV_cardContent{width:100%;align-items:center;gap:8px;font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;border:none;padding:10px 12px;display:flex;text-align:left}.SKV_cardLeading{width:16px;height:16px;color:var(--dsw-alias-label-tertiary);flex:none;justify-content:center;align-items:center;display:inline-flex}.SKV_cardTitle{min-width:0;flex:1;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;font-size:13px;font-weight:500;line-height:20px;transition:color .2s ease}.SKV_cardTitle[data-disabled=true]{color:var(--dsw-alias-label-tertiary)}.SKV_cardTrailing{color:var(--dsw-alias-label-tertiary);flex:none;align-items:center;gap:7px;display:inline-flex}.SKV_statusDot{background:var(--dsw-alias-label-tertiary);border-radius:999px;flex:none;width:7px;height:7px;display:inline-block;transition:background-color .2s ease}.SKV_statusDot[data-enabled=true]{background:var(--dsw-alias-state-success-primary)}.SKV_configTag{background:var(--dsw-alias-bg-layer-1);min-height:20px;color:var(--dsw-alias-label-secondary);white-space:nowrap;border-radius:5px;align-items:center;padding:1px 6px;font-size:11px;line-height:16px;display:inline-flex;transition:background-color .2s ease,color .2s ease}.SKV_configTag[data-enabled=true]{background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 10%, transparent);color:var(--dsw-alias-state-success-primary)}.SKV_configTag[data-enabled=false]{color:var(--dsw-alias-label-tertiary)}.SKV_chevron{color:var(--dsw-alias-label-tertiary);flex:none;transition:transform .15s}.SKV_card[data-open=true] .SKV_chevron{transform:rotate(180deg)}.SKV_cardDetails{border-top:1px solid var(--dsw-alias-border-l2);flex-direction:column;gap:8px;padding:10px 12px;display:flex}.SKV_meta{color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px;margin:0}.SKV_metaProvider{color:var(--dsw-alias-label-tertiary);margin-left:6px}.SKV_contentBox{border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-markdown-code-block);border-radius:8px;max-height:213px;overflow:auto}.SKV_content{margin:0;padding:10px 12px;white-space:pre-wrap;word-break:break-word;color:var(--dsw-alias-label-primary);font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px;line-height:18px}.SKV_failureText{color:var(--dsw-alias-state-error-primary);font-size:12px;line-height:18px;margin:0}.SKV_cardActions{border-top:1px solid var(--dsw-alias-border-l2);align-items:center;gap:8px;padding-top:10px;display:flex}.SKV_switchRow{align-items:center;gap:8px;display:inline-flex}.SKV_switch{box-sizing:border-box;width:36px;height:20px;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:999px;cursor:pointer;padding:0;position:relative;flex:none;transition:background-color .2s ease,border-color .2s ease}.SKV_switch:disabled{cursor:default;opacity:.6}.SKV_switch[data-on=true]{border-color:transparent;background:var(--dsw-alias-state-business-primary)}.SKV_switchThumb{box-sizing:border-box;width:14px;height:14px;border-radius:50%;background:var(--dsw-alias-label-secondary);position:absolute;top:2px;left:2px;transition:transform .22s cubic-bezier(.34,1.56,.64,1),background-color .18s ease,width .15s ease}.SKV_switch[data-on=true] .SKV_switchThumb{transform:translateX(18px);background:var(--dsw-alias-label-primary-foreground)}.SKV_switch:active:not(:disabled) .SKV_switchThumb{width:18px}.SKV_switch[data-on=true]:active:not(:disabled) .SKV_switchThumb{transform:translateX(14px)}.SKV_switchText{color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px}.SKV_opError{color:var(--dsw-alias-state-error-primary);font-size:12px;line-height:18px}.SKV_deleteButton{box-sizing:border-box;height:28px;color:var(--dsw-alias-state-error-primary);font:inherit;cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;padding:0 12px;font-size:12px;line-height:26px;margin-left:auto}.SKV_deleteButton:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.SKV_deleteButton:disabled{cursor:default;opacity:.6}";
+		const cssCards = ".SKV_cards{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none}.SKV_row{display:flex;min-width:0;border-radius:8px}.SKV_row:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_rowContent{width:100%;min-width:0;align-items:center;gap:10px;font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;border:none;padding:7px 10px;display:flex;text-align:left;border-radius:8px}.SKV_rowContent:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:-2px}.SKV_rowIcon{box-sizing:border-box;width:28px;height:28px;color:var(--dsw-alias-label-secondary);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;flex:none;justify-content:center;align-items:center;display:inline-flex}.SKV_rowBody{min-width:0;flex:1;flex-direction:column;gap:1px;display:flex}.SKV_rowTitle{min-width:0;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;font-size:13px;font-weight:600;line-height:20px;color:var(--dsw-alias-label-primary);transition:color .2s ease}.SKV_rowTitle[data-disabled=true]{color:var(--dsw-alias-label-tertiary)}.SKV_rowDesc{min-width:0;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary)}.SKV_rowTrailing{color:var(--dsw-alias-label-tertiary);flex:none;align-items:center;gap:10px;display:inline-flex}.SKV_switchRow{align-items:center;gap:8px;display:inline-flex}.SKV_switch{box-sizing:border-box;width:36px;height:20px;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:999px;cursor:pointer;padding:0;position:relative;flex:none;transition:background-color .2s ease,border-color .2s ease}.SKV_switch:disabled{cursor:default;opacity:.6}.SKV_switch[data-on=true]{border-color:transparent;background:var(--dsw-alias-state-business-primary)}.SKV_switchThumb{box-sizing:border-box;width:14px;height:14px;border-radius:50%;background:var(--dsw-alias-label-secondary);position:absolute;top:2px;left:2px;transition:transform .22s cubic-bezier(.34,1.56,.64,1),background-color .18s ease,width .15s ease}.SKV_switch[data-on=true] .SKV_switchThumb{transform:translateX(18px);background:var(--dsw-alias-label-primary-foreground)}.SKV_switch:active:not(:disabled) .SKV_switchThumb{width:18px}.SKV_switch[data-on=true]:active:not(:disabled) .SKV_switchThumb{transform:translateX(14px)}.SKV_switchText{color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px}.SKV_opError{color:var(--dsw-alias-state-error-primary);font-size:12px;line-height:18px}";
 		// 添加技能：按钮组与状态行
 		const cssAdd = ".SKV_addActions{margin-left:auto;align-items:center;gap:6px;display:inline-flex;position:relative}.SKV_addStatus{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;margin:0}.SKV_fileInput{display:none}.SKV_addTarget{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis;flex:none}.SKV_dropHint{position:absolute;inset:0;z-index:5;pointer-events:none;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--dsw-alias-bg-layer-3) 90%, transparent);border:1px dashed var(--dsw-alias-state-business-primary);border-radius:12px;color:var(--dsw-alias-state-business-primary);font-size:13px;line-height:20px}.SKV_addMenuWrap{position:relative;display:inline-flex}.SKV_addMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;background:var(--dsw-alias-bg-layer-3);border:1px solid var(--dsw-alias-border-l1);border-radius:10px;box-shadow:var(--dsw-shadow-lv2);padding:10px;display:flex;flex-direction:column;gap:8px;min-width:220px}.SKV_addMenuTitle{font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary);margin:0}.SKV_addMenuButton{font:inherit;font-size:13px;line-height:20px;color:var(--dsw-alias-label-primary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:7px 10px;text-align:left;display:flex;align-items:center;gap:8px}.SKV_addMenuButton:hover{background:var(--dsw-alias-interactive-bg-hover)}";
 		// 作用域：横栏、迁移按钮与迁移对话框样式
 		const cssScope = ".SKV_scopeOverlay{position:fixed;inset:0;background:color-mix(in srgb, rgba(0,0,0,.45) 55%, transparent);align-items:center;justify-content:center;display:flex;z-index:1000}.SKV_scopeBox{background:var(--dsw-alias-bg-layer-3);border:1px solid var(--dsw-alias-border-l1);border-radius:12px;box-shadow:var(--dsw-shadow-lv2);width:440px;max-width:calc(100vw - 48px);max-height:80vh;flex-direction:column;padding:16px;gap:12px;display:flex}.SKV_scopeBox h4{font-size:14px;font-weight:600;line-height:20px;margin:0}.SKV_scopeOptions{flex-direction:column;gap:8px;display:flex}.SKV_scopeOption{font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:8px 12px;font-size:13px;line-height:20px;text-align:left;display:flex;align-items:center;gap:8px}.SKV_scopeOption[data-active=true]{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 1px color-mix(in srgb, var(--dsw-alias-state-business-primary) 30%, transparent)}.SKV_scopeOption input{margin:0;accent-color:var(--dsw-alias-state-business-primary)}.SKV_wsPath{color:var(--dsw-alias-label-tertiary);min-width:0;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.SKV_scopeActions{align-items:center;justify-content:flex-end;gap:8px;display:flex}.SKV_scopeAction{font:inherit;cursor:pointer;border-radius:6px;padding:5px 14px;font-size:13px;line-height:20px}.SKV_scopeCancel{background:0 0;border:1px solid var(--dsw-alias-border-l2);color:var(--dsw-alias-label-primary)}.SKV_scopeConfirm{background:var(--dsw-alias-state-business-primary);border:1px solid transparent;color:var(--dsw-alias-state-business-on-primary, #fff)}.SKV_scopeConfirm:disabled{opacity:.6;cursor:default}";
-		// 设置页导航图标（外壳硬编码图标，无扩展点：打标记 + CSS 蒙版绘制）
-		const cssIcon = "button[data-skills-nav]>svg{display:none!important}button[data-skills-nav] svg{display:none!important}button[data-skills-nav] *::before{display:none!important}button[data-skills-nav] *::after{display:none!important}button[data-skills-nav] *{background-image:none!important}button[data-skills-nav]::before{content:\"\";width:16px;height:16px;flex:none;display:inline-block;background-color:currentColor;-webkit-mask:url(data:image/png;base64,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) center/16px 16px no-repeat;mask:url(data:image/png;base64,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) center/16px 16px no-repeat}body[data-ds-dark-theme] .SKV_switchThumb{background:#fff}body[data-ds-dark-theme] .SKV_switch[data-on=true] .SKV_switchThumb{background:#fff}";
-const cssIconMcp = "button[data-mcp-nav]>svg{display:none!important}button[data-mcp-nav] svg{display:none!important}button[data-mcp-nav] *::before{display:none!important}button[data-mcp-nav] *::after{display:none!important}button[data-mcp-nav] *{background-image:none!important}button[data-mcp-nav]::before{content:\"\";width:16px;height:16px;flex:none;display:inline-block;background-color:currentColor;-webkit-mask:url(data:image/png;base64,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) center/16px 16px no-repeat;mask:url(data:image/png;base64,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) center/16px 16px no-repeat}";
 		const cssMigrate = ".SKV_scopeBar{gap:6px;padding:2px;max-width:100%;overflow-x:auto;scrollbar-width:thin;display:flex;align-items:center}.SKV_scopeChip{font:inherit;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:3px 12px;font-size:12px;line-height:18px;white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:6px}.SKV_scopeChip:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_scopeChip[data-active=true]{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 12%, transparent);border-color:var(--dsw-alias-state-business-primary);color:var(--dsw-alias-state-business-primary)}.SKV_scopeChipCount{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums;font-size:11px;line-height:16px}.SKV_scopeChip[data-active=true] .SKV_scopeChipCount{color:var(--dsw-alias-state-business-primary)}.SKV_migrateSection{flex-direction:column;gap:6px;display:flex}.SKV_migrateLabel{color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px;margin:0}.SKV_migrateFromValue{color:var(--dsw-alias-label-primary);font-size:13px;line-height:20px;margin:0;word-break:break-all}.SKV_migrateList{border:1px solid var(--dsw-alias-border-l2);border-radius:8px;max-height:220px;overflow-y:auto;margin:0;padding:4px;list-style:none;display:flex;flex-direction:column;gap:2px}.SKV_migrateItem{font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;border:none;border-radius:6px;padding:6px 10px;font-size:13px;line-height:20px;text-align:left;display:flex;align-items:center;gap:8px}.SKV_migrateItem:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_migrateItem input{margin:0;accent-color:var(--dsw-alias-state-business-primary)}.SKV_migrateItemName{flex:1;min-width:0;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.SKV_migrateItemState{color:var(--dsw-alias-label-tertiary);font-size:11px;flex:none}.SKV_migrateSelectAll{font:inherit;color:var(--dsw-alias-state-business-primary);cursor:pointer;background:0 0;border:none;padding:0;font-size:12px;line-height:18px}.SKV_migrateHint{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;margin:0}.SKV_migrateResult{border-radius:8px;padding:8px 12px;font-size:12px;line-height:18px;margin:0}.SKV_migrateResult[data-ok=true]{background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 10%, transparent);color:var(--dsw-alias-state-success-primary)}.SKV_migrateResult[data-ok=false]{background:color-mix(in srgb, var(--dsw-alias-state-warning-primary) 10%, transparent);color:var(--dsw-alias-state-warning-primary)}.SKV_migrateResultList{margin:4px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;max-height:120px;overflow-y:auto}.SKV_scopeChip{max-width:320px}.SKV_scopeChipLabel{max-width:220px;min-width:0;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;display:inline-block}.SKV_wsPath{min-width:0;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;display:block}.SKV_migrateOptionLabel{min-width:0;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.SKV_scopeOptions{max-height:132px;overflow-y:auto;scrollbar-width:thin}.SKV_migrateList{max-height:148px}.SKV_scopeBox{overflow-y:auto;scrollbar-width:thin}.SKV_select{width:100%;box-sizing:border-box;height:32px;font:inherit;font-size:13px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:0 8px}.SKV_select:focus-visible{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent);outline:none}.SKV_groupBody{display:flex;gap:16px;min-height:0}.SKV_groupSide{width:150px;flex:none;display:flex;flex-direction:column;gap:2px;min-width:0}.SKV_groupNewBtn{display:flex;align-items:center;gap:6px;justify-content:flex-start;font:inherit;font-size:13px;color:var(--dsw-alias-state-business-primary);cursor:pointer;background:0 0;border:1px dashed var(--dsw-alias-border-l1);border-radius:8px;padding:7px 10px;margin-bottom:6px;text-align:left}.SKV_groupNewBtn:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_groupSideLabel{font-size:12px;color:var(--dsw-alias-label-tertiary);padding:0 10px;margin-bottom:2px}.SKV_groupSideItem{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font:inherit;font-size:13px;cursor:pointer;color:var(--dsw-alias-label-secondary);background:0 0;border:none;text-align:left;min-width:0}.SKV_groupSideItem:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_groupSideItem[data-active=true]{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 12%, transparent);color:var(--dsw-alias-state-business-primary);font-weight:500}.SKV_groupMain{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}.SKV_field{display:flex;flex-direction:column;gap:6px}.SKV_fieldLabel{font-size:12px;color:var(--dsw-alias-label-secondary);margin:0}.SKV_skillListBox{border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:0 10px;max-height:220px;overflow-y:auto}.SKV_skillRow{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:0.5px solid var(--dsw-alias-border-l2);font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;min-width:0}.SKV_skillRow:last-child{border-bottom:none}.SKV_skillRow:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_skillRow input{margin:0;accent-color:var(--dsw-alias-state-business-primary);flex:none}.SKV_skillName{flex:1;min-width:0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.SKV_skillBadge{font-size:12px;padding:2px 8px;border-radius:5px;white-space:nowrap;flex:none}.SKV_skillBadge[data-on=true]{background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 12%, transparent);color:var(--dsw-alias-state-success-primary)}.SKV_skillBadge[data-on=false]{background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-tertiary)}.SKV_countRow{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.SKV_countText{font-size:12px;color:var(--dsw-alias-label-secondary);margin:0}.SKV_dialogFooter{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--dsw-alias-border-l2)}.SKV_dangerBtn{font:inherit;font-size:13px;color:var(--dsw-alias-state-error-primary);cursor:pointer;background:0 0;border:1px solid transparent;border-radius:6px;padding:5px 10px}.SKV_dangerBtn:hover:not(:disabled){background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent)}.SKV_dangerBtn:disabled{cursor:default;opacity:.6}.SKV_textInput{width:100%;box-sizing:border-box;height:32px;font:inherit;font-size:13px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;outline:none;padding:0 10px}.SKV_textInput::placeholder{color:var(--dsw-alias-label-tertiary)}.SKV_textInput:focus-visible{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent)}.SKV_scopeBox{width:640px}.SKV_groupSide{width:170px}.SKV_groupSideItem{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.SKV_select{appearance:none;-webkit-appearance:none;width:100%;box-sizing:border-box;height:32px;font:inherit;font-size:13px;color:var(--dsw-alias-label-primary);background-color:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:0 30px 0 10px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 16 16%27 fill=%27none%27%3E%3Cpath d=%27M4 6l4 4 4-4%27 stroke=%27%23888%27 stroke-width=%271.6%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 10px center}.SKV_select:hover{border-color:var(--dsw-alias-border-l1)}.SKV_targetBox{border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:4px;max-height:152px;overflow-y:auto;scrollbar-width:thin}.SKV_targetItem{display:flex;align-items:center;gap:8px;padding:7px 6px;font:inherit;font-size:13px;color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;border:none;border-bottom:0.5px solid var(--dsw-alias-border-l2);width:100%;text-align:left;min-width:0}.SKV_targetItem:last-child{border-bottom:none}.SKV_targetItem:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_targetItem[data-active=true]{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 8%, transparent)}.SKV_targetItem input{margin:0;accent-color:var(--dsw-alias-state-business-primary);flex:none}.SKV_skillListBox{max-height:180px};.SKV_groupBar{gap:0;padding:0 2px;max-width:100%;overflow-x:auto;scrollbar-width:thin;display:flex;align-items:center}.SKV_groupItem{font:inherit;color:var(--dsw-alias-label-secondary);cursor:pointer;background:0 0;border:none;padding:2px 10px;font-size:12px;line-height:18px;white-space:nowrap;flex:none}.SKV_groupItem:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover);border-radius:5px}.SKV_groupItem[data-active=true]{color:var(--dsw-alias-state-business-primary);font-weight:500}.SKV_groupSep{color:var(--dsw-alias-border-l1);flex:none;user-select:none;font-size:12px;line-height:18px;padding:0 1px}";
 const cssGroupDelete = ".SKV_groupItemWrap{position:relative;display:inline-flex;align-items:center}.SKV_groupSideItemWrap{position:relative;display:flex;align-items:center;min-width:0}.SKV_groupSideItemWrap .SKV_groupSideItem{flex:1;min-width:0}.SKV_groupDelete{display:none;width:16px;height:16px;align-items:center;justify-content:center;color:var(--dsw-alias-label-tertiary);font:inherit;font-size:12px;line-height:14px;cursor:pointer;background:0 0;border:none;border-radius:999px;padding:0;margin-left:2px;flex:none}.SKV_groupItemWrap:hover .SKV_groupDelete,.SKV_groupSideItemWrap:hover .SKV_groupSideItemWrap{position:relative;display:flex;align-items:center;min-width:0}.SKV_groupSideItemWrap .SKV_groupSideItem{flex:1;min-width:0}.SKV_groupDelete{display:inline-flex}.SKV_groupDelete:hover{color:var(--dsw-alias-state-error-primary);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent)}.SKV_groupDelete[data-confirm=true]{display:inline-flex;width:auto;height:18px;padding:0 7px;color:var(--dsw-alias-state-error-primary);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent)}";
 const cssCategory = ".SKV_categoryBar{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}.SKV_categoryLabel{font-size:12px;color:var(--dsw-alias-label-tertiary);flex:none;margin-right:2px}.SKV_categoryChip{font:inherit;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:2px 10px;white-space:nowrap;flex:none}.SKV_categoryChip:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_categoryChip[data-active=true]{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 12%, transparent);border-color:var(--dsw-alias-state-business-primary);color:var(--dsw-alias-state-business-primary)}.SKV_categorySelect{box-sizing:border-box;height:32px;border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:13px;line-height:20px;outline:0;padding:0 10px;min-width:220px;cursor:pointer}.SKV_categorySelect:focus-visible{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent)}.SKV_scopeBadge{background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-tertiary);white-space:nowrap;border-radius:999px;padding:1px 7px;font-size:11px;line-height:16px;flex:none;max-width:110px;overflow:hidden;text-overflow:ellipsis}";
-const cssTree = ".SKV_treeFolder{grid-column:1/-1;display:flex;flex-direction:column;gap:10px}.SKV_treeFolderHeader{display:flex;align-items:center;gap:6px;width:100%;font:inherit;font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:7px 10px;text-align:left}.SKV_treeFolderHeader:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_treeFolderName{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.SKV_treeFolderCount{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums;font-size:12px;line-height:18px;flex:none}.SKV_treeChevron{transition:transform .15s;transform:rotate(-90deg)}.SKV_treeChevronOpen{transition:transform .15s;transform:rotate(0deg)}";
-const cssPlugin = ".DPM_section{flex-direction:column;gap:12px;display:flex}.DPM_tabs{display:flex;gap:6px;align-items:center;border-bottom:1px solid var(--dsw-alias-border-l2);padding-bottom:6px}.DPM_tab{font:inherit;font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:0 0;border:none;border-radius:6px;padding:4px 12px}.DPM_tab:hover{background:var(--dsw-alias-interactive-bg-hover)}.DPM_tab[data-active=true]{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 12%, transparent);color:var(--dsw-alias-state-business-primary)}.DPM_toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.DPM_searchBox{position:relative;flex:1;min-width:180px}.DPM_searchField{box-sizing:border-box;width:100%;height:32px;border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:13px;line-height:30px;outline:0;padding:0 10px}.DPM_searchField:focus-visible{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent)}.DPM_addBtn{font:inherit;font-size:13px;line-height:20px;color:var(--dsw-alias-label-primary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:5px 12px}.DPM_addBtn:hover{background:var(--dsw-alias-interactive-bg-hover)}.DPM_group{border:1px solid var(--dsw-alias-border-l2);border-radius:10px;overflow:hidden}.DPM_groupHead{display:flex;align-items:center;gap:8px;width:100%;font:inherit;font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:none;padding:7px 10px;text-align:left}.DPM_groupHead:hover{background:var(--dsw-alias-interactive-bg-hover)}.DPM_groupCount{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums;font-size:12px;flex:none}.DPM_cards{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.DPM_card{border-top:1px solid var(--dsw-alias-border-l2);padding:8px 10px;display:flex;flex-direction:column;gap:4px;min-width:0}.DPM_cardRow{display:flex;align-items:center;gap:8px;min-width:0}.DPM_statusDot{background:var(--dsw-alias-label-tertiary);border-radius:999px;flex:none;width:7px;height:7px;display:inline-block}.DPM_statusDot[data-enabled=true]{background:var(--dsw-alias-state-success-primary)}.DPM_cardName{font-size:13px;font-weight:500;line-height:20px;min-width:0;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;flex:1}.DPM_cardMeta{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;margin:0;word-break:break-all}.DPM_badge{background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);white-space:nowrap;border-radius:5px;padding:1px 6px;font-size:11px;line-height:16px;flex:none}.DPM_badge[data-kind=enabled]{background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 10%, transparent);color:var(--dsw-alias-state-success-primary)}.DPM_badge[data-kind=dangling]{background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent);color:var(--dsw-alias-state-error-primary)}.DPM_actions{display:flex;gap:6px;align-items:center;margin-left:auto;flex:none}.DPM_actionBtn{font:inherit;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:6px;padding:2px 8px}.DPM_actionBtn:hover{background:var(--dsw-alias-interactive-bg-hover)}.DPM_dangerBtn{font:inherit;font-size:12px;line-height:18px;color:var(--dsw-alias-state-error-primary);cursor:pointer;background:transparent;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;padding:2px 8px}.DPM_dangerBtn[data-confirm=true]{background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent)}.DPM_notice{border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:12px;line-height:18px}.DPM_notice[data-kind=error]{border-color:var(--dsw-alias-state-error-primary)}.DPM_notice[data-kind=info]{border-color:var(--dsw-alias-state-business-primary)}.DPM_anomalyRow{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}.DPM_anomalyText{flex:1;min-width:0}.DPM_dialog{position:fixed;inset:0;background:color-mix(in srgb, rgba(0,0,0,.45) 55%, transparent);align-items:center;justify-content:center;display:flex;z-index:1000}.DPM_dialogBox{background:var(--dsw-alias-bg-layer-3);border:1px solid var(--dsw-alias-border-l1);border-radius:12px;box-shadow:var(--dsw-shadow-lv2);width:460px;max-width:calc(100vw - 48px);max-height:80vh;flex-direction:column;padding:16px;gap:12px;display:flex;overflow-y:auto}.DPM_dialogBox h4{font-size:14px;font-weight:600;line-height:20px;margin:0}.DPM_field{display:flex;flex-direction:column;gap:4px}.DPM_fieldLabel{font-size:12px;color:var(--dsw-alias-label-tertiary);line-height:18px}.DPM_textInput{box-sizing:border-box;width:100%;height:32px;border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:13px;outline:0;padding:0 10px}.DPM_textInput:focus-visible{border-color:var(--dsw-alias-state-business-primary)}.DPM_select{box-sizing:border-box;height:32px;border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:13px;outline:0;padding:0 8px;cursor:pointer}.DPM_decision{border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}.DPM_decision p{margin:0;font-size:12px;line-height:18px}.DPM_decisionActions{display:flex;gap:6px;flex-wrap:wrap}.DPM_dialogActions{display:flex;gap:8px;justify-content:flex-end}.DPM_status{color:var(--dsw-alias-label-tertiary);font-size:13px;line-height:20px;margin:0}";
-const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDelete + cssCategory + cssTree + cssIcon + cssIconMcp + cssPlugin;
-		const tagId = "dsh-plugin-manager/SkillsSection.module.css";
+const cssTree = ".SKV_treeFolder{display:flex;flex-direction:column;gap:2px}.SKV_treeFolderHeader{display:flex;align-items:center;gap:6px;width:100%;font:inherit;font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:7px 10px;text-align:left}.SKV_treeFolderHeader:hover{background:var(--dsw-alias-interactive-bg-hover)}.SKV_treeFolderName{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.SKV_treeFolderCount{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums;font-size:12px;line-height:18px;flex:none}.SKV_treeChevron{transition:transform .15s;transform:rotate(-90deg)}.SKV_treeChevronOpen{transition:transform .15s;transform:rotate(0deg)}";
+		const cssDetail = ".SKV_modalWide{width:min(640px,calc(100vw - 48px))!important}.SKV_detailBody{flex-direction:column;gap:14px;display:flex;min-width:0}.SKV_detailInfoRow{flex-wrap:wrap;align-items:center;gap:10px;display:flex}.SKV_detailInfoText{color:var(--dsw-alias-label-secondary);font-size:13px;line-height:20px;min-width:0;flex:1}.SKV_detailContent{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);border-radius:10px;max-height:min(52vh,420px);overflow-y:auto;padding:14px;flex-direction:column;display:flex}.SKV_detailContent pre{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:19px;color:var(--dsw-alias-label-primary);margin:0}.SKV_detailActions{flex-wrap:wrap;align-items:center;gap:8px;display:flex}";
+const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDelete + cssCategory + cssTree + cssDetail;
+		const tagId = "smilexx-skill-mcp-manager/SkillsSection.module.css";
 		if (typeof document !== "undefined") {
 			let tag = document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") as HTMLElement | null;
 			if (tag === null) {
 				tag = document.createElement("style");
-				tag.dataset.plugin = "dsh-plugin-manager";
+				tag.dataset.plugin = "smilexx-skill-mcp-manager";
 				tag.dataset.pluginCss = tagId;
 				document.head.appendChild(tag);
 			}
@@ -133,6 +130,13 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 			searchField: "SKV_searchField",
 			catalogHeading: "SKV_catalogHeading",
 			cards: "SKV_cards",
+			row: "SKV_row",
+			rowContent: "SKV_rowContent",
+			rowIcon: "SKV_rowIcon",
+			rowBody: "SKV_rowBody",
+			rowTitle: "SKV_rowTitle",
+			rowDesc: "SKV_rowDesc",
+			rowTrailing: "SKV_rowTrailing",
 			card: "SKV_card",
 			cardContent: "SKV_cardContent",
 			cardLeading: "SKV_cardLeading",
@@ -167,7 +171,7 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
                      addMenu: "SKV_addMenu",
                      addMenuTitle: "SKV_addMenuTitle",
                      addMenuButton: "SKV_addMenuButton",
-			
+
 			scopeOverlay: "SKV_scopeOverlay",
 			scopeBox: "SKV_scopeBox",
 			scopeOptions: "SKV_scopeOptions",
@@ -197,7 +201,7 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 			categorySelect: "SKV_categorySelect",
 			scopeBadge: "SKV_scopeBadge",
 			select: "SKV_select",
-			
+
 			groupBody: "SKV_groupBody",
 			groupSide: "SKV_groupSide",
 			groupNewBtn: "SKV_groupNewBtn",
@@ -230,45 +234,15 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 			migrateResult: "SKV_migrateResult",
 			migrateResultList: "SKV_migrateResultList",
 			scopeChipLabel: "SKV_scopeChipLabel",
-			migrateOptionLabel: "SKV_migrateOptionLabel"
+			migrateOptionLabel: "SKV_migrateOptionLabel",
+			detailBody: "SKV_detailBody",
+			detailInfoRow: "SKV_detailInfoRow",
+			detailInfoText: "SKV_detailInfoText",
+			detailContent: "SKV_detailContent",
+			detailActions: "SKV_detailActions"
 		};
 
-		// 插件面板类名（与 cssPlugin 对应）
-		const p = {
-			section: "DPM_section",
-			tabs: "DPM_tabs",
-			tab: "DPM_tab",
-			toolbar: "DPM_toolbar",
-			searchBox: "DPM_searchBox",
-			searchField: "DPM_searchField",
-			addBtn: "DPM_addBtn",
-			group: "DPM_group",
-			groupHead: "DPM_groupHead",
-			groupCount: "DPM_groupCount",
-			cards: "DPM_cards",
-			card: "DPM_card",
-			cardRow: "DPM_cardRow",
-			statusDot: "DPM_statusDot",
-			cardName: "DPM_cardName",
-			cardMeta: "DPM_cardMeta",
-			badge: "DPM_badge",
-			actions: "DPM_actions",
-			actionBtn: "DPM_actionBtn",
-			dangerBtn: "DPM_dangerBtn",
-			notice: "DPM_notice",
-			anomalyRow: "DPM_anomalyRow",
-			anomalyText: "DPM_anomalyText",
-			dialog: "DPM_dialog",
-			dialogBox: "DPM_dialogBox",
-			field: "DPM_field",
-			fieldLabel: "DPM_fieldLabel",
-			textInput: "DPM_textInput",
-			select: "DPM_select",
-			decision: "DPM_decision",
-			decisionActions: "DPM_decisionActions",
-			dialogActions: "DPM_dialogActions",
-			status: "DPM_status"
-		};
+
 
 		// ── 文案字典 ─────────────────────────────────────────────────────────
 		const NS = "settings.skills";
@@ -287,6 +261,7 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 			contentError: "技能内容加载失败。",
 			contentMissing: "技能内容不可用。",
 			providerLabel: "来源",
+			noDescription: "暂无描述",
 			enabledTag: "已启用",
 			disabledTag: "已停用",
 			switchEnable: "启用",
@@ -354,7 +329,11 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 			categoryQuickAddHint: "点击按顶层目录批量勾选/取消",
 			checkUpdateAvailable: "发现新版本 v",
 			checkUpdateCurrent: "（当前 v",
-			checkUpdateHint: "）。可在终端运行 dsh-panel update 更新"
+			checkUpdateHint: "）。可在终端运行 dsh-panel update 更新",
+			detailTitle: "技能详情",
+			detailClose: "关闭",
+			detailScopeLabel: "作用域",
+			detailProviderLabel: "来源"
 		};
 
 		const en = {
@@ -371,6 +350,7 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 			contentError: "Skill content failed to load.",
 			contentMissing: "Skill content is unavailable.",
 			providerLabel: "Provider",
+			noDescription: "No description",
 			enabledTag: "Enabled",
 			disabledTag: "Disabled",
 			switchEnable: "Enable",
@@ -438,135 +418,14 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 			selectNone: "Select none",
 			checkUpdateAvailable: "Update available: v",
 			checkUpdateCurrent: " (current v",
-			checkUpdateHint: "). Run dsh-panel update in a terminal to install it"
+			checkUpdateHint: "). Run dsh-panel update in a terminal to install it",
+			detailTitle: "Skill details",
+			detailClose: "Close",
+			detailScopeLabel: "Scope",
+			detailProviderLabel: "Provider"
 		};
 
-		// ── 插件面板文案 ─────────────────────────────────────────────────────
-		const NS_PLUGINS = "dsh-plugin-manager";
 
-		const zhPlugins = {
-			nav: "插件管理",
-			tabList: "插件清单",
-			tabDuplicates: "功能重复",
-			tabSkills: "技能",
-			tabMcp: "MCP",
-			search: "搜索插件",
-			install: "安装插件",
-			installing: "正在安装…",
-			installSpecLabel: "插件 spec（包名 / github:owner/repo#tag / 本地路径）",
-			installSpecPlaceholder: "例如 dshmarket 或 github:owner/repo",
-			installKeepLabel: "同类/重复处理策略",
-			installKeepAsk: "询问（默认）",
-			installKeepAuto: "全自动（同名/功能被包含则跳过）",
-			installKeepAll: "保留全部，仅安装新插件",
-			installKeepNew: "保留新插件，删除全部同类",
-			installKeepExisting: "保留已装插件，取消安装",
-			installStart: "开始安装",
-			installCancel: "取消",
-			installBusy: "正在安装：",
-			installDecisionTitle: "需要决定（功能重复）",
-			installDecisionHint: "请选择处理策略后重新提交：",
-			installDone: "安装结果",
-			empty: "暂无第三方插件。",
-			emptySearch: "没有匹配的插件。",
-			loading: "正在读取插件…",
-			error: "暂时无法读取插件。",
-			retry: "重试",
-			enabled: "已启用",
-			disabled: "已停用",
-			dangling: "声明未安装",
-			readonly: "只读",
-			enable: "启用",
-			disable: "停用",
-			remove: "卸载",
-			confirmRemove: "确认卸载？",
-			cancel: "取消",
-			busy: "处理中…",
-			opFailed: "操作失败",
-			report: "生成 Markdown 清单",
-			reportDone: "已生成插件清单（可复制）：",
-			copy: "复制",
-			copied: "已复制",
-			anomalies: "异常项",
-			anomalyHint: "提示",
-			anomalyActionCleanup: "清理声明",
-			anomalyActionRemove: "卸载",
-			anomalyActionRetry: "重试",
-			anomalyActionManual: "手动",
-			danglingGroup: "悬挂声明",
-			systemGroup: "系统/附带",
-			duplicatesScanned: "已扫描 {n} 个插件",
-			duplicatesEmpty: "未发现功能重复。",
-			fullyCovered: "功能被完全包含",
-			overlap: "功能重叠",
-			sharedWords: "共享特征词",
-			pluginCount: "共 {n} 个",
-			profileLabel: "Profile",
-			close: "关闭",
-			noManage: "系统/附带插件为只读，不可管理"
-		};
-
-		const enPlugins = {
-			nav: "Plugin Manager",
-			tabList: "Plugins",
-			tabDuplicates: "Duplicates",
-			tabSkills: "Skills",
-			tabMcp: "MCP",
-			search: "Search plugins",
-			install: "Install plugin",
-			installing: "Installing…",
-			installSpecLabel: "Plugin spec (package name / github:owner/repo#tag / local path)",
-			installSpecPlaceholder: "e.g. dshmarket or github:owner/repo",
-			installKeepLabel: "Duplicate/same-category policy",
-			installKeepAsk: "Ask (default)",
-			installKeepAuto: "Auto (skip when same name / fully covered)",
-			installKeepAll: "Keep all, install new only",
-			installKeepNew: "Keep new, remove all same-category",
-			installKeepExisting: "Keep installed, cancel install",
-			installStart: "Install",
-			installCancel: "Cancel",
-			installBusy: "Installing: ",
-			installDecisionTitle: "Decision needed (duplicates)",
-			installDecisionHint: "Pick a policy and resubmit: ",
-			installDone: "Install result",
-			empty: "No third-party plugins yet.",
-			emptySearch: "No matching plugins.",
-			loading: "Loading plugins…",
-			error: "Failed to load plugins.",
-			retry: "Retry",
-			enabled: "Enabled",
-			disabled: "Disabled",
-			dangling: "Declared, not installed",
-			readonly: "Read-only",
-			enable: "Enable",
-			disable: "Disable",
-			remove: "Remove",
-			confirmRemove: "Confirm removal?",
-			cancel: "Cancel",
-			busy: "Working…",
-			opFailed: "Operation failed",
-			report: "Generate Markdown report",
-			reportDone: "Report generated (copy it):",
-			copy: "Copy",
-			copied: "Copied",
-			anomalies: "Anomalies",
-			anomalyHint: "Hint",
-			anomalyActionCleanup: "Clean up declaration",
-			anomalyActionRemove: "Remove",
-			anomalyActionRetry: "Retry",
-			anomalyActionManual: "Manual",
-			danglingGroup: "Dangling declarations",
-			systemGroup: "System / bundled",
-			duplicatesScanned: "{n} plugins scanned",
-			duplicatesEmpty: "No duplicates found.",
-			fullyCovered: "Fully covered",
-			overlap: "Overlap",
-			sharedWords: "Shared features",
-			pluginCount: "{n} total",
-			profileLabel: "Profile",
-			close: "Close",
-			noManage: "System/bundled plugins are read-only"
-		};
 
 		// ── 远程贡献 ─────────────────────────────────────────────────────────
 		// 客户端生成 Remote 只要求 codec.mode === "strict" 且调用 schema.parse()；
@@ -575,288 +434,206 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 		const codec = (symbol) => ({ mode: "strict", typeSymbol: symbol, schema: { parse: identity } });
 
 		const CONTRIBUTION = {
-			package: "dsh-plugin-manager",
+			package: "smilexx-skill-mcp-manager",
 			descriptors: [
 				{
-					id: "dsh-plugin-manager#skillsViewer/list",
+					id: "smilexx-skill-mcp-manager#skillsViewer/list",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "list",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#sessionId") }
+						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#sessionId") }
 					],
-					result: codec("dsh-plugin-manager#SkillListResult")
+					result: codec("smilexx-skill-mcp-manager#SkillListResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/workspaces",
+					id: "smilexx-skill-mcp-manager#skillsViewer/workspaces",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "workspaces",
 					invocation: { kind: "direct" },
 					parameters: [],
-					result: codec("dsh-plugin-manager#WorkspacesResult")
+					result: codec("smilexx-skill-mcp-manager#WorkspacesResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/groups",
+					id: "smilexx-skill-mcp-manager#skillsViewer/groups",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "groups",
 					invocation: { kind: "direct" },
 					parameters: [],
-					result: codec("dsh-plugin-manager#GroupsResult")
+					result: codec("smilexx-skill-mcp-manager#GroupsResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/checkUpdate",
+					id: "smilexx-skill-mcp-manager#skillsViewer/checkUpdate",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "checkUpdate",
 					invocation: { kind: "direct" },
 					parameters: [],
-					result: codec("dsh-plugin-manager#CheckUpdateResult")
+					result: codec("smilexx-skill-mcp-manager#CheckUpdateResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/saveGroup",
+					id: "smilexx-skill-mcp-manager#skillsViewer/saveGroup",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "saveGroup",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#SaveGroupPayload") }
+						{ name: "payload", wire: "payload", source: "json", codec: codec("smilexx-skill-mcp-manager#SaveGroupPayload") }
 					],
-					result: codec("dsh-plugin-manager#GroupsResult")
+					result: codec("smilexx-skill-mcp-manager#GroupsResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/deleteGroup",
+					id: "smilexx-skill-mcp-manager#skillsViewer/deleteGroup",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "deleteGroup",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#DeleteGroupPayload") }
+						{ name: "payload", wire: "payload", source: "json", codec: codec("smilexx-skill-mcp-manager#DeleteGroupPayload") }
 					],
-					result: codec("dsh-plugin-manager#GroupsResult")
+					result: codec("smilexx-skill-mcp-manager#GroupsResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/migrate",
+					id: "smilexx-skill-mcp-manager#skillsViewer/migrate",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "migrate",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "name", wire: "name", source: "json", codec: codec("dsh-plugin-manager#SkillName") },
-						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#sessionId") },
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#MigratePayload") }
+						{ name: "name", wire: "name", source: "json", codec: codec("smilexx-skill-mcp-manager#SkillName") },
+						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#sessionId") },
+						{ name: "payload", wire: "payload", source: "json", codec: codec("smilexx-skill-mcp-manager#MigratePayload") }
 					],
-					result: codec("dsh-plugin-manager#MigrateResult")
+					result: codec("smilexx-skill-mcp-manager#MigrateResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/batchMigrate",
+					id: "smilexx-skill-mcp-manager#skillsViewer/batchMigrate",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "batchMigrate",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#sessionId") },
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#BatchMigratePayload") }
+						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#sessionId") },
+						{ name: "payload", wire: "payload", source: "json", codec: codec("smilexx-skill-mcp-manager#BatchMigratePayload") }
 					],
-					result: codec("dsh-plugin-manager#BatchMigrateResult")
+					result: codec("smilexx-skill-mcp-manager#BatchMigrateResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/content",
+					id: "smilexx-skill-mcp-manager#skillsViewer/content",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "content",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "name", wire: "name", source: "json", codec: codec("dsh-plugin-manager#SkillName") },
-						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#sessionId") },
-						{ name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#SkillScope") }
+						{ name: "name", wire: "name", source: "json", codec: codec("smilexx-skill-mcp-manager#SkillName") },
+						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#sessionId") },
+						{ name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#SkillScope") }
 					],
-					result: codec("dsh-plugin-manager#SkillContent")
+					result: codec("smilexx-skill-mcp-manager#SkillContent")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/setEnabled",
+					id: "smilexx-skill-mcp-manager#skillsViewer/setEnabled",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "setEnabled",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "name", wire: "name", source: "json", codec: codec("dsh-plugin-manager#SkillName") },
-						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#sessionId") },
-						{ name: "enabled", wire: "enabled", source: "json", codec: codec("dsh-plugin-manager#EnabledFlag") },
-						{ name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#SkillScope") }
+						{ name: "name", wire: "name", source: "json", codec: codec("smilexx-skill-mcp-manager#SkillName") },
+						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#sessionId") },
+						{ name: "enabled", wire: "enabled", source: "json", codec: codec("smilexx-skill-mcp-manager#EnabledFlag") },
+						{ name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#SkillScope") }
 					],
-					result: codec("dsh-plugin-manager#SetEnabledResult")
+					result: codec("smilexx-skill-mcp-manager#SetEnabledResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/deleteSkill",
+					id: "smilexx-skill-mcp-manager#skillsViewer/deleteSkill",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "deleteSkill",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "name", wire: "name", source: "json", codec: codec("dsh-plugin-manager#SkillName") },
-						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#sessionId") },
-						{ name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#SkillScope") }
+						{ name: "name", wire: "name", source: "json", codec: codec("smilexx-skill-mcp-manager#SkillName") },
+						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#sessionId") },
+						{ name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#SkillScope") }
 					],
-					result: codec("dsh-plugin-manager#DeleteSkillResult")
+					result: codec("smilexx-skill-mcp-manager#DeleteSkillResult")
 				},
 				{
-					id: "dsh-plugin-manager#skillsViewer/addSkill",
+					id: "smilexx-skill-mcp-manager#skillsViewer/addSkill",
 					service: "skillsViewer",
 					namespace: "skillsViewer",
 					method: "addSkill",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("dsh-plugin-manager#sessionId") },
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#AddPayload") }
+						{ name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: codec("smilexx-skill-mcp-manager#sessionId") },
+						{ name: "payload", wire: "payload", source: "json", codec: codec("smilexx-skill-mcp-manager#AddPayload") }
 					],
-					result: codec("dsh-plugin-manager#AddResult")
+					result: codec("smilexx-skill-mcp-manager#AddResult")
 				},
 				{
-					id: "dsh-plugin-manager#mcpManager/list",
+					id: "smilexx-skill-mcp-manager#mcpManager/list",
 					service: "mcpManager",
 					namespace: "mcpManager",
 					method: "list",
 					invocation: { kind: "direct" },
 					parameters: [],
-					result: codec("dsh-plugin-manager#McpListResult")
+					result: codec("smilexx-skill-mcp-manager#McpListResult")
 				},
 				{
-					id: "dsh-plugin-manager#mcpManager/save",
+					id: "smilexx-skill-mcp-manager#mcpManager/save",
 					service: "mcpManager",
 					namespace: "mcpManager",
 					method: "save",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#McpSavePayload") }
+						{ name: "payload", wire: "payload", source: "json", codec: codec("smilexx-skill-mcp-manager#McpSavePayload") }
 					],
-					result: codec("dsh-plugin-manager#McpSaveResult")
+					result: codec("smilexx-skill-mcp-manager#McpSaveResult")
 				},
 				{
-					id: "dsh-plugin-manager#mcpManager/removeServer",
+					id: "smilexx-skill-mcp-manager#mcpManager/removeServer",
 					service: "mcpManager",
 					namespace: "mcpManager",
 					method: "removeServer",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#McpRemovePayload") }
+						{ name: "payload", wire: "payload", source: "json", codec: codec("smilexx-skill-mcp-manager#McpRemovePayload") }
 					],
-					result: codec("dsh-plugin-manager#McpRemoveResult")
+					result: codec("smilexx-skill-mcp-manager#McpRemoveResult")
 				},
 				{
-					id: "dsh-plugin-manager#mcpManager/setEnabled",
+					id: "smilexx-skill-mcp-manager#mcpManager/setEnabled",
 					service: "mcpManager",
 					namespace: "mcpManager",
 					method: "setEnabled",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#McpSetEnabledPayload") }
+						{ name: "payload", wire: "payload", source: "json", codec: codec("smilexx-skill-mcp-manager#McpSetEnabledPayload") }
 					],
-					result: codec("dsh-plugin-manager#McpSaveResult")
+					result: codec("smilexx-skill-mcp-manager#McpSaveResult")
 				},
 				{
-					id: "dsh-plugin-manager#mcpManager/test",
+					id: "smilexx-skill-mcp-manager#mcpManager/test",
 					service: "mcpManager",
 					namespace: "mcpManager",
 					method: "test",
 					invocation: { kind: "direct" },
 					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#McpTestPayload") }
+						{ name: "payload", wire: "payload", source: "json", codec: codec("smilexx-skill-mcp-manager#McpTestPayload") }
 					],
-					result: codec("dsh-plugin-manager#McpTestResult")
+					result: codec("smilexx-skill-mcp-manager#McpTestResult")
 				},
 				{
-					id: "dsh-plugin-manager#mcpManager/reload",
+					id: "smilexx-skill-mcp-manager#mcpManager/reload",
 					service: "mcpManager",
 					namespace: "mcpManager",
 					method: "reload",
 					invocation: { kind: "direct" },
 					parameters: [],
-					result: codec("dsh-plugin-manager#McpListResult")
-				},
-				{
-					id: "dsh-plugin-manager#pluginsViewer/list",
-					service: "pluginsViewer",
-					namespace: "pluginsViewer",
-					method: "list",
-					invocation: { kind: "direct" },
-					parameters: [],
-					result: codec("dsh-plugin-manager#PluginListResult")
-				},
-				{
-					id: "dsh-plugin-manager#pluginsViewer/installPlugin",
-					service: "pluginsViewer",
-					namespace: "pluginsViewer",
-					method: "installPlugin",
-					invocation: { kind: "direct" },
-					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#PluginInstallPayload") }
-					],
-					result: codec("dsh-plugin-manager#PluginInstallResult")
-				},
-				{
-					id: "dsh-plugin-manager#pluginsViewer/enable",
-					service: "pluginsViewer",
-					namespace: "pluginsViewer",
-					method: "enable",
-					invocation: { kind: "direct" },
-					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#PluginOpPayload") }
-					],
-					result: codec("dsh-plugin-manager#PluginOpResult")
-				},
-				{
-					id: "dsh-plugin-manager#pluginsViewer/disable",
-					service: "pluginsViewer",
-					namespace: "pluginsViewer",
-					method: "disable",
-					invocation: { kind: "direct" },
-					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#PluginOpPayload") }
-					],
-					result: codec("dsh-plugin-manager#PluginOpResult")
-				},
-				{
-					id: "dsh-plugin-manager#pluginsViewer/removePlugin",
-					service: "pluginsViewer",
-					namespace: "pluginsViewer",
-					method: "removePlugin",
-					invocation: { kind: "direct" },
-					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#PluginOpPayload") }
-					],
-					result: codec("dsh-plugin-manager#PluginOpResult")
-				},
-				{
-					id: "dsh-plugin-manager#pluginsViewer/report",
-					service: "pluginsViewer",
-					namespace: "pluginsViewer",
-					method: "report",
-					invocation: { kind: "direct" },
-					parameters: [],
-					result: codec("dsh-plugin-manager#PluginReportResult")
-				},
-				{
-					id: "dsh-plugin-manager#pluginsViewer/duplicates",
-					service: "pluginsViewer",
-					namespace: "pluginsViewer",
-					method: "duplicates",
-					invocation: { kind: "direct" },
-					parameters: [],
-					result: codec("dsh-plugin-manager#PluginDuplicatesResult")
-				},
-				{
-					id: "dsh-plugin-manager#pluginsViewer/anomalyAction",
-					service: "pluginsViewer",
-					namespace: "pluginsViewer",
-					method: "anomalyAction",
-					invocation: { kind: "direct" },
-					parameters: [
-						{ name: "payload", wire: "payload", source: "json", codec: codec("dsh-plugin-manager#AnomalyActionPayload") }
-					],
-					result: codec("dsh-plugin-manager#PluginOpResult")
+					result: codec("smilexx-skill-mcp-manager#McpListResult")
 				}
 			]
 		};
@@ -1131,7 +908,7 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 								children: option.label + " — " + option.path
 							}, option.path))]
 						})]
-					}), 
+					}),
 (0, react_jsx_runtime.jsxs)("div", {
 						className: c.field,
 						children: [(0, react_jsx_runtime.jsx)("label", {
@@ -1339,12 +1116,105 @@ const css = cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssGroupDele
 			});
 		}
 
+		// ── 技能详情弹窗（DSH 原生 Modal：居中、遮罩、Escape/遮罩关闭）────────
+		function SkillsDetailModal({ t, skill, body, op, enabled, onClose, onToggle, onDelete, confirmKey }) {
+			const scopeLabel = (() => {
+				if (skill.scope !== undefined && skill.scope !== null && skill.scope.kind === "workspace") {
+					const parts = String(skill.scope.path).replaceAll("\\", "/").split("/").filter(Boolean);
+					return parts.length > 0 ? parts[parts.length - 1] : String(skill.scope.path);
+				}
+				return t("scopeGlobal");
+			})();
+			const content =
+				body === undefined || body.status === "loading" ? (0, react_jsx_runtime.jsx)("p", {
+					className: c.status,
+					children: t("contentLoading")
+				}) :
+				body.status === "error" ? (0, react_jsx_runtime.jsx)("p", {
+					className: c.failureText,
+					children: t("contentError")
+				}) :
+				body.status === "missing" ? (0, react_jsx_runtime.jsx)("p", {
+					className: c.failureText,
+					children: t("contentMissing")
+				}) :
+				body.status === "ready" ? (0, react_jsx_runtime.jsx)("div", {
+					className: c.detailContent,
+					children: (0, react_jsx_runtime.jsx)("pre", {
+						children: body.skill.content
+					})
+				}) : null;
+			const editable = skill.source !== "bundled" && skill.source !== "runtime";
+			return (0, react_jsx_runtime.jsx)(primitives.Modal, {
+				open: true,
+				onClose,
+				title: skill.name,
+				description: skill.description !== undefined && skill.description !== "" ? skill.description : undefined,
+				closeLabel: t("detailClose"),
+				className: "SKV_modalWide",
+				children: (0, react_jsx_runtime.jsxs)("div", {
+					className: c.detailBody,
+					children: [(0, react_jsx_runtime.jsxs)("div", {
+						className: c.detailInfoRow,
+						children: [(0, react_jsx_runtime.jsx)("span", {
+							className: c.cardLeading,
+							children: (0, react_jsx_runtime.jsx)(primitives.IconSkillOutline16, { size: 16 })
+						}), (0, react_jsx_runtime.jsx)("span", {
+							className: c.detailInfoText,
+							children: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, {
+								children: [t("detailProviderLabel") + ": " + (skill.provider ?? "-"), " · ", t("detailScopeLabel") + ": " + scopeLabel]
+							})
+						}), editable ? (0, react_jsx_runtime.jsxs)("span", {
+							className: c.switchRow,
+							children: [(0, react_jsx_runtime.jsx)("button", {
+								type: "button",
+								role: "switch",
+								className: c.switch,
+								"data-on": enabled ? "true" : void 0,
+								"aria-checked": enabled,
+								"aria-label": enabled ? t("switchDisable") : t("switchEnable"),
+								disabled: op?.status === "busy",
+								onClick: onToggle,
+								children: (0, react_jsx_runtime.jsx)("span", {
+									className: c.switchThumb
+								})
+							}), (0, react_jsx_runtime.jsx)("span", {
+								className: c.switchText,
+								children: enabled ? t("switchDisable") : t("switchEnable")
+							})]
+						}) : null]
+					}), content]
+				}),
+				footer: (0, react_jsx_runtime.jsxs)("div", {
+					className: c.detailActions,
+					children: [op?.status === "error" ? (0, react_jsx_runtime.jsx)("span", {
+						className: c.opError,
+						children: t("opFailed")
+					}) : null, editable ? (0, react_jsx_runtime.jsx)("button", {
+						type: "button",
+						className: c.dangerBtn,
+						disabled: op?.status === "busy",
+						onClick: onDelete,
+						"data-confirm": confirmKey ? "true" : void 0,
+						children: confirmKey ? t("confirmDelete") : t("deleteLabel")
+					}) : null, (0, react_jsx_runtime.jsx)("button", {
+						type: "button",
+						className: c.scopeAction + " " + c.scopeCancel,
+						onClick: onClose,
+						children: t("detailClose")
+					})]
+				})
+			});
+		}
+
 function SkillsSection(props) {
 			const { t, currentSessionId, listSkills, loadContent, setSkillEnabled, removeSkill, addSkill, listWorkspaces, batchMigrateSkill, listGroups, saveGroupSkill, deleteGroupSkill, checkUpdateRemote } = props;
 			const [query, setQuery] = react.useState("");
 			const [listState, setListState] = react.useState({ status: "loading" });
 			const [request, setRequest] = react.useState(0);
 			const [expanded, setExpanded] = react.useState(null);
+			// 详情弹窗当前展示的技能对象（与 expanded 同步；expanded 存缓存键）。
+			const [detailSkill, setDetailSkill] = react.useState(null);
 			// 树形折叠状态（默认全部展开；路径为 key）。
 			const [collapsed, setCollapsed] = react.useState(() => new Set());
 			const toggleCollapsed = (path) => {
@@ -1411,6 +1281,7 @@ function SkillsSection(props) {
 			const refresh = () => {
 				setBodies({});
 				setExpanded(null);
+				setDetailSkill(null);
 				setRequest((value) => value + 1);
 			};
 
@@ -1445,6 +1316,7 @@ function SkillsSection(props) {
 					setListState((prev) => (prev.status === "ready" ? { status: "ready", skills: prev.skills.filter((s) => opKeyOf(s) !== key) } : prev));
 					setOps((prev) => ({ ...prev, [key]: { status: "ok" } }));
 					setExpanded((current) => (current === key ? null : current));
+					setDetailSkill((current) => (current !== null && opKeyOf(current) === key ? null : current));
 					reloadAfterHot();
 				}, () => {
 					setOps((prev) => ({ ...prev, [key]: { status: "error" } }));
@@ -1786,82 +1658,54 @@ function SkillsSection(props) {
 			const querying = normalizedQuery.trim() !== "";
 			const treeRoot = buildSkillTree(filtered);
 			const renderCard = (skill) => {
-				const open = expanded === opKeyOf(skill);
-				const body = bodies[opKeyOf(skill)];
 				const enabled = skill.enabled !== false;
-				const editable = skill.source !== "bundled" && skill.source !== "runtime";
 				const op = ops[opKeyOf(skill)];
+				const scopeBadge = (() => {
+					const isWs = skill.scope !== undefined && skill.scope !== null && skill.scope.kind === "workspace";
+					const label = isWs ? labelOf(skill.scope.path) : t("scopeGlobal");
+					return (0, react_jsx_runtime.jsx)("span", {
+						className: c.scopeBadge,
+						"data-scope": isWs ? "workspace" : "global",
+						title: label,
+						children: label
+					});
+				})();
 				return (0, react_jsx_runtime.jsxs)("li", {
 					key: skill.name,
-					className: c.card,
+					className: c.row,
 					"data-skill-name": skill.name,
-					"data-open": open ? "true" : void 0,
-					children: [(0, react_jsx_runtime.jsxs)("button", {
-						className: c.cardContent,
-						type: "button",
-						"aria-expanded": open,
+					children: [(0, react_jsx_runtime.jsxs)("div", {
+						className: c.rowContent,
+						role: "button",
+						tabIndex: 0,
+						"aria-haspopup": "dialog",
 						onClick: () => {
-							toggle(skill);
+							openDetail(skill);
+						},
+						onKeyDown: (event) => {
+							if (event.key === "Enter" || event.key === " ") {
+								event.preventDefault();
+								openDetail(skill);
+							}
 						},
 						children: [(0, react_jsx_runtime.jsx)("span", {
-							className: c.cardLeading,
-							children: (0, react_jsx_runtime.jsx)(primitives.IconSkillOutline16, { size: 14 })
-						}), (0, react_jsx_runtime.jsx)("strong", {
-							className: c.cardTitle,
-							"data-disabled": enabled ? void 0 : "true",
-							title: skill.name,
-							children: skill.name
+							className: c.rowIcon,
+							children: (0, react_jsx_runtime.jsx)(primitives.IconSkillOutline16, { size: 16 })
 						}), (0, react_jsx_runtime.jsxs)("span", {
-							className: c.cardTrailing,
-							children: [(0, react_jsx_runtime.jsx)("span", {
-								className: c.scopeBadge,
-								"data-scope": skill.scope !== undefined && skill.scope !== null && skill.scope.kind === "workspace" ? "workspace" : "global",
-								title: skill.scope !== undefined && skill.scope !== null && skill.scope.kind === "workspace" ? labelOf(skill.scope.path) : t("scopeGlobal"),
-								children: skill.scope !== undefined && skill.scope !== null && skill.scope.kind === "workspace" ? labelOf(skill.scope.path) : t("scopeGlobal")
+							className: c.rowBody,
+							children: [(0, react_jsx_runtime.jsx)("strong", {
+								className: c.rowTitle,
+								"data-disabled": enabled ? void 0 : "true",
+								title: skill.name,
+								children: skill.name
 							}), (0, react_jsx_runtime.jsx)("span", {
-								className: c.statusDot,
-								"data-enabled": enabled ? "true" : "false",
-								"aria-hidden": "true"
-							}), (0, react_jsx_runtime.jsx)("span", {
-								className: c.configTag,
-								"data-enabled": enabled ? "true" : "false",
-								children: enabled ? t("enabledTag") : t("disabledTag")
-							}), (0, react_jsx_runtime.jsx)(primitives.IconChevronDownOutline14, {
-								className: c.chevron,
-								size: 12,
-								"aria-hidden": "true"
+								className: c.rowDesc,
+								title: skill.description !== undefined && skill.description !== "" ? skill.description : undefined,
+								children: skill.description !== undefined && skill.description !== "" ? skill.description : t("noDescription")
 							})]
-						})]
-					}), open ? (0, react_jsx_runtime.jsxs)("div", {
-						className: c.cardDetails,
-						children: [(0, react_jsx_runtime.jsxs)("p", {
-							className: c.meta,
-							children: [skill.description, (0, react_jsx_runtime.jsx)("span", {
-								className: c.metaProvider,
-								children: t("providerLabel") + ": " + skill.provider
-							})]
-						}), body === undefined || body.status === "loading" ? (0, react_jsx_runtime.jsx)("p", {
-							className: c.status,
-							children: t("contentLoading")
-						}) : null,
-						body !== undefined && body.status === "error" ? (0, react_jsx_runtime.jsx)("p", {
-							className: c.failureText,
-							children: t("contentError")
-						}) : null,
-						body !== undefined && body.status === "missing" ? (0, react_jsx_runtime.jsx)("p", {
-							className: c.failureText,
-							children: t("contentMissing")
-						}) : null,
-						body !== undefined && body.status === "ready" ? (0, react_jsx_runtime.jsx)("div", {
-							className: c.contentBox,
-							children: (0, react_jsx_runtime.jsx)("pre", {
-								className: c.content,
-								children: body.skill.content
-							})
-						}) : null,
-						editable ? (0, react_jsx_runtime.jsxs)("div", {
-							className: c.cardActions,
-							children: [(0, react_jsx_runtime.jsxs)("span", {
+						}), (0, react_jsx_runtime.jsxs)("span", {
+							className: c.rowTrailing,
+							children: [scopeBadge, (0, react_jsx_runtime.jsxs)("span", {
 								className: c.switchRow,
 								children: [(0, react_jsx_runtime.jsx)("button", {
 									type: "button",
@@ -1871,7 +1715,8 @@ function SkillsSection(props) {
 									"aria-checked": enabled,
 									"aria-label": enabled ? t("switchDisable") : t("switchEnable"),
 									disabled: op?.status === "busy",
-									onClick: () => {
+									onClick: (event) => {
+										event.stopPropagation();
 										applySetEnabled(skill);
 									},
 									children: (0, react_jsx_runtime.jsx)("span", {
@@ -1881,21 +1726,9 @@ function SkillsSection(props) {
 									className: c.switchText,
 									children: enabled ? t("switchDisable") : t("switchEnable")
 								})]
-							}), op?.status === "error" ? (0, react_jsx_runtime.jsx)("span", {
-								className: c.opError,
-								children: t("opFailed")
-							}) : null, (0, react_jsx_runtime.jsx)("button", {
-								type: "button",
-								className: c.deleteButton,
-								disabled: op?.status === "busy",
-								onClick: () => {
-									applyRemove(skill);
-								},
-								"data-confirm": confirmKey === opKeyOf(skill) ? "true" : void 0,
-								children: confirmKey === opKeyOf(skill) ? t("confirmDelete") : t("deleteLabel")
 							})]
-						}) : null]
-					}) : null]
+						})]
+					})]
 				}, skill.name);
 			};
 			const renderFolder = (folder) => (0, react_jsx_runtime.jsxs)("li", {
@@ -1932,7 +1765,7 @@ function SkillsSection(props) {
 			const scopeGroupRows = (Array.isArray(groupsList) ? groupsList : []).filter((group) => group.scopes !== undefined && group.scopes !== null && Object.prototype.hasOwnProperty.call(group.scopes, scopeFilter));
 			const groupKeys = ["all", ...scopeGroupRows.map((group) => group.name)];
 			const groupByKey = new Map(scopeGroupRows.map((group) => [group.name, group]));
-			
+
 
 			const migratorSkills = migrator !== null ? skills.filter((skill) => scopeOf(skill) === migrator.from) : [];
 			const membersOfGroup = (groupId, scopeKey) => {
@@ -1942,18 +1775,18 @@ function SkillsSection(props) {
 			};
 			const groupEditorSkills = groupEditor !== null ? skills.filter((skill) => scopeOf(skill) === groupEditor.scope) : [];
 
-			// 搜索过滤掉已展开项时自动收起。
+			// 详情技能被过滤掉时自动关闭弹窗（技能被删除后同样生效）。
 			react.useEffect(() => {
-				if (expanded !== null && !filtered.some((skill) => opKeyOf(skill) === expanded)) setExpanded(null);
-			}, [expanded, filtered]);
+				if (detailSkill !== null && !filtered.some((skill) => opKeyOf(skill) === opKeyOf(detailSkill))) setExpanded(null);
+			}, [detailSkill, filtered]);
 
-			// 展开/收起：展开时懒加载内容并缓存。缓存键与操作键一致，按
-			// （名称+作用域）区分——同名技能在不同作用域各有独立展开与正文。
-			const toggle = (skill) => {
+			// 打开详情弹窗：懒加载正文并缓存。缓存键与操作键一致，按
+			// （名称+作用域）区分——同名技能在不同作用域各有独立正文。
+			const openDetail = (skill) => {
 				const key = opKeyOf(skill);
-				const next = expanded === key ? null : key;
-				setExpanded(next);
-				if (next === null || bodies[key] !== undefined || inflight.current.has(key)) return;
+				setExpanded(key);
+				setDetailSkill(skill);
+				if (bodies[key] !== undefined || inflight.current.has(key)) return;
 				inflight.current.add(key);
 				setBodies((prev) => ({ ...prev, [key]: { status: "loading" } }));
 				Promise.resolve().then(() => loadContent(skill.name, scopeOf(skill))).then((skillBody) => {
@@ -2302,56 +2135,31 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
 						onClose: () => {
 							setMigrator(null);
 						}
+					}) : null,
+					detailSkill !== null && expanded !== null ? (0, react_jsx_runtime.jsx)(SkillsDetailModal, {
+						t,
+						skill: detailSkill,
+						body: bodies[expanded],
+						op: ops[expanded],
+						enabled: detailSkill.enabled !== false,
+						onClose: () => {
+							setExpanded(null);
+							setDetailSkill(null);
+						},
+						onToggle: () => {
+							applySetEnabled(detailSkill);
+						},
+						onDelete: () => {
+							applyRemove(detailSkill);
+						},
+						confirmKey: confirmKey === expanded ? true : false
 					}) : null
 					]
 				})
 			});
 		}
 
-
-		// ── 设置页导航图标补丁 ──────────────────────────────────────────────
-		// 外壳的 navIcon 是硬编码的（无扩展点），这里用 MutationObserver 给
-		// “技能”导航项打上 data 标记，由 CSS 隐藏齿轮并用蒙版绘制自定义图标。
-		const NAV_LABELS = [zh.nav, en.nav];
-		const mcpNavLabels = () => [mcpZh.nav, mcpEn.nav];
-		let navPatchScheduled = false;
-		const patchSkillsNavIcons = () => {
-			navPatchScheduled = false;
-			if (typeof document === "undefined") return;
-			for (const dialog of document.querySelectorAll('[role="dialog"]')) {
-				for (const button of dialog.querySelectorAll("button")) {
-					if (button.dataset.skillsNav !== "1") {
-						let hit = false;
-						for (const span of button.querySelectorAll("span")) {
-							const text = (span.textContent ?? "").trim();
-							if (span.childElementCount === 0 && NAV_LABELS.includes(text)) {
-								hit = true;
-								break;
-							}
-						}
-						if (hit) button.dataset.skillsNav = "1";
-					}
-					if (button.dataset.mcpNav !== "1") {
-						let hit = false;
-						for (const span of button.querySelectorAll("span")) {
-							const text = (span.textContent ?? "").trim();
-							if (span.childElementCount === 0 && mcpNavLabels().includes(text)) {
-								hit = true;
-								break;
-							}
-						}
-						if (hit) button.dataset.mcpNav = "1";
-					}
-				}
-			}
-		};
-		const scheduleNavPatch = () => {
-			if (navPatchScheduled || typeof document === "undefined") return;
-			navPatchScheduled = true;
-			queueMicrotask(patchSkillsNavIcons);
-		};
-
-                // ── MCP 设置页：字典 / 样式 / 表单 / 卡片 ──────────────────────────
+		// ── MCP 设置页：字典 / 样式 / 表单 / 卡片 ──────────────────────────
                 const MCP_NS = "settings.mcp";
                 const mcpZh = {
                         nav: "MCP",
@@ -2408,10 +2216,20 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                         stateUnknown: "未知",
                         toolCount: "{count} 个工具",
                         advanced: "高级设置",
-                        currentVersion: "dsh-plugin-manager",
+                        currentVersion: "smilexx-skill-mcp-manager",
                         checkUpdateAvailable: "发现新版本 v",
                         checkUpdateCurrent: "（当前 v",
-                        checkUpdateHint: "）。可在终端运行 dsh-panel update 更新"
+                        checkUpdateHint: "）。可在终端运行 dsh-panel update 更新",
+                        detailTitle: "MCP 服务器详情",
+                        detailStatus: "状态",
+                        detailConfig: "配置",
+                        detailEnvKeys: "环境变量（仅键名）",
+                        detailHeaderKeys: "请求头（仅键名）",
+                        detailReconnect: "自动重连",
+                        detailTimeout: "单次调用超时",
+                        detailTools: "已发现工具",
+                        detailNoTools: "暂无工具",
+                        detailEdit: "编辑"
                 };
                 const mcpEn = {
                         nav: "MCP",
@@ -2468,19 +2286,29 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                         stateUnknown: "Unknown",
                         toolCount: "{count} tools",
                         advanced: "Advanced",
-                        currentVersion: "dsh-plugin-manager",
+                        currentVersion: "smilexx-skill-mcp-manager",
                         checkUpdateAvailable: "Update available: v",
                         checkUpdateCurrent: " (current v",
-                        checkUpdateHint: "). Run dsh-panel update in a terminal to install it"
+                        checkUpdateHint: "). Run dsh-panel update in a terminal to install it",
+                        detailTitle: "MCP server details",
+                        detailStatus: "Status",
+                        detailConfig: "Configuration",
+                        detailEnvKeys: "Environment (keys only)",
+                        detailHeaderKeys: "Headers (keys only)",
+                        detailReconnect: "Auto reconnect",
+                        detailTimeout: "Call timeout",
+                        detailTools: "Discovered tools",
+                        detailNoTools: "No tools",
+                        detailEdit: "Edit"
                 };
 
-                const cssMcp = ".MCP_section{position:relative;width:100%;max-width:760px;color:var(--dsw-alias-label-primary);display:flex;flex-direction:column;gap:14px}.MCP_head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.MCP_head h3{font-size:14px;font-weight:600;line-height:20px;margin:0}.MCP_sub{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;margin:0}.MCP_toolbar{display:flex;align-items:center;gap:8px}.MCP_add{font:inherit;color:var(--dsw-alias-state-business-primary);cursor:pointer;background:0 0;border:1px dashed var(--dsw-alias-border-l1);border-radius:8px;padding:7px 16px;font-size:13px;line-height:20px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}.MCP_add:hover{background:var(--dsw-alias-interactive-bg-hover)}.MCP_cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.MCP_card{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-width:0}.MCP_cardTop{display:flex;align-items:center;gap:8px;min-width:0}.MCP_name{font-size:13px;font-weight:600;line-height:20px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.MCP_badges{display:inline-flex;align-items:center;gap:6px;flex:none}.MCP_badge{background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);border-radius:5px;padding:1px 6px;font-size:11px;line-height:16px}.MCP_meta{display:flex;align-items:center;gap:8px;color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px}.MCP_dot{width:7px;height:7px;border-radius:999px;background:var(--dsw-alias-label-tertiary);flex:none}.MCP_dot[data-on=true]{background:var(--dsw-alias-state-success-primary)}.MCP_dot[data-err=true]{background:var(--dsw-alias-state-error-primary)}.MCP_actions{display:flex;align-items:center;gap:8px;border-top:1px solid var(--dsw-alias-border-l2);padding-top:8px;flex-wrap:wrap}.MCP_spacer{flex:1}.MCP_form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.MCP_field{display:flex;flex-direction:column;gap:5px}.MCP_field[data-wide=true]{grid-column:1 / -1}.MCP_label{font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary);margin:0}.MCP_input{box-sizing:border-box;width:100%;height:32px;font:inherit;font-size:13px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:0 8px}.MCP_input:focus-visible,.MCP_textarea:focus-visible{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent);outline:none}.MCP_textarea{box-sizing:border-box;width:100%;min-height:64px;font:inherit;font-size:12px;line-height:18px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:6px 8px;resize:vertical}.MCP_transportRow{display:flex;gap:8px}.MCP_transportBtn{font:inherit;font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:4px 14px}.MCP_transportBtn[data-active=true]{color:var(--dsw-alias-state-business-primary);border-color:var(--dsw-alias-state-business-primary);background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 12%, transparent)}.MCP_secretKeys{display:flex;flex-wrap:wrap;gap:6px}.MCP_key{display:inline-flex;align-items:center;gap:6px;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:2px 8px;font-size:11px;line-height:16px}.MCP_key button{font:inherit;color:var(--dsw-alias-state-error-primary);cursor:pointer;background:0 0;border:none;padding:0}.MCP_checkRow{display:flex;align-items:center;gap:8px;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary)}.MCP_result{border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:8px 10px;font-size:12px;line-height:18px;max-height:160px;overflow:auto}.MCP_actionBtn{font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;padding:0 12px;font-size:12px;line-height:26px;height:28px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;box-sizing:border-box}.MCP_actionBtn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.MCP_actionBtn:disabled{cursor:default;opacity:.6}.MCP_dangerBtn{font:inherit;color:var(--dsw-alias-state-error-primary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;padding:0 12px;font-size:12px;line-height:26px;height:28px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;box-sizing:border-box}.MCP_dangerBtn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.MCP_iconBtn{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;color:var(--dsw-alias-label-secondary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;padding:0;flex:none}.MCP_iconBtn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.MCP_advancedToggle{font:inherit;color:var(--dsw-alias-label-secondary);cursor:pointer;background:0 0;border:1px dashed var(--dsw-alias-border-l1);border-radius:8px;padding:6px 12px;font-size:13px;line-height:20px}.MCP_advancedToggle:hover{background:var(--dsw-alias-interactive-bg-hover)}.MCP_result[data-ok=true]{border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 40%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 8%, transparent)}.MCP_result[data-ok=false]{border-color:color-mix(in srgb, var(--dsw-alias-state-error-primary) 40%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 8%, transparent)}";
-                const mcpTagId = "dsh-plugin-manager/McpSection.module.css";
+                const cssMcp = ".MCP_section{position:relative;width:100%;max-width:760px;color:var(--dsw-alias-label-primary);display:flex;flex-direction:column;gap:14px}.MCP_head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.MCP_head h3{font-size:14px;font-weight:600;line-height:20px;margin:0}.MCP_sub{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;margin:0}.MCP_toolbar{display:flex;align-items:center;gap:8px}.MCP_add{font:inherit;color:var(--dsw-alias-state-business-primary);cursor:pointer;background:0 0;border:1px dashed var(--dsw-alias-border-l1);border-radius:8px;padding:7px 16px;font-size:13px;line-height:20px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}.MCP_add:hover{background:var(--dsw-alias-interactive-bg-hover)}.MCP_cards{display:flex;flex-direction:column;gap:2px}.MCP_card{display:flex;align-items:center;gap:10px;min-width:0;cursor:pointer;border-radius:8px;padding:7px 10px;transition:background-color .15s ease}.MCP_card:hover{background:var(--dsw-alias-interactive-bg-hover)}.MCP_cardIcon{box-sizing:border-box;width:28px;height:28px;color:var(--dsw-alias-label-secondary);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;flex:none;justify-content:center;align-items:center;display:inline-flex}.MCP_cardBody{min-width:0;flex:1;flex-direction:column;gap:1px;display:flex}.MCP_name{font-size:13px;font-weight:600;line-height:20px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.MCP_cardDesc{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary)}.MCP_cardTrailing{flex:none;align-items:center;gap:8px;display:inline-flex}.MCP_badges{display:inline-flex;align-items:center;gap:6px;flex:none}.MCP_badge{background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);border-radius:5px;padding:1px 6px;font-size:11px;line-height:16px}.MCP_meta{display:flex;align-items:center;gap:8px;color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px}.MCP_dot{width:7px;height:7px;border-radius:999px;background:var(--dsw-alias-label-tertiary);flex:none}.MCP_dot[data-on=true]{background:var(--dsw-alias-state-success-primary)}.MCP_dot[data-err=true]{background:var(--dsw-alias-state-error-primary)}.MCP_actions{display:flex;align-items:center;gap:8px;border-top:1px solid var(--dsw-alias-border-l2);padding-top:8px;flex-wrap:wrap}.MCP_spacer{flex:1}.MCP_form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.MCP_field{display:flex;flex-direction:column;gap:5px}.MCP_field[data-wide=true]{grid-column:1 / -1}.MCP_label{font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary);margin:0}.MCP_input{box-sizing:border-box;width:100%;height:32px;font:inherit;font-size:13px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:0 8px}.MCP_input:focus-visible,.MCP_textarea:focus-visible{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent);outline:none}.MCP_textarea{box-sizing:border-box;width:100%;min-height:64px;font:inherit;font-size:12px;line-height:18px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:6px 8px;resize:vertical}.MCP_transportRow{display:flex;gap:8px}.MCP_transportBtn{font:inherit;font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:4px 14px}.MCP_transportBtn[data-active=true]{color:var(--dsw-alias-state-business-primary);border-color:var(--dsw-alias-state-business-primary);background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 12%, transparent)}.MCP_secretKeys{display:flex;flex-wrap:wrap;gap:6px}.MCP_key{display:inline-flex;align-items:center;gap:6px;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:2px 8px;font-size:11px;line-height:16px}.MCP_key button{font:inherit;color:var(--dsw-alias-state-error-primary);cursor:pointer;background:0 0;border:none;padding:0}.MCP_checkRow{display:flex;align-items:center;gap:8px;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary)}.MCP_result{border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:8px 10px;font-size:12px;line-height:18px;max-height:160px;overflow:auto}.MCP_actionBtn{font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;padding:0 12px;font-size:12px;line-height:26px;height:28px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;box-sizing:border-box}.MCP_actionBtn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.MCP_actionBtn:disabled{cursor:default;opacity:.6}.MCP_dangerBtn{font:inherit;color:var(--dsw-alias-state-error-primary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;padding:0 12px;font-size:12px;line-height:26px;height:28px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;box-sizing:border-box}.MCP_dangerBtn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.MCP_iconBtn{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;color:var(--dsw-alias-label-secondary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;padding:0;flex:none}.MCP_iconBtn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.MCP_advancedToggle{font:inherit;color:var(--dsw-alias-label-secondary);cursor:pointer;background:0 0;border:1px dashed var(--dsw-alias-border-l1);border-radius:8px;padding:6px 12px;font-size:13px;line-height:20px}.MCP_advancedToggle:hover{background:var(--dsw-alias-interactive-bg-hover)}.MCP_result[data-ok=true]{border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 40%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 8%, transparent)}.MCP_result[data-ok=false]{border-color:color-mix(in srgb, var(--dsw-alias-state-error-primary) 40%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 8%, transparent)}.MCP_modalWide{width:min(560px,calc(100vw - 48px))!important}.MCP_detailBody{flex-direction:column;gap:14px;display:flex;min-width:0}.MCP_detailBlock{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);border-radius:10px;padding:12px;flex-direction:column;gap:8px;display:flex}.MCP_detailRow{display:flex;align-items:baseline;gap:10px;min-width:0}.MCP_detailLabel{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;flex:none;min-width:76px}.MCP_detailValue{color:var(--dsw-alias-label-primary);font-size:13px;line-height:20px;min-width:0;word-break:break-all;flex:1}.MCP_detailChip{background:var(--dsw-alias-bg-layer-3);color:var(--dsw-alias-label-secondary);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:1px 10px;font-size:12px;line-height:18px;display:inline-flex;align-items:center;gap:6px}";
+                const mcpTagId = "smilexx-skill-mcp-manager/McpSection.module.css";
                 if (typeof document !== "undefined") {
                         let mcpTag = document.querySelector("style[data-plugin-css=" + JSON.stringify(mcpTagId) + "]") as HTMLElement | null;
                         if (mcpTag === null) {
                                 mcpTag = document.createElement("style");
-                                mcpTag.dataset.plugin = "dsh-plugin-manager";
+                                mcpTag.dataset.plugin = "smilexx-skill-mcp-manager";
                                 mcpTag.dataset.pluginCss = mcpTagId;
                                 document.head.appendChild(mcpTag);
                         }
@@ -2494,6 +2322,10 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                         add: "MCP_add",
                         cards: "MCP_cards",
                         card: "MCP_card",
+                        cardIcon: "MCP_cardIcon",
+                        cardBody: "MCP_cardBody",
+                        cardDesc: "MCP_cardDesc",
+                        cardTrailing: "MCP_cardTrailing",
                         cardTop: "MCP_cardTop",
                         name: "MCP_name",
                         badges: "MCP_badges",
@@ -2516,7 +2348,13 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                         actionBtn: "MCP_actionBtn",
                         dangerBtn: "MCP_dangerBtn",
                         iconBtn: "MCP_iconBtn",
-                        advancedToggle: "MCP_advancedToggle"
+                        advancedToggle: "MCP_advancedToggle",
+                        detailRow: "MCP_detailRow",
+                        detailLabel: "MCP_detailLabel",
+                        detailValue: "MCP_detailValue",
+                        detailBlock: "MCP_detailBlock",
+                        detailChip: "MCP_detailChip",
+                        detailBody: "MCP_detailBody"
                 };
 
                 function mcpParseLines(text) {
@@ -2755,6 +2593,124 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                                 })
                         });
                 }
+
+                // ── MCP 详情弹窗（DSH 原生 Modal；配置键值 + 状态 + 工具）────────
+                function McpDetailDialog({ t, server, testResult, testing, confirming, onClose, onEdit, onToggle, onTest, onDelete, onCancelConfirm }) {
+                        const stateKey = (() => {
+                                if (!server.enabled) return "stateStopped";
+                                const phase = server.fiberPhase;
+                                if (phase === "active") return "stateActive";
+                                if (phase === "loading" || phase === "unloading") return "stateLoading";
+                                if (phase === "failed") return "stateFailed";
+                                if (phase === "pending") return "statePending";
+                                return "stateUnknown";
+                        })();
+                        const isHttp = server.transport === "streamable-http";
+                        const row = (label, value) => (0, react_jsx_runtime.jsxs)("div", {
+                                className: m.detailRow,
+                                children: [(0, react_jsx_runtime.jsx)("span", { className: m.detailLabel, children: label }), (0, react_jsx_runtime.jsx)("span", { className: m.detailValue, children: value })]
+                        });
+                        const rows: any[] = [];
+                        rows.push(row(t("fieldTransport"), isHttp ? t("transportHttp") : t("transportStdio")));
+                        if (isHttp) {
+                                rows.push(row(t("fieldUrl"), server.url ?? ""));
+                                if (Array.isArray(server.headerKeys) && server.headerKeys.length > 0) {
+                                        rows.push(row(t("detailHeaderKeys"), server.headerKeys.join(", ")));
+                                }
+                        } else {
+                                rows.push(row(t("fieldCommand"), server.command ?? ""));
+                                if (Array.isArray(server.args) && server.args.length > 0) {
+                                        rows.push(row(t("fieldArgs"), server.args.join(" ")));
+                                }
+                                if (typeof server.cwd === "string" && server.cwd !== "") {
+                                        rows.push(row(t("fieldCwd"), server.cwd));
+                                }
+                                if (Array.isArray(server.envKeys) && server.envKeys.length > 0) {
+                                        rows.push(row(t("detailEnvKeys"), server.envKeys.join(", ")));
+                                }
+                        }
+                        rows.push(row(t("detailTimeout"), String(server.toolCallTimeoutMs ?? 60000) + " ms"));
+                        rows.push(row(t("detailReconnect"), server.reconnect?.enabled === false ? t("stateDisabled") : t("stateEnabled")));
+                        return (0, react_jsx_runtime.jsx)(primitives.Modal, {
+                                open: true,
+                                onClose,
+                                title: server.serverName,
+                                description: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, {
+                                        children: [(0, react_jsx_runtime.jsx)("span", {
+                                                className: m.dot,
+                                                "data-on": server.enabled ? "true" : "false",
+                                                "data-err": server.fiberPhase === "failed" ? "true" : "false"
+                                        }), " " + t(stateKey) + " · " + t("toolCount").replace("{count}", String(server.toolCount ?? 0))]
+                                }),
+                                closeLabel: t("close"),
+                                className: "MCP_modalWide",
+                                children: (0, react_jsx_runtime.jsxs)("div", {
+                                        className: m.detailBody,
+                                        children: [(0, react_jsx_runtime.jsx)("div", {
+                                                className: m.detailBlock,
+                                                children: rows
+                                        }), (0, react_jsx_runtime.jsxs)("div", {
+                                                className: m.detailBlock,
+                                                children: [(0, react_jsx_runtime.jsx)("span", {
+                                                        className: m.detailLabel,
+                                                        children: t("detailTools")
+                                                }), testResult === null ? (0, react_jsx_runtime.jsx)("p", {
+                                                        className: m.sub,
+                                                        children: t("detailNoTools")
+                                                }) : testResult.ok ? (0, react_jsx_runtime.jsx)("div", {
+                                                        className: m.detailBlock,
+                                                        children: Array.isArray(testResult.tools) && testResult.tools.length > 0 ? testResult.tools.map((tool) => (0, react_jsx_runtime.jsx)("span", {
+                                                                className: m.detailChip,
+                                                                children: tool.name
+                                                        }, tool.name)) : (0, react_jsx_runtime.jsx)("p", {
+                                                                className: m.sub,
+                                                                children: t("detailNoTools")
+                                                        })
+                                                }) : (0, react_jsx_runtime.jsx)("p", {
+                                                        className: m.sub,
+                                                        children: t("testFailed") + " " + (testResult.error ?? "")
+                                                })]
+                                        }), testing ? (0, react_jsx_runtime.jsx)("p", {
+                                                className: m.sub,
+                                                children: t("testing")
+                                        }) : null]
+                                }),
+                                footer: (0, react_jsx_runtime.jsxs)("div", {
+                                        className: m.detailBlock,
+                                        "data-tools": undefined,
+                                        children: [(0, react_jsx_runtime.jsx)("button", {
+                                                type: "button",
+                                                className: m.actionBtn,
+                                                onClick: onTest,
+                                                disabled: testing,
+                                                children: testing ? t("testing") : t("test")
+                                        }), (0, react_jsx_runtime.jsx)("span", { className: m.spacer }), confirming ? (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, {
+                                                children: [(0, react_jsx_runtime.jsx)("button", {
+                                                        type: "button",
+                                                        className: m.actionBtn,
+                                                        onClick: onCancelConfirm,
+                                                        children: t("cancel")
+                                                }), (0, react_jsx_runtime.jsx)("button", {
+                                                        type: "button",
+                                                        className: m.dangerBtn,
+                                                        "data-confirm": "true",
+                                                        onClick: onDelete,
+                                                        children: t("confirmDelete")
+                                                })]
+                                        }) : (0, react_jsx_runtime.jsx)("button", {
+                                                type: "button",
+                                                className: m.dangerBtn,
+                                                onClick: onDelete,
+                                                children: t("delete")
+                                        }), (0, react_jsx_runtime.jsx)("button", {
+                                                type: "button",
+                                                className: m.actionBtn,
+                                                onClick: onEdit,
+                                                children: t("detailEdit")
+                                        })]
+                                })
+                        });
+                }
                 function McpSection({ t, listMcp, saveMcp, removeMcp, setEnabledMcp, testMcp, reloadMcp, checkUpdateRemote }) {
                         const [loadState, setLoadState] = react.useState({ kind: "loading" } as any);
                         const [data, setData] = react.useState(null);
@@ -2766,6 +2722,8 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                         const [confirming, setConfirming] = react.useState(null);
                         const [testing, setTesting] = react.useState(null);
                         const [testResult, setTestResult] = react.useState(null);
+                        // 详情弹窗当前查看的服务器（null 表示未打开）。
+                        const [detail, setDetail] = react.useState(null);
                         react.useEffect(() => {
                                 let cancelled = false;
                                 listMcp().then((value) => {
@@ -2871,80 +2829,102 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                                         (0, react_jsx_runtime.jsx)("path", { d: "M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" })
                                 ]
                         });
-                        const serverCard = (server, isExternal) => {
-                                const state = stateLabel(server);
-                                const dotOn = server.enabled && server.fiberPhase === "active";
-                                const dotErr = server.fiberPhase === "failed";
-                                return (0, react_jsx_runtime.jsxs)("div", {
-                                        className: m.card,
-                                        children: [(0, react_jsx_runtime.jsxs)("div", {
-                                                className: m.cardTop,
-                                                children: [(0, react_jsx_runtime.jsx)("span", { className: m.name, children: server.serverName }), (0, react_jsx_runtime.jsxs)("span", {
-                                                        className: m.badges,
-                                                        children: [(0, react_jsx_runtime.jsx)("span", { className: m.badge, children: server.transport === "streamable-http" ? "HTTP" : "STDIO" }), isExternal ? (0, react_jsx_runtime.jsx)("span", { className: m.badge, children: t("external") }) : null]
-                                                }), (0, react_jsx_runtime.jsx)("span", { className: m.spacer }), isExternal ? null : (0, react_jsx_runtime.jsx)("button", {
-                                                        type: "button",
-                                                        className: m.iconBtn,
-                                                        "aria-label": t("editTitle"),
-                                                        onClick: () => { setDialogError(null); setEditing({ server }); },
-                                                        children: gearIcon
-                                                })]
-                                        }), (0, react_jsx_runtime.jsxs)("div", {
-                                                className: m.meta,
-                                                children: [(0, react_jsx_runtime.jsx)("span", {
-                                                        className: m.dot,
-                                                        "data-on": server.enabled ? "true" : "false",
-                                                        "data-err": server.fiberPhase === "failed" ? "true" : "false"
-                                                }), (0, react_jsx_runtime.jsx)("span", { children: t !== null ? t("toolCount").replace("{count}", String(server.toolCount ?? 0)) : "" })]
-                                        }), isExternal ? null : (0, react_jsx_runtime.jsxs)("div", {
-                                                className: m.actions,
-                                                children: [(0, react_jsx_runtime.jsxs)("span", {
-                                                        className: c.switchRow,
-                                                        children: [(0, react_jsx_runtime.jsx)("button", {
-                                                                type: "button",
-                                                                role: "switch",
-                                                                className: c.switch,
-                                                                "data-on": server.enabled ? "true" : void 0,
-                                                                "aria-checked": server.enabled,
-                                                                "aria-label": server.enabled ? t("disable") : t("enable"),
-                                                                onClick: () => applyToggle(server),
-                                                                children: (0, react_jsx_runtime.jsx)("span", { className: c.switchThumb })
-                                                        }), (0, react_jsx_runtime.jsx)("span", { className: c.switchText, children: t !== null ? (server.enabled ? t("stateEnabled") : t("stateDisabled")) : "" })]
-                                                }), (0, react_jsx_runtime.jsx)("span", { className: m.spacer }), (0, react_jsx_runtime.jsx)("button", {
-                                                        type: "button",
-                                                        className: m.actionBtn,
-                                                        disabled: testing === server.serverName,
-                                                        onClick: () => applyTest(server),
-                                                        children: testing === server.serverName ? t !== null ? t("testing") : "" : t !== null ? t("test") : ""
-                                                }), confirming === server.serverName ? (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, {
+                        const serverIcon = (0, react_jsx_runtime.jsxs)("svg", {
+                                                        width: 14,
+                                                        height: 14,
+                                                        viewBox: "0 0 24 24",
+                                                        fill: "none",
+                                                        stroke: "currentColor",
+                                                        strokeWidth: 1.8,
+                                                        strokeLinecap: "round",
+                                                        strokeLinejoin: "round",
                                                         children: [
-                                                                (0, react_jsx_runtime.jsx)("button", {
-                                                                        type: "button",
-                                                                        className: m.actionBtn,
-                                                                        onClick: () => setConfirming(null),
-                                                                        children: t !== null ? t("cancel") : ""
-                                                                }),
-                                                                (0, react_jsx_runtime.jsx)("button", {
-                                                                        type: "button",
-                                                                        className: m.dangerBtn,
-                                                                        "data-confirm": "true",
-                                                                        onClick: () => applyRemove(server),
-                                                                        children: t !== null ? t("confirmDelete") : ""
-                                                                })
+                                                                (0, react_jsx_runtime.jsx)("rect", { x: 3, y: 4, width: 18, height: 7, rx: 2 }),
+                                                                (0, react_jsx_runtime.jsx)("rect", { x: 3, y: 13, width: 18, height: 7, rx: 2 }),
+                                                                (0, react_jsx_runtime.jsx)("line", { x1: 7, y1: 7.5, x2: 7.01, y2: 7.5 }),
+                                                                (0, react_jsx_runtime.jsx)("line", { x1: 7, y1: 16.5, x2: 7.01, y2: 16.5 })
                                                         ]
-                                                }) : (0, react_jsx_runtime.jsx)("button", {
-                                                        type: "button",
-                                                        className: m.dangerBtn,
-                                                        onClick: () => applyRemove(server),
-                                                        children: t !== null ? t("delete") : ""
-                                                })]
-                                                                                }), testResult?.serverName === server.serverName ? (0, react_jsx_runtime.jsxs)("div", {
-                                                className: m.result,
-                                                "data-ok": testResult.result.ok ? "true" : "false",
-                                                children: [testResult.result.ok ? t !== null ? t("testOk").replace("{count}", String(testResult.result.tools?.length ?? 0)) : "" : t !== null ? t("testFailed") + " " + (testResult.result.error ?? "") : "", testResult.result.ok && Array.isArray(testResult.result.tools) ? (0, react_jsx_runtime.jsx)("div", { children: testResult.result.tools.map((tool) => tool.name).join(", ") }) : null]
-                                        }) : null]
-                                }, server.serverName + (isExternal ? ":external" : ""));
-                        };
+                                                });
+                                                const serverCard = (server, isExternal) => {
+                                                        const state = stateLabel(server);
+                                                        const desc = (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, {
+                                                                children: [(0, react_jsx_runtime.jsx)("span", {
+                                                                        className: m.dot,
+                                                                        "data-on": server.enabled ? "true" : "false",
+                                                                        "data-err": server.fiberPhase === "failed" ? "true" : "false"
+                                                                }), " " + (t !== null ? t(state) : "") + " · " + (t !== null ? t("toolCount").replace("{count}", String(server.toolCount ?? 0)) : "")]
+                                                        });
+                                                        return (0, react_jsx_runtime.jsxs)("div", {
+                                                                className: m.card,
+                                                                onClick: () => setDetail(server),
+                                                                children: [(0, react_jsx_runtime.jsx)("span", {
+                                                                        className: m.cardIcon,
+                                                                        children: serverIcon
+                                                                }), (0, react_jsx_runtime.jsxs)("span", {
+                                                                        className: m.cardBody,
+                                                                        children: [(0, react_jsx_runtime.jsx)("span", {
+                                                                                className: m.name,
+                                                                                children: server.serverName
+                                                                        }), (0, react_jsx_runtime.jsxs)("span", {
+                                                                                className: m.cardDesc,
+                                                                                children: [(0, react_jsx_runtime.jsx)("span", { className: m.badge, children: server.transport === "streamable-http" ? "HTTP" : "STDIO" }), isExternal ? (0, react_jsx_runtime.jsx)("span", { className: m.badge, children: t("external") }) : null, " " + desc]
+                                                                        })]
+                                                                }), (0, react_jsx_runtime.jsxs)("span", {
+                                                                        className: m.cardTrailing,
+                                                                        children: [isExternal ? null : (0, react_jsx_runtime.jsx)("button", {
+                                                                                type: "button",
+                                                                                className: m.iconBtn,
+                                                                                "aria-label": t("editTitle"),
+                                                                                title: t("editTitle"),
+                                                                                onClick: (event) => { event.stopPropagation(); setDialogError(null); setDetail(null); setEditing({ server }); },
+                                                                                children: gearIcon
+                                                                        }), (0, react_jsx_runtime.jsx)("button", {
+                                                                                type: "button",
+                                                                                className: m.actionBtn,
+                                                                                disabled: testing === server.serverName,
+                                                                                onClick: (event) => { event.stopPropagation(); applyTest(server); },
+                                                                                children: testing === server.serverName ? t !== null ? t("testing") : "" : t !== null ? t("test") : ""
+                                                                        }), confirming === server.serverName ? (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, {
+                                                                                children: [
+                                                                                        (0, react_jsx_runtime.jsx)("button", {
+                                                                                                type: "button",
+                                                                                                className: m.actionBtn,
+                                                                                                onClick: (event) => { event.stopPropagation(); setConfirming(null); },
+                                                                                                children: t !== null ? t("cancel") : ""
+                                                                                        }),
+                                                                                        (0, react_jsx_runtime.jsx)("button", {
+                                                                                                type: "button",
+                                                                                                className: m.dangerBtn,
+                                                                                                "data-confirm": "true",
+                                                                                                onClick: (event) => { event.stopPropagation(); applyRemove(server); },
+                                                                                                children: t !== null ? t("confirmDelete") : ""
+                                                                                        })
+                                                                                ]
+                                                                        }) : (0, react_jsx_runtime.jsx)("button", {
+                                                                                type: "button",
+                                                                                className: m.dangerBtn,
+                                                                                onClick: (event) => { event.stopPropagation(); applyRemove(server); },
+                                                                                children: t !== null ? t("delete") : ""
+                                                                        }), (0, react_jsx_runtime.jsxs)("span", {
+                                                                                className: c.switchRow,
+                                                                                children: [(0, react_jsx_runtime.jsx)("button", {
+                                                                                        type: "button",
+                                                                                        role: "switch",
+                                                                                        className: c.switch,
+                                                                                        "data-on": server.enabled ? "true" : void 0,
+                                                                                        "aria-checked": server.enabled,
+                                                                                        "aria-label": server.enabled ? t("disable") : t("enable"),
+                                                                                        onClick: (event) => { event.stopPropagation(); applyToggle(server); },
+                                                                                        children: (0, react_jsx_runtime.jsx)("span", { className: c.switchThumb })
+                                                                                }), (0, react_jsx_runtime.jsx)("span", { className: c.switchText, children: t !== null ? (server.enabled ? t("stateEnabled") : t("stateDisabled")) : "" })]
+                                                                        })]
+                                                                }), testResult?.serverName === server.serverName ? (0, react_jsx_runtime.jsxs)("div", {
+                                                                        className: m.result,
+                                                                        "data-ok": testResult.result.ok ? "true" : "false",
+                                                                        children: [testResult.result.ok ? t !== null ? t("testOk").replace("{count}", String(testResult.result.tools?.length ?? 0)) : "" : t !== null ? t("testFailed") + " " + (testResult.result.error ?? "") : "", testResult.result.ok && Array.isArray(testResult.result.tools) ? (0, react_jsx_runtime.jsx)("div", { children: testResult.result.tools.map((tool) => tool.name).join(", ") }) : null]
+                                                                }) : null]
+                                                        }, server.serverName + (isExternal ? ":external" : ""));
+                                                };;
                         return (0, react_jsx_runtime.jsxs)("div", {
                                 className: m.section,
                                 children: [(0, react_jsx_runtime.jsxs)("div", {
@@ -3001,434 +2981,26 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                                         onCancel: () => setEditing(null),
                                         busy: dialogBusy,
                                         error: dialogError
+                                }) : null, detail !== null ? (0, react_jsx_runtime.jsx)(McpDetailDialog, {
+                                        t: t !== null ? t : (key) => key,
+                                        server: detail,
+                                        testResult: testResult?.serverName === detail.serverName ? testResult.result : null,
+                                        testing: testing === detail.serverName,
+                                        confirming: confirming === detail.serverName,
+                                        onClose: () => setDetail(null),
+                                        onEdit: () => {
+                                                setDialogError(null);
+                                                setDetail(null);
+                                                setEditing({ server: detail });
+                                        },
+                                        onToggle: () => applyToggle(detail),
+                                        onTest: () => applyTest(detail),
+                                        onDelete: () => applyRemove(detail),
+                                        onCancelConfirm: () => setConfirming(null)
                                 }) : null]
                         });
                 }
 
-		function PluginsSection(props) {
-			const { t, listPlugins, installPlugin, enablePlugin, disablePlugin, removePlugin, duplicatesPlugins, reportPlugins, anomalyAction, skills, mcp } = props;
-			const jsx = react_jsx_runtime.jsx;
-			const jsxs = react_jsx_runtime.jsxs;
-			const [tab, setTab] = useLocalStorage("tab", "list");
-			const [query, setQuery] = useLocalStorage("query", "");
-			const [listState, setListState] = react.useState({ status: "loading" });
-			const [request, setRequest] = react.useState(0);
-			const [collapsed, setCollapsed] = react.useState(() => new Set());
-			const [busyKey, setBusyKey] = react.useState(null);
-			const [opError, setOpError] = react.useState(null);
-			const [confirmKey, setConfirmKey] = react.useState(null);
-			const [installOpen, setInstallOpen] = react.useState(false);
-			const [installSpec, setInstallSpec] = react.useState("");
-			const [installKeep, setInstallKeep] = react.useState("");
-			const [installState, setInstallState] = react.useState(null);
-			const [reportText, setReportText] = react.useState(null);
-			const [duplicates, setDuplicates] = react.useState(null);
-			const [dupState, setDupState] = react.useState({ status: "idle" });
-
-			react.useEffect(() => {
-				let current = true;
-				setListState((prev) => (prev.status === "ready" ? prev : { status: "loading" }));
-				Promise.resolve().then(() => listPlugins()).then((snapshot) => {
-					if (!current) return;
-					const plugins = snapshot !== null && typeof snapshot === "object" && Array.isArray(snapshot.plugins) ? snapshot.plugins : [];
-					const anomalies = snapshot !== null && typeof snapshot === "object" && Array.isArray(snapshot.anomalies) ? snapshot.anomalies : [];
-					const profile = snapshot !== null && typeof snapshot === "object" ? (snapshot.profile ?? null) : null;
-					const profileDir = snapshot !== null && typeof snapshot === "object" ? (snapshot.profileDir ?? null) : null;
-					setListState({ status: "ready", plugins, anomalies, profile, profileDir });
-				}, () => {
-					if (current) setListState({ status: "error" });
-				});
-				return () => { current = false; };
-			}, [listPlugins, request]);
-
-			const refresh = () => { setOpError(null); setRequest((value) => value + 1); };
-			const cleanHostError = (error) => String(error?.message ?? error).replace(/^pluginsViewer\.[a-zA-Z]+ failed: [a-zA-Z0-9_-]+: /, "");
-
-			const plugins = listState.status === "ready" ? listState.plugins : [];
-			const anomalies = listState.status === "ready" ? (listState.anomalies ?? []) : [];
-			const normalizedQuery = query.trim().toLocaleLowerCase();
-			const matches = (plugin) => plugin.name.toLocaleLowerCase().includes(normalizedQuery)
-				|| String(plugin.description ?? "").toLocaleLowerCase().includes(normalizedQuery)
-				|| String(plugin.category ?? "").toLocaleLowerCase().includes(normalizedQuery);
-			const filtered = normalizedQuery === "" ? plugins : plugins.filter(matches);
-			const managed = filtered.filter((plugin) => plugin.managed !== false && plugin.installed !== false);
-			const dangling = filtered.filter((plugin) => plugin.managed !== false && plugin.installed === false);
-			const systemPlugins = filtered.filter((plugin) => plugin.managed === false);
-
-			const runOp = (key, op, thenRefresh) => {
-				setBusyKey(key);
-				setOpError(null);
-				Promise.resolve().then(op).then(() => {
-					if (thenRefresh) refresh();
-				}, (error) => {
-					setOpError(cleanHostError(error));
-				}).then(() => setBusyKey(null));
-			};
-
-			const toggleGroup = (category) => {
-				setCollapsed((prev) => {
-					const next = new Set(prev);
-					if (next.has(category)) next.delete(category);
-					else next.add(category);
-					return next;
-				});
-			};
-
-			const applyInstall = (keepValue) => {
-				setBusyKey("install");
-				setOpError(null);
-				Promise.resolve().then(() => installPlugin({ spec: installSpec, keep: keepValue === "" ? null : keepValue })).then((result) => {
-					setInstallState(result);
-					if (result !== null && result.ok === true) {
-						setInstallSpec("");
-						setInstallKeep("");
-					}
-				}, (error) => {
-					setOpError(cleanHostError(error));
-				}).then(() => setBusyKey(null));
-			};
-
-			const loadDuplicates = () => {
-				setDupState({ status: "loading" });
-				setOpError(null);
-				Promise.resolve().then(() => duplicatesPlugins()).then((value) => {
-					setDuplicates(value);
-					setDupState({ status: "ready" });
-				}, (error) => {
-					setOpError(cleanHostError(error));
-					setDupState({ status: "error" });
-				});
-			};
-
-			const loadReport = () => {
-				setOpError(null);
-				Promise.resolve().then(() => reportPlugins()).then((value) => {
-					setReportText(value !== null && typeof value === "object" && typeof value.markdown === "string" ? value.markdown : String(value ?? ""));
-				}, (error) => {
-					setOpError(cleanHostError(error));
-				});
-			};
-
-			const copyReport = () => {
-				if (reportText === null) return;
-				Promise.resolve().then(() => navigator.clipboard.writeText(reportText)).catch(() => {});
-			};
-
-			const statusOf = (plugin) => {
-				if (plugin.enabledState !== undefined && plugin.enabledState !== null) return plugin.enabledState.enabled ? "enabled" : "disabled";
-				return plugin.enabled ? "enabled" : "disabled";
-			};
-
-			const stateLabel = (plugin) => {
-				if (plugin.installed === false) return t("dangling");
-				return statusOf(plugin) === "enabled" ? t("enabled") : t("disabled");
-			};
-
-			const stateKind = (plugin) => {
-				if (plugin.installed === false) return "dangling";
-				return statusOf(plugin) === "enabled" ? "enabled" : "disabled";
-			};
-
-			const canManage = (plugin) => plugin.managed !== false;
-			const renderActions = (plugin) => {
-				if (!canManage(plugin)) return null;
-				const key = "op:" + plugin.name;
-				const isEnabled = statusOf(plugin) === "enabled";
-				return jsxs("span", {
-					className: p.actions,
-					children: [
-						jsx("button", {
-							type: "button",
-							className: p.actionBtn,
-							disabled: busyKey !== null,
-							onClick: () => runOp(key, () => isEnabled ? disablePlugin({ name: plugin.name }) : enablePlugin({ name: plugin.name }), true),
-							children: isEnabled ? t("disable") : t("enable")
-						}),
-						confirmKey === plugin.name ? jsxs("span", {
-							className: p.actions,
-							children: [
-								jsx("button", { type: "button", className: p.dangerBtn, "data-confirm": "true", onClick: () => { runOp(key, () => removePlugin({ name: plugin.name, yes: true }), true); setConfirmKey(null); }, children: t("confirmRemove") }),
-								jsx("button", { type: "button", className: p.actionBtn, onClick: () => setConfirmKey(null), children: t("cancel") })
-							]
-						}) : jsx("button", {
-							type: "button",
-							className: p.dangerBtn,
-							disabled: busyKey !== null,
-							onClick: () => setConfirmKey(plugin.name),
-							children: t("remove")
-						})
-					]
-				});
-			};
-
-			const renderPluginCard = (plugin) => {
-				const metaParts = [plugin.category, plugin.version ?? ""].filter(Boolean).join(" · ");
-				return jsxs("li", {
-					className: p.card,
-					"data-plugin-name": plugin.name,
-					children: [
-						jsxs("div", {
-							className: p.cardRow,
-							children: [
-								jsx("span", { className: p.statusDot, "data-enabled": statusOf(plugin) === "enabled" ? "true" : "false", "aria-hidden": "true" }),
-								jsx("span", { className: p.cardName, title: plugin.name, children: plugin.name }),
-								jsx("span", { className: p.badge, "data-kind": stateKind(plugin), children: stateLabel(plugin) }),
-								plugin.managed === false ? jsx("span", { className: p.badge, children: t("readonly") }) : null,
-								renderActions(plugin)
-							]
-						}),
-						metaParts !== "" ? jsx("p", { className: p.cardMeta, children: metaParts }) : null,
-						plugin.description !== null && plugin.description !== "" ? jsx("p", { className: p.cardMeta, children: plugin.description }) : null,
-						plugin.loaderEntry !== undefined && plugin.loaderEntry !== null ? jsx("p", { className: p.cardMeta, children: "entry:" + (plugin.loaderEntry.entryId ?? "-") + " · phase:" + (plugin.loaderEntry.fiberPhase ?? "-") }) : null
-					]
-				});
-			};
-
-			const renderGroup = (category, members) => {
-				if (members.length === 0) return null;
-				const open = !collapsed.has(category);
-				return jsxs("div", {
-					className: p.group,
-					children: [
-						jsxs("button", {
-							type: "button",
-							className: p.groupHead,
-							"aria-expanded": open ? "true" : "false",
-							onClick: () => toggleGroup(category),
-							children: [
-								jsx("span", { children: category }),
-								jsx("span", { className: p.groupCount, children: String(members.length) })
-							]
-						}),
-						open ? jsx("ul", { className: p.cards, children: members.map(renderPluginCard) }) : null
-					]
-				});
-			};
-
-			const renderAnomaly = (anomaly) => {
-				const actionLabel = anomaly.action === "cleanup" ? t("anomalyActionCleanup")
-					: anomaly.action === "remove" ? t("anomalyActionRemove")
-					: anomaly.action === "retry" ? t("anomalyActionRetry")
-					: t("anomalyActionManual");
-				const action = () => {
-					if (anomaly.action === undefined || anomaly.plugin === undefined) return;
-					setBusyKey("anomaly:" + anomaly.plugin);
-					Promise.resolve().then(() => anomalyAction({ plugin: anomaly.plugin, kind: anomaly.action })).then(() => {
-						refresh();
-					}, (error) => {
-						setOpError(cleanHostError(error));
-					}).then(() => setBusyKey(null));
-				};
-				return jsxs("div", {
-					className: p.anomalyRow,
-					"data-anomaly-kind": anomaly.kind,
-					children: [
-						jsxs("span", {
-							className: p.anomalyText,
-							children: [
-								jsx("strong", { children: anomaly.kind }),
-								" ",
-								anomaly.message,
-								anomaly.hint !== undefined ? jsx("span", { className: p.cardMeta, children: " " + t("anomalyHint") + "：" + anomaly.hint }) : null
-							]
-						}),
-						anomaly.action !== undefined && anomaly.plugin !== undefined ? jsx("button", {
-							type: "button",
-							className: p.actionBtn,
-							disabled: busyKey !== null,
-							onClick: action,
-							children: actionLabel
-						}) : null
-					]
-				});
-			};
-			const renderListTab = () => {
-				return jsxs("div", {
-					className: p.section,
-					children: [
-						jsxs("div", {
-							className: p.toolbar,
-							children: [
-								jsxs("div", {
-									className: p.searchBox,
-									children: [
-										jsx("input", {
-											type: "search",
-											className: p.searchField,
-											value: query,
-											placeholder: t("search"),
-											"aria-label": t("search"),
-											onChange: (event) => { setQuery(event.currentTarget.value); }
-										})
-									]
-								}),
-								jsx("button", { type: "button", className: p.addBtn, onClick: () => { setInstallOpen(true); setInstallState(null); }, children: t("install") }),
-								jsx("button", { type: "button", className: p.addBtn, onClick: loadReport, children: t("report") }),
-								jsx("button", { type: "button", className: p.addBtn, onClick: refresh, children: t("retry") })
-							]
-						}),
-						opError !== null ? jsxs("div", { className: p.notice, "data-kind": "error", role: "alert", children: [jsx("span", { children: t("opFailed") + "：" + opError }), jsx("button", { type: "button", className: p.actionBtn, onClick: () => setOpError(null), children: t("close") })] }) : null,
-						reportText !== null ? jsxs("div", {
-							className: p.notice,
-							"data-kind": "info",
-							children: [
-								jsx("span", { children: t("reportDone") }),
-								jsx("button", { type: "button", className: p.actionBtn, onClick: copyReport, children: t("copy") }),
-								jsx("button", { type: "button", className: p.actionBtn, onClick: () => setReportText(null), children: t("close") })
-							]
-						}) : null,
-						anomalies.length > 0 ? jsxs("div", {
-							className: p.notice,
-							"data-kind": "error",
-							children: [jsx("strong", { children: t("anomalies") }), anomalies.map(renderAnomaly)]
-						}) : null,
-						listState.status === "loading" ? jsx("p", { className: p.status, children: t("loading") }) : null,
-						listState.status === "error" ? jsxs("div", { className: p.notice, "data-kind": "error", children: [jsx("span", { children: t("error") }), jsx("button", { type: "button", className: p.actionBtn, onClick: refresh, children: t("retry") })] }) : null,
-						plugins.length === 0 && listState.status === "ready" ? jsx("p", { className: p.status, children: t("empty") }) : null,
-						plugins.length > 0 && filtered.length === 0 ? jsx("p", { className: p.status, children: t("emptySearch") }) : null,
-						renderGroup(t("danglingGroup"), dangling),
-						[...new Set(managed.map((plugin) => plugin.category))].sort((a, b) => String(a).localeCompare(String(b))).map((category) => renderGroup(category, managed.filter((plugin) => plugin.category === category))),
-						renderGroup(t("systemGroup"), systemPlugins)
-					]
-				});
-			};
-
-			const renderDuplicatesTab = () => {
-				if (dupState.status === "idle") loadDuplicates();
-				if (dupState.status === "loading" || dupState.status === "idle") return jsx("p", { className: p.status, children: t("loading") });
-				if (dupState.status === "error") return jsxs("div", { className: p.notice, "data-kind": "error", children: [jsx("span", { children: t("error") }), jsx("button", { type: "button", className: p.actionBtn, onClick: loadDuplicates, children: t("retry") })] });
-				const groups = duplicates !== null && Array.isArray(duplicates.groups) ? duplicates.groups : [];
-				const scanned = duplicates !== null ? (duplicates.scanned ?? 0) : 0;
-				return jsxs("div", {
-					className: p.section,
-					children: [
-						jsx("p", { className: p.status, children: t("duplicatesScanned").replace("{n}", String(scanned)) }),
-						groups.length === 0 ? jsx("p", { className: p.status, children: t("duplicatesEmpty") }) : null,
-						groups.map((group, index) => {
-							const names = group.kind === "fully-covered"
-								? [group.covered?.name, group.covering?.name].filter(Boolean)
-								: (Array.isArray(group.plugins) ? group.plugins.map((plugin) => plugin.name) : []);
-							return jsxs("div", {
-								className: p.group,
-								children: [
-									jsxs("div", {
-										className: p.groupHead,
-										children: [
-											jsx("span", { children: group.kind === "fully-covered" ? t("fullyCovered") : t("overlap") }),
-											group.sharedWords !== undefined && group.sharedWords.length > 0 ? jsx("span", { className: p.groupCount, children: t("sharedWords") + "：" + group.sharedWords.join(", ") }) : null
-										]
-									}),
-									jsx("ul", {
-										className: p.cards,
-										children: names.map((name) => {
-											const plugin = plugins.find((candidate) => candidate.name === name);
-											return jsxs("li", {
-												className: p.card,
-												"data-plugin-name": name,
-												children: [
-													jsxs("div", {
-														className: p.cardRow,
-														children: [
-															jsx("span", { className: p.cardName, title: name, children: name }),
-															jsx("span", { className: p.badge, children: plugin !== undefined ? stateLabel(plugin) : "" }),
-															plugin !== undefined ? renderActions(plugin) : null
-														]
-													}),
-													plugin !== undefined && plugin.description !== null ? jsx("p", { className: p.cardMeta, children: plugin.description }) : null
-												]
-											}, index + ":" + name);
-										})
-									})
-								]
-							}, index);
-						})
-					]
-				});
-			};
-			const renderInstallDialog = () => {
-				if (!installOpen) return null;
-				const decision = installState !== null && installState.requiresDecision === true ? installState : null;
-				return jsx("div", {
-					className: p.dialog,
-					onClick: (event) => { if (event.target === event.currentTarget && busyKey !== "install") setInstallOpen(false); },
-					children: jsxs("div", {
-						className: p.dialogBox,
-						children: [
-							jsx("h4", { children: t("install") }),
-							jsxs("label", {
-								className: p.field,
-								children: [
-									jsx("span", { className: p.fieldLabel, children: t("installSpecLabel") }),
-									jsx("input", {
-										className: p.textInput,
-										value: installSpec,
-										placeholder: t("installSpecPlaceholder"),
-										onChange: (event) => { setInstallSpec(event.currentTarget.value); setInstallState(null); }
-									})
-								]
-							}),
-							jsxs("label", {
-								className: p.field,
-								children: [
-									jsx("span", { className: p.fieldLabel, children: t("installKeepLabel") }),
-									jsx("select", {
-										className: p.select,
-										value: installKeep,
-										onChange: (event) => { setInstallKeep(event.currentTarget.value); },
-										children: [
-											jsx("option", { value: "", children: t("installKeepAsk") }),
-											jsx("option", { value: "auto", children: t("installKeepAuto") }),
-											jsx("option", { value: "all", children: t("installKeepAll") }),
-											jsx("option", { value: "new", children: t("installKeepNew") }),
-											jsx("option", { value: "existing", children: t("installKeepExisting") })
-										]
-									})
-								]
-							}),
-							opError !== null ? jsxs("div", { className: p.notice, "data-kind": "error", children: [jsx("span", { children: t("opFailed") + "：" + opError })] }) : null,
-							decision !== null ? jsxs("div", {
-								className: p.notice,
-								"data-kind": "error",
-								children: [
-									jsx("strong", { children: t("installDecisionTitle") }),
-									jsx("span", { children: t("installDecisionHint") }),
-									Array.isArray(decision.decisions) ? decision.decisions.map((d, index) => jsx("div", { className: p.decision, children: jsx("p", { children: d.message }) }, index)) : null
-								]
-							}) : null,
-							installState !== null && installState.ok === true ? jsxs("div", {
-								className: p.notice,
-								"data-kind": "info",
-								children: [jsx("strong", { children: t("installDone") }), jsx("span", { children: installState.message ?? "" })]
-							}) : null,
-							jsxs("div", {
-								className: p.dialogActions,
-								children: [
-									jsx("button", { type: "button", className: p.addBtn, disabled: busyKey === "install" || installSpec.trim() === "", onClick: () => applyInstall(installKeep), children: busyKey === "install" ? t("installing") : t("installStart") }),
-									jsx("button", { type: "button", className: p.actionBtn, disabled: busyKey === "install", onClick: () => setInstallOpen(false), children: t("installCancel") })
-								]
-							})
-						]
-					})
-				});
-			};
-
-			return jsxs("div", {
-				className: p.section,
-				children: [
-					jsxs("div", {
-						className: p.tabs,
-						children: [
-							jsx("button", { type: "button", className: p.tab, "data-active": tab === "list" ? "true" : undefined, onClick: () => setTab("list"), children: t("tabList") }),
-							jsx("button", { type: "button", className: p.tab, "data-active": tab === "duplicates" ? "true" : undefined, onClick: () => setTab("duplicates"), children: t("tabDuplicates") }),
-							jsx("button", { type: "button", className: p.tab, "data-active": tab === "skills" ? "true" : undefined, onClick: () => setTab("skills"), children: t("tabSkills") }),
-							jsx("button", { type: "button", className: p.tab, "data-active": tab === "mcp" ? "true" : undefined, onClick: () => setTab("mcp"), children: t("tabMcp") })
-						]
-					}),
-					tab === "skills" ? jsx(SkillsSection, { ...skills }) : tab === "mcp" ? jsx(McpSection, { ...mcp }) : tab === "list" ? renderListTab() : renderDuplicatesTab(),
-					renderInstallDialog()
-				]
-			});
-		}
 		// ── cordis 插件体 ─────────────────────────────────────────────────────
 		const inject = ["slots", "locale", "remote", "sessions"];
 
@@ -3436,19 +3008,9 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
 			// 字典注册（生命周期随插件 fiber）
 			ctx.effect(() => ctx.locale.register(NS, { zh, en }), "ui-skill-mcp-panel: skill dictionaries");
 			ctx.effect(() => ctx.locale.register(MCP_NS, { zh: mcpZh, en: mcpEn }), "ui-skill-mcp-panel: mcp dictionaries");
-			ctx.effect(() => ctx.locale.register(NS_PLUGINS, { zh: zhPlugins, en: enPlugins }), "dsh-plugin-manager: plugin dictionaries");
-
-			// 设置面板重开时重新打图标标记（元素重建，观察者再次扫描）
-			if (typeof document !== "undefined") {
-				const navObserver = new MutationObserver(scheduleNavPatch);
-				navObserver.observe(document.body, { childList: true, subtree: true });
-				scheduleNavPatch();
-				ctx.effect(() => () => navObserver.disconnect(), "ui-skill-mcp-panel: nav icon patch");
-			}
 
 			const t = ctx.locale.bind(NS);
 			const mt = ctx.locale.bind(MCP_NS);
-			const pt = ctx.locale.bind(NS_PLUGINS);
 			// 挂载远程贡献；所有远程调用都等待挂载完成后再取命名空间服务。
 			const mount = ctx.remote.$mount(CONTRIBUTION);
 			const currentSessionId = () => {
@@ -3482,13 +3044,6 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
 				if (!result.ok) throw new Error("mcpManager." + method + " failed: " + result.error.code + ": " + result.error.message);
 				return result.value;
 			};
-			const callPlugin = async (method, ...args) => {
-				await mount;
-				const remote = ctx.get("remote.pluginsViewer");
-				const result = await remote[method](...args);
-				if (!result.ok) throw new Error("pluginsViewer." + method + " failed: " + result.error.code + ": " + result.error.message);
-				return result.value;
-			};
 			const sectionFace = () => ({
 				currentSessionId,
 				listSkills: () => callRemote("list", currentSessionId()),
@@ -3511,28 +3066,25 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
 				testMcp: (payload) => callMcp("test", payload),
 				reloadMcp: () => callMcp("reload")
 			});
-			const pluginSectionFace = () => ({
-				listPlugins: () => callPlugin("list"),
-				installPlugin: (payload) => callPlugin("installPlugin", { payload }),
-				enablePlugin: (payload) => callPlugin("enable", { payload }),
-				disablePlugin: (payload) => callPlugin("disable", { payload }),
-				removePlugin: (payload) => callPlugin("removePlugin", { payload }),
-				duplicatesPlugins: () => callPlugin("duplicates"),
-				reportPlugins: () => callPlugin("report"),
-				anomalyAction: (payload) => callPlugin("anomalyAction", { payload }),
-				skills: { ...sectionFace(), t },
-				mcp: { ...mcpSectionFace(), t: mt }
-			});
-						// 插件管理：注册为原生「插件」模块的一个 Tab（settings.plugins.tab，
-			// order 20，位于已配置/已安装之后）。
+
+			// 「技能」页签：挂在官方「插件」section 下（order 1，位于「插件配置」0 之后）。
 			ctx.slots.inject("settings.plugins.tab", () => ctx.slots.register({
 				name: "settings.plugins.tab",
-				id: "dsh-plugin-manager",
-				order: 20,
-				label: () => pt("nav"),
-				locale: NS_PLUGINS,
-				inject: pluginSectionFace
-			}, PluginsSection));
+				id: "skills",
+				order: 1,
+				label: () => t("nav"),
+				locale: NS,
+				inject: sectionFace
+			}, SkillsSection));
+			// 「MCP」页签：order 2，位于「技能」(1) 下方。
+			ctx.slots.inject("settings.plugins.tab", () => ctx.slots.register({
+				name: "settings.plugins.tab",
+				id: "mcp",
+				order: 2,
+				label: () => mt("nav"),
+				locale: MCP_NS,
+				inject: mcpSectionFace
+			}, (props) => (0, react_jsx_runtime.jsx)(McpSection, { ...props, t: mt })));
 		}
 
 		bundleModule.exports.NS = NS;

@@ -1,6 +1,6 @@
 {
-  "name": "dsh-input-enhancer",
-  "version": "2.3.1",
+  "name": "smilexx-input-enhancer",
+  "version": "2.3.2",
   "description": "增强 DSH Web GUI 输入栏：分类命令菜单、Plan 模式按钮与实时调整方向",
   "author": "AI Development Team",
   "license": "MIT",

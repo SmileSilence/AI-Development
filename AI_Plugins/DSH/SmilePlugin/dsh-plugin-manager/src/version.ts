@@ -1,5 +1,5 @@
 /**
- * dsh-skill-mcp-panel —— 版本检查工具（CLI 与宿主共用）。
+ * smilexx-skill-mcp-manager —— 版本检查工具（CLI 与宿主共用）。
  *
  * 当前版本取自本插件自己的 package.json；最新版本取自 GitHub 官方 REST API
  * 的 releases/latest。版本比较使用简易 semver（数字段逐位比较，忽略 v 前缀）。
@@ -8,10 +8,12 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 /** 本包 / 仓库 / 安装 spec（CLI update 与 UI 共用同一事实源）。 */
-export const PACKAGE_NAME = "dsh-skill-mcp-panel";
-export const REPO_SLUG = "Fishquito7/dsh-skill-mcp-panel";
-export const INSTALL_SPEC = `github:${REPO_SLUG}`;
-export const RELEASES_LATEST_URL = `https://api.github.com/repos/${REPO_SLUG}/releases/latest`;
+// 本地分发（file: tgz 安装）：REPO_SLUG 为空表示无远端发布源，
+// fetchUpdateCheck() 短路返回「无更新」，CLI update / UI 横幅不会误报。
+export const PACKAGE_NAME = "smilexx-skill-mcp-manager";
+export const REPO_SLUG = "";
+export const INSTALL_SPEC = REPO_SLUG === "" ? "" : `github:${REPO_SLUG}`;
+export const RELEASES_LATEST_URL = REPO_SLUG === "" ? "" : `https://api.github.com/repos/${REPO_SLUG}/releases/latest`;
 
 export interface UpdateCheckInfo {
   latest: string | null;
@@ -38,6 +40,10 @@ export function currentVersion(): string {
  * 提示“限流”，而不是误报“已是最新版本”。
  */
 export async function fetchUpdateCheck(): Promise<UpdateCheckInfo> {
+  // 本地分发（file: tgz 安装）：没有远端发布源，直接报告「无更新」。
+  if (REPO_SLUG === "") {
+    return { latest: null, updateAvailable: false, rateLimited: false, error: "本地安装包（无远端发布源）" };
+  }
   // 手动 AbortController + finally 清理：AbortSignal.timeout 的隐式定时器在
   // Windows 上退出时可能触发 libuv 断言（UV_HANDLE_CLOSING）。
   const controller = new AbortController();

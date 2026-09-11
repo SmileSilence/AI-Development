@@ -1,6 +1,6 @@
-# dsh-plugin-manager bundle patch.
+# smilexx-skill-mcp-manager bundle patch.
 # 安装本包后 profile 自动将其加入 dsh.profile.bundles 并应用本层，
 # 插件无需手工编辑 cordis.patch.yml 即可挂载。
 - insert:
-    - id: dsh-plugin-manager
-      name: dsh-plugin-manager
+    - id: smilexx-skill-mcp-manager
+      name: smilexx-skill-mcp-manager

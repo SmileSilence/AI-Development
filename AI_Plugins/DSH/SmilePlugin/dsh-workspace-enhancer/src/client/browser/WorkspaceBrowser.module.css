@@ -398,6 +398,12 @@
   scrollbar-gutter: stable;
 }
 
+/* 批量模式会把焦点交给列表区域以接收 Ctrl+A；隐藏浏览器默认白色轮廓。 */
+.listArea:focus,
+.listArea:focus-visible {
+  outline: none;
+}
+
 .flatList > * + *,
 .searchTree > [role='treeitem'] + [role='treeitem'],
 .groupSection > * + * {
@@ -776,10 +782,6 @@
 .bulkActiveIcon {
   color: var(--dsw-alias-state-success-primary, var(--dsw-alias-interactive-accent));
 }
-  color: var(--dsw-alias-interactive-accent, var(--dsw-alias-label-primary));
-  border-color: var(--dsw-alias-interactive-accent, var(--dsw-alias-border-default, var(--dsw-alias-border)));
-  background: var(--dsw-alias-interactive-bg-hover);
-}
 
 /* ---- 标签筛选（v0.4.0）：标题栏筛选按钮 + 弹出面板（飞书多维表格式） ---- */
 .filterButton {
@@ -974,4 +976,3 @@
     transition: none;
   }
 }
-

@@ -1,5 +1,5 @@
 /**
- * dsh-workspace-enhancer — 标签筛选器（v0.5.0 改造）。
+ * smilexx-workspace-enhancer — 标签筛选器（v0.5.0 改造）。
  *
  * 由「标题栏右侧一个筛选图标按钮」+「点击弹出的筛选面板」组成（飞书多维表格式）：
  *  - 仅宽侧栏（wide）挂载；rail 窄侧栏保持现状不加筛选按钮。

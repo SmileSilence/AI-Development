@@ -1,0 +1,33 @@
+{
+  "host": "0.1.3-alpha.1-d347e70",
+  "port": 13074,
+  "packageVersion": "0.7.2",
+  "archiveManagerDisableRemoved": true,
+  "results": [
+    {
+      "name": "daily-ui-loaded-with-both-workspace-plugins-enabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "enhancer-settings-remain-available",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no-duplicate-slot-client-error",
+      "ok": true,
+      "detail": {
+        "errors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "name": "no-page-errors",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "consoleErrors": []
+}

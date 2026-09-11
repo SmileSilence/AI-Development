@@ -4,7 +4,7 @@
  * 跟随浅色/深色主题；重复注入由 style id 守卫。
  */
 
-const STYLE_ID = 'dsh-input-enhancer-style'
+const STYLE_ID = 'smilexx-input-enhancer-style'
 
 const CSS = [
   // ── Codex 风格“调整方向”：折向箭头 + 文字，无常驻底色 ──────

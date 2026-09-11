@@ -1,5 +1,5 @@
 /**
- * dsh-workspace-enhancer — Host 半部。
+ * smilexx-workspace-enhancer — Host 半部。
  *
  * 职责：
  *  1) 注册「打开工作区目录」HTTP 路由，供 Client 半部在系统文件管理器中

@@ -1,0 +1,140 @@
+{
+  "host": "0.1.3-alpha.1-d347e70",
+  "port": 13071,
+  "syntheticData": true,
+  "results": [
+    {
+      "name": "saved-running-setting-applies-on-load",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "compact-by-default",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "compact-preview-and-summary",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "edit-expands-form",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "draft-only-updates-preview",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cancel-discards-and-collapses",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "preview-无动效",
+      "ok": true,
+      "detail": {
+        "count": 0,
+        "animation": ""
+      }
+    },
+    {
+      "name": "preview-边缘流光",
+      "ok": true,
+      "detail": {
+        "count": 1,
+        "animation": "dshRunningTravel"
+      }
+    },
+    {
+      "name": "preview-跑马灯",
+      "ok": true,
+      "detail": {
+        "count": 1,
+        "animation": "dshRunningTravel"
+      }
+    },
+    {
+      "name": "preview-渐变流动",
+      "ok": true,
+      "detail": {
+        "count": 1,
+        "animation": "dshRunningTravel"
+      }
+    },
+    {
+      "name": "save-collapses",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "reload-remains-compact",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "reduced-motion-static",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "grouped-running-session-full-row-effect",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "running-pill-remains-static",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover-prioritizes-host-fill",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "selected-prioritizes-host-fill",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu-open-keeps-edge-layer",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bulk-selected-keeps-effect",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "flat-running-session-consistent",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collapsed-workspace-gets-effect-and-count",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "expanded-workspace-stops-effect",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search-running-row-consistent",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no-page-errors",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "errors": []
+}

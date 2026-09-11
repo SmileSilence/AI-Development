@@ -1,20 +1,16 @@
-# dsh-workspace-enhancer bundle patch
+# smilexx-workspace-enhancer bundle patch
 #
-# 接管 sidebar.workspaces（工作区侧栏）：
+# 注册 sidebar.workspaces（工作区侧栏）后备界面：
 #   - 禁用官方 ui-workspace（其 client 半部注册 sidebar.workspaces）
-#   - 禁用 @michengai/dsh-archive-manager 的 ui-workspace-archive-manager 替换
-#     （该插件同样替换侧栏；两个 occupant 会在运行时冲突——见 PLAN §M1）
-#   - insert 本插件的 Host + Client 半部（Client 注册我们的 fork WorkspaceBrowser）
+#   - insert 本插件的 Host + Client 半部；其它工作区插件仍可按优先级接管侧栏
 #
 # disabled 对不存在的 entry 幂等无害；对存在的 entry 停用。insert 由
 # dsh plugin --profile <name> add 触发，也可手动加入 cordis.patch.yml。
 - id: ui-workspace
   disabled: true
-- id: ui-workspace-archive-manager
-  disabled: true
 - insert:
     - id: workspace-enhancer
-      name: dsh-workspace-enhancer
+      name: smilexx-workspace-enhancer
       config:
         # 集成自 dsh-workspace-tagger 的标签子系统开关（默认开）。
         tags:

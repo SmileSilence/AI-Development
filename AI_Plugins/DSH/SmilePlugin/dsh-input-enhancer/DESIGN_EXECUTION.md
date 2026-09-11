@@ -18,7 +18,7 @@
 | 编号 | 必需验证场景 | 结果 | 实际证据 |
 | --- | --- | --- | --- |
 | P1 | 未启用、单次、常驻三态；外观与点击语义；外部原生入口状态同步 | 通过 | 〔组件〕PlanButton.test.jsx 17 项（三态外观、/plan 与 /plan off 点击语义）；〔隔离宿主〕accept.json：planOn/planOff 类名与 aria 互斥切换、`data-plan-button` 恰 1 个、截图 22/23 |
-| P2 | 常驻取消、刷新、新建与切换会话；偏好恢复；旧回调不影响其他会话 | 通过 | 〔组件〕preference.test.jsx 5 项 + PlanButton 自动应用 6 项（appliedRef 每会话一次/noReapplyRef 退出后本停留不重开/代次隔离）；〔隔离宿主〕accept.json：右键勾选写入 `dsh-input-enhancer:defaultPlanMode`（先后验证 true/false 两值）、E4-persist-write |
+| P2 | 常驻取消、刷新、新建与切换会话；偏好恢复；旧回调不影响其他会话 | 通过 | 〔组件〕preference.test.jsx 5 项 + PlanButton 自动应用 6 项（appliedRef 每会话一次/noReapplyRef 退出后本停留不重开/代次隔离）；〔隔离宿主〕accept.json：右键勾选写入 `smilexx-input-enhancer:defaultPlanMode`（先后验证 true/false 两值）、E4-persist-write |
 | P3 | 加载延迟、locked、pending、快速连点；无重复/相反请求竞态、无虚假成功 | 通过 | 〔组件〕PlanButton 竞态与代次守卫用例（epochRef/aliveRef/prevEffectiveRef；busy/pending 阻止相反请求；投影为准不做伪成功） |
 | P4 | 命令失败与存储失败；真实状态保留、中文提示、可恢复不无限重试 | 通过 | 〔组件〕PlanButton 错误路径用例（Promise 拒绝、ok:false、未知命令、存储写入失败提示、自动应用失败保留手动重试入口） |
 | U1 | 上方菜单、深浅主题、窄窗口、缩放；无裁切/遮挡，关闭与焦点正常 | 通过 | 〔组件〕CommandMenu 分支 15 项（launcher 判定、悬停/钻取走原生控制器、关闭与焦点）；〔隔离宿主〕截图 21（分类菜单弹出于输入栏上方，无遮挡）；深浅主题/窄窗沿用原生容器样式，未专项截图（原生容器渲染，非自定义层） |
@@ -26,10 +26,10 @@
 | C2 | 鼠标、方向键、Enter、Tab、Escape、中文输入法；视觉高亮与执行一致、不误提交正文 | 通过 | 〔组件〕keyboard.test.jsx（仅捕获阶段 ArrowUp/Down wrap、Enter/Tab/Escape 语义、IME composing 放行）；CommandMenu 指针用例 |
 | C3 | /、@、原生选择器、参数、附件和草稿；原生行为完整、内容不丢失 | 通过 | 〔组件〕CommandMenu launcher!==command 分支：不挂载分类菜单、不拦截输入，/ 与 @ 全程原生（用户内容不经我们处理）；浏览器未专项截图但分类菜单仅在“指令(+)”点击后出现（E2）与此一致 |
 | L1 | 服务晚到/撤销、失败激活、热更新与重复启停；无重复注册/残留、原生席位可恢复 | 通过 | 〔组件〕plugin.test.jsx 7 项（注入幂等、编号唯一）；〔隔离宿主〕accept 多轮启停无重复注册；negative-control.json：卸载后重启 hasOurs=false、planButtons=0、原生全量菜单与原生 Plan 部件恢复；reinstall 后 reappear |
-| B1 | 发布清单、解包目录与独立依赖解析；不依赖源码工作区 | 通过 | pack 12 文件（lib 入口、补丁、README/SKILL/PROJECT_SPEC/DESIGN_EXECUTION/文档/许可证）；tgz 根为 `package/`；安装目录 node_modules/dsh-input-enhancer/lib/client.js 含最新修复（`(snap)=>snap`），仅依赖 8 个平台 externals（peer），无缺失依赖 |
-| B2 | 打包安装、配置导出、构建 CLI 与浏览器真实激活 | 通过 | 〔隔离宿主〕官方 `dsh plugin --profile web add <tgz>` 安装成功；`--dump-config` 输出 `# == dsh-input-enhancer - id: dsh-input-enhancer`；构建 CLI 启动；浏览器 E1–E5 全部通过（e2e-report.json 7/7） |
+| B1 | 发布清单、解包目录与独立依赖解析；不依赖源码工作区 | 通过 | pack 12 文件（lib 入口、补丁、README/SKILL/PROJECT_SPEC/DESIGN_EXECUTION/文档/许可证）；tgz 根为 `package/`；安装目录 node_modules/smilexx-input-enhancer/lib/client.js 含最新修复（`(snap)=>snap`），仅依赖 8 个平台 externals（peer），无缺失依赖 |
+| B2 | 打包安装、配置导出、构建 CLI 与浏览器真实激活 | 通过 | 〔隔离宿主〕官方 `dsh plugin --profile web add <tgz>` 安装成功；`--dump-config` 输出 `# == smilexx-input-enhancer - id: smilexx-input-enhancer`；构建 CLI 启动；浏览器 E1–E5 全部通过（e2e-report.json 7/7） |
 | B3 | 卸载后重启、重新安装及临时环境清理；无遗留效果、清理范围准确 | 通过 | 〔隔离宿主〕negative-control.json（卸载→重启→原生恢复）+ accept.json（重新安装→复现）成对证据；测试进程（web/Edge）已停止；仅保留脱敏报告/截图与安装产物；清理路径均在 `_stage/stage-c` 临时目录内 |
-| D1 | 当前 Web 替换与失败回滚；单一 Plan 入口、两功能正常、回滚结果可证实 | 🟡 配置级通过，线上 UI 重启验证待用户 | 见 D 节：线上 profile 已安装同版产物、bundles 启用 dsh-input-enhancer/停用 dsh-plan-switch（依赖保留）；dump-config 往返证明回滚可证实；浏览器单 Plan 入口由同版产物在隔离宿主验证过（E1），GUI 重启后需用户最终确认 |
+| D1 | 当前 Web 替换与失败回滚；单一 Plan 入口、两功能正常、回滚结果可证实 | 🟡 配置级通过，线上 UI 重启验证待用户 | 见 D 节：线上 profile 已安装同版产物、bundles 启用 smilexx-input-enhancer/停用 dsh-plan-switch（依赖保留）；dump-config 往返证明回滚可证实；浏览器单 Plan 入口由同版产物在隔离宿主验证过（E1），GUI 重启后需用户最终确认 |
 
 ## Stage C（独立打包安装验收）记录
 
@@ -37,8 +37,8 @@
 
 1. ✅ 使用构建 CLI，非 tsx/源码启动。
 2. ✅ 打包产物安装到隔离临时 DSH_HOME/profile；临时会话/端口/浏览器存储；报告无生产凭据。
-3. ✅ 从安装目录解析依赖：node_modules/dsh-input-enhancer 由 tgz 解包安装（12 文件），未使用仓库 node_modules/工作区提升/NODE_PATH 兜底；peer 宿主依赖 = 8 个平台 externals，均由 profile 提供。
-4. ✅ 导出组合配置：`--dump-config` 显示 `# == dsh-input-enhancer - id: dsh-input-enhancer`；稳定 ID、Host 分支与 Client 激活链已挂载（浏览器实际加载 client.js）。
+3. ✅ 从安装目录解析依赖：node_modules/smilexx-input-enhancer 由 tgz 解包安装（12 文件），未使用仓库 node_modules/工作区提升/NODE_PATH 兜底；peer 宿主依赖 = 8 个平台 externals，均由 profile 提供。
+4. ✅ 导出组合配置：`--dump-config` 显示 `# == smilexx-input-enhancer - id: smilexx-input-enhancer`；稳定 ID、Host 分支与 Client 激活链已挂载（浏览器实际加载 client.js）。
 5. ✅ 构建 CLI 启动 + 真实浏览器验证：E1 唯一 Plan 按钮、E2 分类菜单（5 分类 7 命令）、E3 三态切换、E4 右键常驻 + localStorage、E5 无控制台错误；另执行了代表性原生命令操作（/plan 经 remote.commands.execute）。
 6. ✅ 提供方/激活/热更新/重复启停：多次启停无重复注册；卸载→重启（negative-control：原生 UI 完整恢复、无残留）→重装（accept：功能复现）成对验证。
 7. ✅ 测试进程已停止、临时配置保留为证据；清理路径均在本次临时目录内。
@@ -52,11 +52,11 @@
 
 前置：Stage C 全部必需项通过（见上）。
 
-1. ✅ 再次备份：`_backups/dsh-input-enhancer-2.0.0/20260903-174559-stage-d-web-profile/`（package.json、pnpm-lock.yaml、cordis.patch.yml、cordis.yml、pnpm-workspace.yaml、NOTES.txt 记录 dsh-plan-switch 版本）——D 应用后参考态保存为 `*.applied-D`。
-2. ✅ 安装与独立测试完全相同的打包产物 dsh-input-enhancer-2.0.0.tgz（解包至线上 profile node_modules，12 文件、含修复）；bundles 启用列表移除 dsh-plan-switch（依赖保留用于回滚）；不停用 DSH 原生 Plan 能力。
+1. ✅ 再次备份：`_backups/smilexx-input-enhancer-2.0.0/20260903-174559-stage-d-web-profile/`（package.json、pnpm-lock.yaml、cordis.patch.yml、cordis.yml、pnpm-workspace.yaml、NOTES.txt 记录 dsh-plan-switch 版本）——D 应用后参考态保存为 `*.applied-D`。
+2. ✅ 安装与独立测试完全相同的打包产物 smilexx-input-enhancer-2.0.0.tgz（解包至线上 profile node_modules，12 文件、含修复）；bundles 启用列表移除 dsh-plan-switch（依赖保留用于回滚）；不停用 DSH 原生 Plan 能力。
 3. ✅ 未拷贝隔离测试 profile；仅修改线上 profile 本次相关项（dependencies/bundles/lockfile）；未强制终止活动 GUI（本会话即运行于其上），无活动任务被中断。
 4. 🟡 生效方式：profile `patchReload=live`，改动可能在 GUI 下次热重载自动生效；线上 GUI（3080）进程未被终止（401 探活通过）。最终“单 Plan 入口、两功能可用”需 GUI 重启后浏览器确认——这是给用户的唯一待办动作（命令与核对点见 ROLLBACK_README.md）。
-5. ✅ 失败回滚已按“可证实”验证：恢复备份 package.json/lockfile → `--dump-config` 重新出现 `# == dsh-plan-switch` 且无 dsh-input-enhancer（回滚态与 D 态往返均可由 dump-config 区分）；随后重新应用 D 态（`package.json.applied-D` 参考）。线上 UI 重启后的回滚执行步骤随 ROLLBACK_README.md 交付。
+5. ✅ 失败回滚已按“可证实”验证：恢复备份 package.json/lockfile → `--dump-config` 重新出现 `# == dsh-plan-switch` 且无 smilexx-input-enhancer（回滚态与 D 态往返均可由 dump-config 区分）；随后重新应用 D 态（`package.json.applied-D` 参考）。线上 UI 重启后的回滚执行步骤随 ROLLBACK_README.md 交付。
 6. ✅ 交付清单：安装包、中文使用说明（README/SKILL/PROJECT_SPEC/API/TROUBLESHOOTING/CHANGELOG）、实际版本与命令、通过项（矩阵）、未验证项（线上 UI 重启确认）、备份与回滚说明；未发布 npm/GitHub，未新增模型工具。
 
 ## 运行命令
@@ -66,7 +66,7 @@ pnpm run build     # esbuild 产物 lib/index.js + lib/client.js
 pnpm run check     # 产物/入口/补丁/许可/外置一致性检查
 pnpm test          # 单元 + 组件（53 项）
 pnpm run test:e2e  # node scripts/e2e.mjs --url <token URL>（真实浏览器 CDP，7 项）
-pnpm run pack      # npm pack → dsh-input-enhancer-2.0.0.tgz
+pnpm run pack      # npm pack → smilexx-input-enhancer-2.0.0.tgz
 ```
 
 ## 变更记录
@@ -86,7 +86,7 @@ pnpm run pack      # npm pack → dsh-input-enhancer-2.0.0.tgz
 - 真实 profile 考证：唯一客户端命令贡献者是 dsh-rewind-plugin（decorate rewind/undo），
   且其 apply 早于本插件（bundle 序），纯运行时拦截抓不到 → 采用三层归属（L3 配置 > L1 拦截 > L2 内置表）。
 - 客户端启动图不向 apply 传配置（boot.ts `loader.create({ name })`）→ 用户配置走 localStorage
-  `dsh-input-enhancer:commandOwners`（与 defaultPlanMode 同通道）。
+  `smilexx-input-enhancer:commandOwners`（与 defaultPlanMode 同通道）。
 - 打开置顶缺陷实测复现：重开后 scrollTop=141、active=compact（原生首高亮 + scrollIntoView 拖动）；
   修复 = 新代次打开时 scrollTop 归零 + 高亮同步视觉首行。
 
@@ -97,10 +97,10 @@ pnpm run pack      # npm pack → dsh-input-enhancer-2.0.0.tgz
 - CategorizedMenu 打开置顶同步 effect；视口 `overflow-anchor:none`；PlanButton 开关状态文案。
 - 测试 53 → **79 项全绿**（owners 解析/插件分类/打开置顶/开关文案 + 既有回归适配）；
   check 白名单 + 版本核对升级 2.1.0。
-- 打包 `dsh-input-enhancer-2.1.0.tgz`（lib/client.js sha256 C568EABB…DBA58）；
+- 打包 `smilexx-input-enhancer-2.1.0.tgz`（lib/client.js sha256 C568EABB…DBA58）；
   Stage C 隔离环境重装后 **e2e 8/8 通过**（新增 E6-reopen-scroll-top：scrollTop=0、首分类「模式」、active=goal），
   证据 `_stage/stage-c/evidence/e2e-report.json`（2026-09-03T11:37Z）。
-- 线上 profile 已手动解包替换为 2.1.0（备份 `_backups/dsh-input-enhancer-2.0.0/20260903-e2e-v2.1.0-upgrade/`，
+- 线上 profile 已手动解包替换为 2.1.0（备份 `_backups/smilexx-input-enhancer-2.0.0/20260903-e2e-v2.1.0-upgrade/`，
   含 installed-v2.0.0 与 NOTES）；生效需用户重启 GUI 后确认三项反馈。
 
 ### 已知边界
@@ -121,7 +121,7 @@ pnpm run pack      # npm pack → dsh-input-enhancer-2.0.0.tgz
 - `PlanButton.jsx`：选择后显式 `setPersistent(next)`；打开菜单前 `setPersistent(readPreference())` 兜底；
   文案改为「√ 默认 Plan / 默认 Plan」，移除 `selectedIds`（原生尾部勾）避免双勾。
 - 测试 79 → 81 项（新增状态即时同步、旁路写入兜底两条回归）；e2e E4 选择器适配「默认 Plan」。
-- 版本 2.1.1；打包 `dsh-input-enhancer-2.1.1.tgz`（lib/client.js sha256 见打包输出）。
+- 版本 2.1.1；打包 `smilexx-input-enhancer-2.1.1.tgz`（lib/client.js sha256 见打包输出）。
 
 ## v2.2.0 迭代记录（2026-09-03，用户反馈驱动）
 

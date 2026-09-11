@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * dsh-input-enhancer 静态验收脚本：
+ * smilexx-input-enhancer 静态验收脚本：
  * 校验构建产物、入口、补丁、许可与客户端外置依赖是否符合发布契约。
  * 失败时以非零退出码结束。
  */
@@ -22,15 +22,15 @@ if (existsSync(join(root, 'lib/index.js'))) {
   const host = await import(pathToFileURL(join(root, 'lib/index.js')).href + '?v=' + Date.now())
   const def = host.default
   ok(def && typeof def === 'object', 'lib/index.js 未导出默认对象')
-  ok(def && def.name === 'dsh-input-enhancer', '宿主默认导出 name 应为 dsh-input-enhancer')
+  ok(def && def.name === 'smilexx-input-enhancer', '宿主默认导出 name 应为 smilexx-input-enhancer')
   ok(def && typeof def.apply === 'function', '宿主 apply 应为空函数')
-  ok(host.name === 'dsh-input-enhancer', 'lib/index.js 应具名导出 name')
+  ok(host.name === 'smilexx-input-enhancer', 'lib/index.js 应具名导出 name')
 }
 // 3. 客户端入口：__ModuleLoader__ 注册 + id + 外置依赖白名单
 if (existsSync(join(root, 'lib/client.js'))) {
   const client = readFileSync(join(root, 'lib/client.js'), 'utf8')
   ok(client.includes('window.__ModuleLoader__.load('), 'lib/client.js 应通过 __ModuleLoader__.load 注册')
-  ok(client.includes("'dsh-input-enhancer'"), 'lib/client.js 应声明 id dsh-input-enhancer')
+  ok(client.includes("'smilexx-input-enhancer'"), 'lib/client.js 应声明 id smilexx-input-enhancer')
   const allowed = new Set([
     'react', 'react/jsx-runtime', 'react-dom', 'react-dom/client',
     '@deepseek-ai/cordis', '@deepseek-ai/dsh-client-store',
@@ -46,7 +46,7 @@ if (existsSync(join(root, 'lib/client.js'))) {
 }
 // 4. 包元数据路由
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
-ok(pkg.version === '2.3.1', 'package.json 版本应为 2.3.1')
+ok(pkg.version === '2.3.2', 'package.json 版本应为 2.3.2')
 ok(pkg.main === './lib/index.js', 'main 应指向 lib/index.js')
 ok(pkg.exports['.']?.default === './lib/index.js', '根 exports 应指向 lib/index.js')
 ok(pkg.exports['./client']?.default === './lib/client.js', './client 应指向 lib/client.js')

@@ -1,16 +1,14 @@
-# dsh-input-enhancer
+# smilexx-input-enhancer
 
-# dsh-input-enhancer
+GitHub: https://github.com/SmileSilence/smilexx-input-enhancer
 
-GitHub: https://github.com/SmileSilence/dsh-input-enhancer
-
-DSH Web GUI 输入栏增强插件（2.3.1）：**分类命令菜单** + **Plan 模式按钮** + **实时调整方向**。
+DSH Web GUI 输入栏增强插件（2.3.2）：**分类命令菜单** + **Plan 模式按钮** + **实时调整方向**。
 
 - 分类命令菜单：仅当点击输入栏 `+` 按钮时出现，候选来源为原生命令目录（含客户端插件贡献的命令），
   按固定分类排序：**模式 / 模型 / 权限 / 会话 → 插件分类（按来源插件各一节）→ 其他**。
   选择、钻取与执行全部走原生管道；每次打开菜单自动置顶并高亮首项。
 - Plan 按钮：位于输入栏 Plan 席位，三态（关闭 / 单次开启 / 常驻开启），右键菜单可设“常驻 Plan 模式”，
-  偏好保存在浏览器同源存储（`dsh-input-enhancer:defaultPlanMode`），新会话/切换会话自动应用。
+  偏好保存在浏览器同源存储（`smilexx-input-enhancer:defaultPlanMode`），新会话/切换会话自动应用。
 - 调整方向：运行过程中排队消息的操作区保留所有原生按钮，并在删除按钮后追加“调整方向”。点击会安全停止
   当前生成，把所选消息移到队首并自动启动后继轮次；原生上箭头“插话发送”仍然保留。
 
@@ -19,10 +17,10 @@ DSH Web GUI 输入栏增强插件（2.3.1）：**分类命令菜单** + **Plan �
 通过 DSH 插件命令安装本压缩包（不要发布到 npm / GitHub）：
 
 ```bash
-dsh plugin --profile <profile> add ./dsh-input-enhancer-2.3.1.tgz
+dsh plugin --profile <profile> add ./smilexx-input-enhancer-2.3.1.tgz
 ```
 
-补丁 `cordis.patch.yml` 会把一行 `dsh-input-enhancer` 插入配置；宿主端注册调整方向远程服务，
+补丁 `cordis.patch.yml` 会把一行 `smilexx-input-enhancer` 插入配置；宿主端注册调整方向远程服务，
 客户端资源（`lib/client.js` 经 `window.__ModuleLoader__.load` 注册）登录 Web 会话时自动生效。
 
 ## 使用
@@ -42,7 +40,7 @@ dsh plugin --profile <profile> add ./dsh-input-enhancer-2.3.1.tgz
 归属三层优先级：
 
 1. **用户配置**（最高）：浏览器控制台执行
-   `localStorage.setItem('dsh-input-enhancer:commandOwners', JSON.stringify({ 命令名: '插件显示名' }))`
+   `localStorage.setItem('smilexx-input-enhancer:commandOwners', JSON.stringify({ 命令名: '插件显示名' }))`
    后刷新页面；
 2. **运行时捕获**：插件自动包装命令注册/装饰调用，记录来源插件（对晚于本插件启用的插件生效）；
 3. **内置默认表**：`rewind`/`undo` → `dsh-rewind-plugin`。
@@ -59,7 +57,7 @@ pnpm install        # 安装开发依赖（含 esbuild 构建脚本授权）
 pnpm run build      # 构建 lib/index.js（宿主空挂载）与 lib/client.js（客户端 bundle，外置平台模块）
 pnpm test           # vitest 单元 + 组件测试（jsdom，86 项）
 pnpm run check      # 静态验收：产物/入口/补丁/许可/外置依赖一致性
-pnpm run pack       # 生成 dsh-input-enhancer-2.3.1.tgz
+pnpm run pack       # 生成 smilexx-input-enhancer-2.3.1.tgz
 pnpm run test:e2e   # 端到端验收（Stage C 独立安装后的浏览器验证入口）
 ```
 

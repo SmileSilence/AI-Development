@@ -343,3 +343,6 @@
   margin-right: 4px;
   flex: none;
 }
+
+.dualPillBack { height: 100%; min-width: 0; }
+.pillCount { flex: none; }

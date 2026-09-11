@@ -12,6 +12,7 @@
  * 均走 controller → settingsScope.mutate，revision fence 由 settings 域负责）。
  */
 import { useState } from 'react'
+import { RunningTagSettings } from './RunningTagSettings.tsx'
 import type { TranslateNS } from '@deepseek-ai/dsh-client-locale/client'
 import type { HostObservable } from '@deepseek-ai/dsh-client-ui-slots'
 import type { SettingsScopeSnapshot } from '@deepseek-ai/dsh-client-ui-settings/client'
@@ -20,7 +21,7 @@ import {
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { WorkspaceTaggerSettings } from '../settings-types.ts'
 import {
-  clampSplitRatio, tagNameError, tagById,
+  clampSplitRatio, tagNameError, getRunningTag,
 } from '../tag-store.ts'
 import type { TaggerController } from '../tagger-controller.ts'
 import { DualTagPill, type TagSegment } from '../ui/TagPill.tsx'
@@ -42,7 +43,7 @@ export function TagsSettingsTab({ t, useTagger, tagger }: {
   tagger: TaggerController
 }) {
   const settings = useTagger(snapshot => snapshot.value) as WorkspaceTaggerSettings | undefined
-  const [runningOpen, setRunningOpen] = useState(false)
+
   const [adding, setAdding] = useState(false)
   const [addName, setAddName] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -115,21 +116,16 @@ export function TagsSettingsTab({ t, useTagger, tagger }: {
     try { await tagger.setSplitRatio(clampSplitRatio(value)) } catch { setError('save') } finally { setBusy(false) }
   }
 
-  const runningMenuItems = [
-    { id: 'none', label: t('settings.none') },
-    ...tags.map(tag => ({ id: tag.id, label: tag.name })),
-  ]
-
   // 双色预览：前=首个标签（工作区色），后=运行标签或次个标签（会话色）。
   const frontTag = tags[0]
   const previewFront: TagSegment | undefined = frontTag === undefined
     ? undefined
     : { color: frontTag.color, name: frontTag.name }
   const previewBack: TagSegment = (() => {
-    const running = settings.runningTagId === null ? undefined : tagById(settings, settings.runningTagId)
-    const second = tags.find(tag => tag.id !== frontTag?.id && tag.id !== settings.runningTagId)
+    const running = getRunningTag(settings)
+    const second = tags.find(tag => tag.id !== frontTag?.id)
     const target = running ?? second ?? tags[0]
-    if (target !== undefined) return { color: target.color, name: target.name }
+    if (target !== undefined) return target
     return { color: PREVIEW_FALLBACK[1], name: t('settings.previewSession') }
   })()
 
@@ -146,48 +142,7 @@ export function TagsSettingsTab({ t, useTagger, tagger }: {
         sessions: String(Object.keys(settings.sessionTags).length),
       })}</p>
 
-      <div className={css.section}>
-        <div className={css.settingRow}>
-          <span className={css.settingLabel}>{t('settings.runningTag')}</span>
-          <Menu
-            open={runningOpen}
-            onClose={() => { setRunningOpen(false) }}
-            items={runningMenuItems}
-            selectedId={settings.runningTagId ?? undefined}
-            onSelect={(id) => {
-              setRunningOpen(false)
-              if (busy) return
-              setBusy(true)
-              setError(null)
-              const next = id === 'none' ? null : id
-              tagger.setRunningTag(next).catch(() => setError('save')).finally(() => setBusy(false))
-            }}
-            align="start"
-            side="bottom"
-            portal
-            closeOnPointerLeave
-            anchor={(
-              <button
-                type="button"
-                className={css.selectButton}
-                aria-haspopup="listbox"
-                onClick={() => { setRunningOpen(true) }}
-              >
-                {(() => {
-                  const running = settings.runningTagId === null ? undefined : tagById(settings, settings.runningTagId)
-                  return running === undefined ? t('settings.none') : (
-                    <>
-                      <span className={css.selectDot} style={{ backgroundColor: running.color }} />
-                      {running.name}
-                    </>
-                  )
-                })()}
-              </button>
-            )}
-          />
-        </div>
-        <p className={css.sectionHint}>{t('settings.runningTagHint')}</p>
-      </div>
+      <RunningTagSettings settings={settings} tagger={tagger} t={t} />
 
       <div className={css.section}>
         <div className={css.settingRow}>

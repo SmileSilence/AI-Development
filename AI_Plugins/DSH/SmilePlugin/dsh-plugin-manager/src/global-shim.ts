@@ -1,5 +1,5 @@
 /**
- * dsh-plugin-manager —— 全局命令 shim 安装。
+ * smilexx-skill-mcp-manager —— 全局命令 shim 安装。
  *
  * profile 安装只会在 <profile>/node_modules/.bin 生成 dsh-panel，该目录不在
  * 用户 PATH 中。宿主启动时把 shim 写入 npm 全局 bin 目录，使用户能在
@@ -45,11 +45,11 @@ export function ensureGlobalShim(logger?: { info(message: string): void }): void
     const message = changed
       ? `installed global dsh-panel shim at ${join(binDir, "dsh-panel")}`
       : `global dsh-panel shim already up to date at ${join(binDir, "dsh-panel")}`;
-    if (logger !== undefined) logger.info("[dsh-plugin-manager] " + message);
-    else console.log("[dsh-plugin-manager] " + message);
+    if (logger !== undefined) logger.info("[smilexx-skill-mcp-manager] " + message);
+    else console.log("[smilexx-skill-mcp-manager] " + message);
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
-    if (logger !== undefined) logger.info("[dsh-plugin-manager] unable to install global dsh-panel shim: " + detail);
-    else console.warn("[dsh-plugin-manager] unable to install global dsh-panel shim: " + detail);
+    if (logger !== undefined) logger.info("[smilexx-skill-mcp-manager] unable to install global dsh-panel shim: " + detail);
+    else console.warn("[smilexx-skill-mcp-manager] unable to install global dsh-panel shim: " + detail);
   }
 }

@@ -1,5 +1,5 @@
 /**
- * m11-probe：探测当前 GUI 是否已加载 dsh-workspace-enhancer 0.5.0 的新 client bundle。
+ * m11-probe：探测当前 GUI 是否已加载 smilexx-workspace-enhancer 0.5.0 的新 client bundle。
  * 通过自铸 Cookie + 无头 Edge 打开筛选面板，统计操作符下拉的选项数。
  * 3 项=旧 bundle（HMR 未生效）；7 项=新 bundle（HMR 已生效）。
  */

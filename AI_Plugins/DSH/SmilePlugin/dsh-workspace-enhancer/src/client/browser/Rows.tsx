@@ -7,6 +7,7 @@
  */
 import { useState } from 'react'
 import clsx from 'clsx'
+import type { BulkGesture } from './bulk-selection.ts'
 import {
   HoverCard, IconAlarmClockOutline16, IconArchiveOutline20, IconBranchOutline16,
   IconCheckOutline16, IconEditOutline16, IconEllipsisOutline16, IconFolderClose16, IconFolderOpen16,
@@ -22,8 +23,9 @@ import { openDirectory } from '../open-directory.ts'
 import { DualTagPill, TagPill, type TagSegment } from '../tags/ui/TagPill.tsx'
 import type { WorkspaceTaggerSettings } from '../tags/settings-types.ts'
 import {
-  effectiveSessionTagId, effectiveWorkspaceTagId, hexToRgba, ROW_TINT_ALPHA, tagById,
+  getRunningTag, hexToRgba, ROW_TINT_ALPHA, tagById,
 } from '../tags/tag-store.ts'
+import { RunningRowEffect, RUNNING_ROW_CLASS, runningRowStyle } from './RunningRowEffect.tsx'
 import css from './Rows.module.css'
 
 /** The standard locale seat, prop-passed from the browser root. */
@@ -80,10 +82,14 @@ function createdLabel(createdAt: number, t: RowTranslate): string {
  *   行3 日期：纯展示。
  * 深度契合 dsh 配色与 UI 风格（卡片/标题/次级文本均用 dsw-alias 令牌）。
  */
-function WorkspaceHoverContent({ label, cwd, createdAt, t, onRename }: {
+function WorkspaceHoverContent({ label, cwd, createdAt, t, onRename, sessionCount, ownTag, runningTag, runningCount }: {
   label: string
   cwd: string | undefined
   createdAt: number
+  sessionCount: number
+  ownTag?: TagSegment | undefined
+  runningTag?: TagSegment | undefined
+  runningCount: number
   t: RowTranslate
   /** 卡内双击标题改名：直接提交 Host（Promise 拒绝时恢复标题并展示失败）。 */
   onRename?: ((title: string) => Promise<void>) | undefined
@@ -185,6 +191,13 @@ function WorkspaceHoverContent({ label, cwd, createdAt, t, onRename }: {
 
       {/* 行3 日期：纯展示。 */}
       <div className={css.hoverTime}>{createdLabel(createdAt, t)}</div>
+      <div className={css.hoverTime}>{t('hover.sessionCount', { n: sessionCount })}</div>
+      {(ownTag !== undefined || (runningTag !== undefined && runningCount > 0)) && (
+        <div className={css.workspaceHoverTags}>
+          {ownTag !== undefined && <TagPill tag={ownTag} />}
+          {runningTag !== undefined && runningCount > 0 && <TagPill tag={runningTag} count={runningCount} />}
+        </div>
+      )}
       {failed && <div className={css.hoverOpenError}>{t('hover.openFailed')}</div>}
     </div>
   )
@@ -267,7 +280,7 @@ function rowHalf(e: { clientY: number; currentTarget: HTMLElement }): 'before' |
  * @param props.t - the browser root's locale seat.
  * @returns the row element.
  */
-export function ProjectRowItem({ group, onToggle, onCreate, actions, drag, home, t, onTogglePin, onRenameWorkspace, bulkMode, bulkSelected, onBulkToggle, tagger }: {
+export function ProjectRowItem({ group, onToggle, onCreate, actions, drag, home, t, onTogglePin, onRenameWorkspace, bulkMode, bulkActive, bulkSelected, onBulkToggle, tagger }: {
   group: GroupNode
   onToggle: () => void
   onCreate: () => void
@@ -284,8 +297,9 @@ export function ProjectRowItem({ group, onToggle, onCreate, actions, drag, home,
   onRenameWorkspace?: ((title: string) => Promise<void>) | undefined
   /** 批量模式（需求 5）显示勾选框。 */
   bulkMode?: boolean | undefined
+  bulkActive?: boolean | undefined
   bulkSelected?: boolean | undefined
-  onBulkToggle?: (() => void) | undefined
+  onBulkToggle?: ((gesture: BulkGesture) => void) | undefined
   /** 标签子系统行侧注入面（集成自 dsh-workspace-tagger）。 */
   tagger?: RowTaggerProps | undefined
 }) {
@@ -300,15 +314,19 @@ export function ProjectRowItem({ group, onToggle, onCreate, actions, drag, home,
     ? undefined
     : (() => {
       const hasRunning = row.runningSessionCount > 0
-      const id = effectiveWorkspaceTagId(tagger.settings, row.workspaceId, row.expanded, hasRunning)
-      const tag = id === undefined ? undefined : tagById(tagger.settings, id)
+      const running = !row.expanded && hasRunning ? getRunningTag(tagger.settings) : undefined
+      const id = tagger.settings.workspaceTags[row.workspaceId]
+      const tag = running ?? (id === undefined ? undefined : tagById(tagger.settings, id))
       if (tag === undefined) return undefined
       // 仅当折叠、有运行中会话且配置了运行标签时附加计数（否则显示自身标签，无计数）。
-      const count = !row.expanded && hasRunning && tagger.settings.runningTagId !== null
+      const count = running !== undefined
         ? row.runningSessionCount
         : undefined
-      return { tag, count, tint: hexToRgba(tag.color, ROW_TINT_ALPHA) }
+      return { tag, count, running: running !== undefined }
     })()
+  const runningRowTag = tagView?.running === true ? tagView.tag : undefined
+  const ordinaryTint = tagView === undefined || tagView.running
+    ? undefined : hexToRgba(tagView.tag.color, ROW_TINT_ALPHA)
   const workspaceMenuItems = [
     ...(onTogglePin === undefined
       ? []
@@ -326,11 +344,16 @@ export function ProjectRowItem({ group, onToggle, onCreate, actions, drag, home,
   ]
   const ownRow = (
     <div
-      className={clsx(css.projectRow, menuOpen && css.menuOpen)}
+      className={clsx(css.projectRow, menuOpen && css.menuOpen, bulkSelected && css.bulkSelected,
+        runningRowTag !== undefined && RUNNING_ROW_CLASS)}
       role="treeitem"
       aria-expanded={row.expanded}
-      style={tagView === undefined ? undefined : { boxShadow: `inset 0 0 0 1000px ${tagView.tint}` }}
-      onClick={onToggle}
+      aria-selected={bulkMode ? bulkSelected === true : undefined}
+      data-bulk-key={bulkMode && onBulkToggle ? row.workspaceId : undefined}
+      data-bulk-kind={bulkMode && onBulkToggle ? 'workspace' : undefined}
+      style={runningRowTag !== undefined ? runningRowStyle(runningRowTag)
+        : ordinaryTint === undefined ? undefined : { boxShadow: `inset 0 0 0 1000px ${ordinaryTint}` }}
+      onClick={(e) => { if (bulkMode && onBulkToggle) onBulkToggle(e); else if (!bulkActive) onToggle() }}
       onContextMenu={actions === undefined
         ? undefined
         : (e) => {
@@ -338,7 +361,7 @@ export function ProjectRowItem({ group, onToggle, onCreate, actions, drag, home,
           e.preventDefault()
           setMenuOpen(true)
         }}
-      draggable={drag !== undefined}
+      draggable={drag !== undefined && !bulkActive}
       onDragStart={drag === undefined
         ? undefined
         : (e) => {
@@ -348,26 +371,28 @@ export function ProjectRowItem({ group, onToggle, onCreate, actions, drag, home,
         }}
       onDragEnd={drag?.end}
     >
+      <RunningRowEffect tag={runningRowTag} />
       {bulkMode === true && onBulkToggle !== undefined && (
         <span className={css.bulkCheckbox} onClick={(e) => { e.stopPropagation() }}>
           <input
             type="checkbox"
             aria-label={t('bulk.aria.checkWorkspace')}
             checked={bulkSelected === true}
-            onChange={onBulkToggle}
+            onChange={() => { /* 点击事件统一处理修饰键，避免重复切换。 */ }}
+            onClick={(e) => { e.stopPropagation(); onBulkToggle({ ctrlKey: e.ctrlKey, metaKey: e.metaKey, shiftKey: e.shiftKey, checkbox: true }) }}
           />
         </span>
       )}
       <span className={clsx(css.slot, css.folder, active && css.folderActive)}>
         {row.expanded ? <IconFolderOpen16 /> : <IconFolderClose16 />}
       </span>
-      <span className={clsx(css.slot, css.chevron)}>
+      <button type="button" className={clsx(css.slot, css.chevron, css.expandButton)} aria-label={row.expanded ? "折叠工作区" : "展开工作区"} onClick={(e) => { e.stopPropagation(); onToggle() }}>
         <IconTriangleRightFill14 className={clsx(css.arrow, row.expanded && css.arrowOpen)} />
-      </span>
+      </button>
       {tagView !== undefined && (
         <span className={css.rowPillSlot}>
           <TagPill
-            tag={{ color: tagView.tag.color, name: tagView.tag.name }}
+            tag={tagView.tag}
             count={tagView.count}
           />
         </span>
@@ -440,6 +465,11 @@ export function ProjectRowItem({ group, onToggle, onCreate, actions, drag, home,
         label={row.label}
         cwd={row.cwd === undefined ? undefined : abbreviateHomePath(row.cwd, home)}
         createdAt={row.createdAt}
+        sessionCount={row.totalSessionCount}
+        runningCount={row.runningSessionCount}
+        ownTag={tagger?.settings === undefined || row.workspaceId === undefined
+          ? undefined : tagById(tagger.settings, tagger.settings.workspaceTags[row.workspaceId] ?? '')}
+        runningTag={tagger?.settings === undefined ? undefined : getRunningTag(tagger.settings)}
         t={t}
         onRename={onRenameWorkspace}
       />}
@@ -560,7 +590,11 @@ function SessionHoverContent({ node, now, t }: { node: SessionNode; now: number;
  * @param props.t - Workspace-browser translation seat.
  * @returns the result button.
  */
-export function SearchResultItem({ result, currentId, onOpen, tagger, t }: {
+export function SearchResultItem({ result, currentId, onOpen, tagger, t, bulkMode, bulkActive, bulkSelected, onBulkToggle }: {
+  bulkMode?: boolean
+  bulkActive?: boolean
+  bulkSelected?: boolean
+  onBulkToggle?: (gesture: BulkGesture) => void
   result: SearchResultNode
   currentId: string | undefined
   onOpen: (id: SearchResultNode['id']) => void
@@ -574,19 +608,41 @@ export function SearchResultItem({ result, currentId, onOpen, tagger, t }: {
   const backTag = tagger === undefined || tagger.settings === undefined
     ? undefined
     : (() => {
-      const id = effectiveSessionTagId(tagger.settings, result.id, result.running)
-      const tag = id === undefined ? undefined : tagById(tagger.settings, id)
-      return tag === undefined ? undefined : { color: tag.color, name: tag.name }
+      const id = tagger.settings.sessionTags[result.id]
+      return (result.running ? getRunningTag(tagger.settings) : undefined)
+        ?? (id === undefined ? undefined : tagById(tagger.settings, id))
     })()
+  const runningRowTag = result.running && tagger?.settings !== undefined
+    ? getRunningTag(tagger.settings) : undefined
+  const ordinaryTint = backTag === undefined || runningRowTag !== undefined
+    ? undefined : hexToRgba(backTag.color, ROW_TINT_ALPHA)
   return (
-    <button
-      type="button"
-      className={clsx(css.searchResultRow, selected && css.selected)}
+    <div
+      tabIndex={0}
+      className={clsx(css.searchResultRow, selected && !bulkMode && css.selected, bulkSelected && css.bulkSelected,
+        runningRowTag !== undefined && RUNNING_ROW_CLASS)}
+      style={runningRowTag !== undefined ? runningRowStyle(runningRowTag)
+        : ordinaryTint === undefined ? undefined : { boxShadow: `inset 0 0 0 1000px ${ordinaryTint}` }}
       role="treeitem"
-      aria-selected={selected}
-      onClick={() => { onOpen(result.id) }}
+      aria-selected={bulkMode ? bulkSelected === true : selected}
+      data-bulk-key={bulkMode ? result.id : undefined}
+      data-bulk-kind={bulkMode ? 'session' : undefined}
+      onClick={(e) => { if (bulkMode) onBulkToggle?.(e); else if (!bulkActive) onOpen(result.id) }}
+      onKeyDown={(e) => {
+        if (e.target !== e.currentTarget || (e.key !== 'Enter' && e.key !== ' ')) return
+        e.preventDefault()
+        if (bulkMode) onBulkToggle?.(e); else if (!bulkActive) onOpen(result.id)
+      }}
     >
+      <RunningRowEffect tag={runningRowTag} />
       <span className={css.searchResultHeading}>
+        {bulkMode && onBulkToggle && (
+          <span className={css.bulkCheckbox} onClick={(e) => { e.stopPropagation() }}>
+            <input type="checkbox" aria-label={t('bulk.aria.checkSession')} checked={bulkSelected === true}
+              onChange={() => { /* 点击统一处理。 */ }}
+              onClick={(e) => { e.stopPropagation(); onBulkToggle({ ctrlKey: e.ctrlKey, metaKey: e.metaKey, shiftKey: e.shiftKey, checkbox: true }) }} />
+          </span>
+        )}
         <span className={css.slot}>
           {(primaryStatus.state !== 'done' || result.completed) && (
             <SessionStatusDots statuses={statuses} />
@@ -606,7 +662,7 @@ export function SearchResultItem({ result, currentId, onOpen, tagger, t }: {
           <span className={css.searchResultSnippet}>{result.snippet}</span>
         )}
       </span>
-    </button>
+    </div>
   )
 }
 
@@ -625,7 +681,7 @@ export function SearchResultItem({ result, currentId, onOpen, tagger, t }: {
  * @param props.t - the browser root's locale seat.
  * @returns the session row.
  */
-export function SessionNodeItem({ node, currentId, now, onOpen, onRename, onFork, onArchive, onTogglePin, drag, flat = false, t, bulkMode, bulkSelected, onBulkToggle, tagger, workspaceFront }: {
+export function SessionNodeItem({ node, currentId, now, onOpen, onRename, onFork, onArchive, onTogglePin, drag, flat = false, t, bulkMode, bulkActive, bulkSelected, onBulkToggle, tagger, workspaceFront }: {
   node: SessionNode
   currentId: string | undefined
   now: number
@@ -645,8 +701,9 @@ export function SessionNodeItem({ node, currentId, now, onOpen, onRename, onFork
   t: RowTranslate
   /** 批量模式（需求 5）显示勾选框。 */
   bulkMode?: boolean | undefined
+  bulkActive?: boolean | undefined
   bulkSelected?: boolean | undefined
-  onBulkToggle?: (() => void) | undefined
+  onBulkToggle?: ((gesture: BulkGesture) => void) | undefined
   /** 标签子系统行侧注入面（集成自 dsh-workspace-tagger）。 */
   tagger?: RowTaggerProps | undefined
   /** 双色胶囊前段 = 工作区自身标签（会话行内展示）。 */
@@ -663,11 +720,14 @@ export function SessionNodeItem({ node, currentId, now, onOpen, onRename, onFork
   const backTag = tagger === undefined || tagger.settings === undefined
     ? undefined
     : (() => {
-      const id = effectiveSessionTagId(tagger.settings, node.id, row.running)
-      const tag = id === undefined ? undefined : tagById(tagger.settings, id)
-      return tag === undefined ? undefined : { color: tag.color, name: tag.name }
+      const id = tagger.settings.sessionTags[node.id]
+      return (row.running ? getRunningTag(tagger.settings) : undefined)
+        ?? (id === undefined ? undefined : tagById(tagger.settings, id))
     })()
-  const tint = backTag === undefined ? undefined : hexToRgba(backTag.color, ROW_TINT_ALPHA)
+  const runningRowTag = row.running && tagger?.settings !== undefined
+    ? getRunningTag(tagger.settings) : undefined
+  const tint = backTag === undefined || runningRowTag !== undefined
+    ? undefined : hexToRgba(backTag.color, ROW_TINT_ALPHA)
   // Archive hides the row through the registry-global archive set and never
   // touches the session log, so it is not styled as destructive and needs no
   // confirmation dialog.
@@ -688,20 +748,24 @@ export function SessionNodeItem({ node, currentId, now, onOpen, onRename, onFork
   const ownRow = (
     <div
       className={clsx(
-        css.sessionRow, selected && css.selected, menuOpen && css.menuOpen,
+        css.sessionRow, selected && !bulkMode && css.selected, menuOpen && css.menuOpen, bulkSelected && css.bulkSelected,
+        runningRowTag !== undefined && RUNNING_ROW_CLASS,
         flat && !showStatus && css.flatSessionRowWithoutStatus,
         drag?.marker === 'before' && css.dropBefore, drag?.marker === 'after' && css.dropAfter,
       )}
-      style={tint === undefined ? undefined : { boxShadow: `inset 0 0 0 1000px ${tint}` }}
+      style={runningRowTag !== undefined ? runningRowStyle(runningRowTag)
+        : tint === undefined ? undefined : { boxShadow: `inset 0 0 0 1000px ${tint}` }}
       role="treeitem"
-      aria-selected={selected}
-      onClick={() => { onOpen(node.id) }}
+      aria-selected={bulkMode ? bulkSelected === true : selected}
+      data-bulk-key={bulkMode && !node.blank ? node.id : undefined}
+      data-bulk-kind={bulkMode && !node.blank ? 'session' : undefined}
+      onClick={(e) => { if (bulkMode) { if (!node.blank) onBulkToggle?.(e) } else if (!bulkActive) onOpen(node.id) }}
       onContextMenu={(e) => {
         // 右键 = ···菜单（需求 3）。
         e.preventDefault()
         setMenuOpen(true)
       }}
-      draggable={drag !== undefined}
+      draggable={drag !== undefined && !bulkActive}
       onDragStart={drag === undefined
         ? undefined
         : (e) => {
@@ -726,13 +790,15 @@ export function SessionNodeItem({ node, currentId, now, onOpen, onRename, onFork
           drag.drop(rowHalf(e))
         }}
     >
-      {bulkMode === true && onBulkToggle !== undefined && (
+      <RunningRowEffect tag={runningRowTag} />
+      {bulkMode === true && !node.blank && onBulkToggle !== undefined && (
         <span className={css.bulkCheckbox} onClick={(e) => { e.stopPropagation() }}>
           <input
             type="checkbox"
             aria-label={t('bulk.aria.checkSession')}
             checked={bulkSelected === true}
-            onChange={onBulkToggle}
+            onChange={() => { /* 点击事件统一处理修饰键，避免重复切换。 */ }}
+            onClick={(e) => { e.stopPropagation(); onBulkToggle({ ctrlKey: e.ctrlKey, metaKey: e.metaKey, shiftKey: e.shiftKey, checkbox: true }) }}
           />
         </span>
       )}

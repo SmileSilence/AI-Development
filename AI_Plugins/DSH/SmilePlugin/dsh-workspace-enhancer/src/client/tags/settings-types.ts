@@ -13,6 +13,21 @@ export interface TagDefinition {
   color: string
 }
 
+export type RunningEffectPreset = 'none' | 'edge' | 'gradient'
+export type RunningEffectSpeed = 'slow' | 'medium' | 'fast'
+export interface RunningTagEffect {
+  preset: RunningEffectPreset
+  color: string
+  secondaryColor: string
+  speed: RunningEffectSpeed
+}
+export interface RunningTagConfig {
+  enabled: boolean
+  name: string
+  color: string
+  effect: RunningTagEffect
+}
+
 /** workspace-tagger 命名空间完整设置。 */
 export interface WorkspaceTaggerSettings {
   /** 全部标签定义（数组序即下拉展示序）。 */
@@ -23,6 +38,8 @@ export interface WorkspaceTaggerSettings {
   sessionTags: Record<string, string>
   /** 运行会话标签；null = 关闭。 */
   runningTagId: string | null
+  /** 缺失或 null 时兼容旧标签设置，首次保存后独立。 */
+  runningTag?: RunningTagConfig | null
   /** 双色胶囊前段（工作区色）占比 0.1–0.9。 */
   splitRatio: number
   /** 颜色选择器自定义预设（上限 ~12 个）。 */

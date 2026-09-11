@@ -1,0 +1,5 @@
+# smilexx-notification-manager bundle patch
+- insert:
+    - id: smilexx-notification-manager
+      name: smilexx-notification-manager
+      config: {}

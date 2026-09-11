@@ -1,0 +1,13 @@
+{
+  "host": "0.1.3-alpha.1-d347e70",
+  "port": 13070,
+  "syntheticData": true,
+  "results": [
+    {
+      "name": "fatal",
+      "ok": false,
+      "detail": "Error: page.goto: url: expected string, got undefined"
+    }
+  ],
+  "errors": []
+}

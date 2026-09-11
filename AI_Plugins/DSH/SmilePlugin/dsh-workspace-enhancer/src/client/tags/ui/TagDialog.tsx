@@ -65,11 +65,8 @@ export function TagDialog({ title, settings, current, t, controller, onAssign, o
   const [colorDraft, setColorDraft] = useState<string | null>(null)
 
   const tags: readonly TagDefinition[] = settings?.tags ?? []
-  // 下拉只列普通标签：会话运行中标签（runningTagId）由设置页单独配置。
-  const selectableTags: readonly TagDefinition[] = settings === undefined
-    ? []
-    : tags.filter(tag => tag.id !== settings.runningTagId)
-  // 当前选中若不在下拉集合（运行中标签 / 已被删除）→ 归一化为「无标签」。
+  // 独立运行状态不占用普通标签，旧绑定仍可选择。
+  const selectableTags = tags
   const effectiveSelected = selected !== null && selectableTags.some(tag => tag.id === selected)
     ? selected
     : null

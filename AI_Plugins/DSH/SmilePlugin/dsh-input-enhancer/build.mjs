@@ -1,4 +1,4 @@
-// dsh-input-enhancer 单一构建脚本（唯一产物生成方式）
+// smilexx-input-enhancer 单一构建脚本（唯一产物生成方式）
 // - lib/index.js   : 宿主端入口（esm，Node）
 // - lib/client.js  : 浏览器端入口（cjs 工厂，经 window.__ModuleLoader__.load 注册）
 // React、ReactDOM 与原生 UI 组件由 DSH 模块加载器提供，构建时全部外置。
@@ -69,7 +69,7 @@ const inner = await readFile(join(lib, '.client-inner.cjs'), 'utf8')
 const indent = text => text.split('\n').map(line => '    ' + line).join('\n')
 const wrapped = [
   'window.__ModuleLoader__.load({',
-  "  id: 'dsh-input-enhancer',",
+  "  id: 'smilexx-input-enhancer',",
   '  factory: (require) => {',
   '    var module = { exports: {} };',
   '    var exports = module.exports;',

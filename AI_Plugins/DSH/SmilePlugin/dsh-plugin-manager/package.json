@@ -1,7 +1,7 @@
 {
-  "name": "dsh-plugin-manager",
-  "version": "0.2.2",
-  "description": "DSH 统一插件管理器：插件管理（清单/安装/启用/停用/卸载/功能重复/异常处理）+ 技能管理（按类型分类）+ MCP 管理（cordis.patch.yml 受管块）。基于 dsh-skill-mcp-panel v2.0.2 重构。",
+  "name": "smilexx-skill-mcp-manager",
+  "version": "0.4.1",
+  "description": "DSH 技能与 MCP 管理面板：技能管理（按类型分类、启停/删除/添加/迁移/分组）+ MCP 管理（cordis.patch.yml 受管块，Stdio/HTTP，HMR 热加载）。基于 dsh-skill-mcp-panel v2.0.2 重构。",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -30,8 +30,7 @@
     "zod": "^4.4.3",
     "@deepseek-ai/dsh-subprocess": "^0.1.2-alpha.4",
     "@modelcontextprotocol/sdk": "^1.12.0",
-    "chokidar": "^5.0.0",
-    "@deepseek-ai/dsh-tools": "^0.1.2-alpha.4"
+    "chokidar": "^5.0.0"
   },
   "bin": {
     "dsh-panel": "./lib/cli.js"

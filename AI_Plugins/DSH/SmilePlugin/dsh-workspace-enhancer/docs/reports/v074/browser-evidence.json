@@ -1,0 +1,78 @@
+{
+  "host": "0.1.3-alpha.1-d347e70",
+  "packageVersion": "0.7.4",
+  "results": [
+    {
+      "name": "effect-menu-hides-marquee",
+      "ok": true,
+      "detail": "无动效\n边缘流光\n渐变流动"
+    },
+    {
+      "name": "edge-uses-clockwise-rounded-perimeter",
+      "ok": true,
+      "detail": {
+        "animationName": "dshRunningPerimeter",
+        "keyframes": [
+          "0px",
+          "-100px"
+        ],
+        "pathLength": "100",
+        "total": 879.6988525390625,
+        "start": {
+          "x": 8,
+          "y": 1
+        },
+        "next": {
+          "x": 12,
+          "y": 1
+        },
+        "box": {
+          "width": 298,
+          "height": 148
+        },
+        "svgBox": {
+          "width": 300,
+          "height": 150
+        }
+      }
+    },
+    {
+      "name": "effect-menu-hides-marquee",
+      "ok": true,
+      "detail": "无动效\n边缘流光\n渐变流动"
+    },
+    {
+      "name": "gradient-uses-seamless-double-tile",
+      "ok": true,
+      "detail": {
+        "animationName": "dshRunningGradientLoop",
+        "backgroundSize": "50% 100%",
+        "width": 1116,
+        "parentWidth": 558,
+        "keyframes": [
+          "translate3d(0px, 0px, 0px)",
+          "translate3d(-50%, 0px, 0px)"
+        ]
+      }
+    },
+    {
+      "name": "effect-menu-hides-marquee",
+      "ok": true,
+      "detail": "无动效\n边缘流光\n渐变流动"
+    },
+    {
+      "name": "reduced-motion-is-static-border",
+      "ok": true,
+      "detail": {
+        "animationName": "none",
+        "dasharray": "none"
+      }
+    },
+    {
+      "name": "no-page-errors",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "errors": []
+}

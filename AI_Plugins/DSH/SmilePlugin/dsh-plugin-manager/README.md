@@ -1,37 +1,30 @@
-# dsh-plugin-manager
+# smilexx-skill-mcp-manager
 
-DSH 统一插件管理器：**插件管理 + 技能管理 + MCP 管理**，全部集成在 DSH Web 设置页。
+DSH **技能管理 + MCP 管理**面板，全部集成在 DSH Web 设置页。
 
-基于 [dsh-skill-mcp-panel](https://github.com/Fishquito7/dsh-skill-mcp-panel) v2.0.2 重构，新增插件管理模块并改造技能分类 UI。
+基于 [dsh-skill-mcp-panel](https://github.com/Fishquito7/dsh-skill-mcp-panel) v2.0.2 重构：只保留技能与 MCP 两个页签（挂在官方「插件」设置入口下），移除插件管理模块（清单/安装/功能重复等改由 dshmarket / `dsh plugin` 命令承担）。
 
 ## 功能
 
-### 插件管理（设置 → 插件 → 「插件管理」Tab）
-- 插件清单（状态/版本/描述/启用情况/异常项统计）
-- 安装（含功能重复检测）、启用/停用（HMR 生效）、卸载（校验 `dependencies` 与 `dsh.profile.bundles` 无残留）
-- 功能重复扫描（可直接停用/卸载重复项）
-- Markdown 清单生成（面板复制 / `dsh-panel plugin report`）
-- 异常项：结构化展示 + 逐项处理动作 + 诊断复制
-- 不携带旧版 dsh-plugin-manager 的操作历史与回滚功能
-
-### 技能管理（设置 → 插件 → 插件管理 → 技能）
+### 技能管理（设置 → 插件 → 技能）
 - 按 **类型（`metadata.category`）下拉筛选**，不再按工作区/分组横栏分类
-- 卡片列表：展开查看 SKILL.md 内容；行内作用域徽标（全局/工作区）
-- 启用/停用（改名 `SKILL.md.disabled`）、删除、打开目录
+- **单列列表行**：每行 = 圆形图标 + 技能名 + 单行描述 + 作用域标签 + 启停开关；**点击行弹出详情**（DSH 原生 Modal：SKILL.md 内容、启停开关、删除/关闭）
+- 启用/停用（改名 `SKILL.md.disabled`）、删除、添加（单文件 / 目录束 / zip / 拖放）
 - 批量迁移 / 分组（次级对话框，保留基座能力）
 
-### MCP 管理（设置 → 插件 → 插件管理 → MCP）
+### MCP 管理（设置 → 插件 → MCP）
 - 管理 profile `cordis.patch.yml` 受管块：Stdio / HTTP 两种调用方式
+- **单列列表行**：每行 = 圆形图标 + 服务器名 + 摘要（transport/状态/工具数）+ 编辑/测试/删除 + 启停开关；**点击行弹出详情**（状态、配置键值、已发现工具、测试/删除/编辑/关闭）
 - 新增、编辑、启停、删除、测试连接；保存后 HMR 热加载
-- `env` / `headers` 密钥脱敏
+- `env` / `headers` 密钥脱敏（详情仅显示键名）
 
 ## 安装
 
 ```bash
 # 先卸载被替代的旧插件（避免设置页插槽 id 冲突）
-dsh plugin --profile web remove dsh-skill-mcp-panel
+dsh plugin --profile web remove dsh-plugin-manager
 # 安装本插件（tarball 或本地目录）
-dsh plugin --profile web add <dsh-plugin-manager-0.2.2.tgz>
+dsh plugin --profile web add <smilexx-skill-mcp-manager-0.4.1.tgz>
 ```
 
 重启网关（`dsh-restart`）后刷新页面。
@@ -41,14 +34,12 @@ dsh plugin --profile web add <dsh-plugin-manager-0.2.2.tgz>
 ```bash
 dsh-panel skill list                 # 技能列表
 dsh-panel mcp list                   # MCP 服务器列表
-dsh-panel plugin list                # 插件清单（含异常项）
-dsh-panel plugin install <spec> [--keep auto|all|new|existing] [--category <name>]
-dsh-panel plugin enable|disable <name>
-dsh-panel plugin remove <name> --yes
-dsh-panel plugin report               # 生成 Markdown 插件清单
-dsh-panel plugin duplicates           # 功能重复检测
-dsh-panel plugin anomalies            # 异常项
-dsh-panel plugin anomaly-action <plugin> <kind>   # cleanup | remove | retry | manual
+dsh-panel skill enable|disable <name>
+dsh-panel skill delete <name> [--yes]
+dsh-panel skill add <path> [--project | --workspace <path>]
+dsh-panel skill scope <name> [--global | --workspace <path>] [--copy]
+dsh-panel skill migrate <name...> --from <ws> --to <ws> [--copy]
+dsh-panel mcp add|remove|enable|disable|test <name>
 ```
 
 ## 开发

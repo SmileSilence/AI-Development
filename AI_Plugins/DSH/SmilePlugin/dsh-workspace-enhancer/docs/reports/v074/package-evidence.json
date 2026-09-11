@@ -1,0 +1,19 @@
+{
+  "name": "smilexx-workspace-enhancer",
+  "version": "0.7.4",
+  "filename": "smilexx-workspace-enhancer-0.7.4.tgz",
+  "sizeBytes": 79204,
+  "sha1": "68edcf89b471371432e1bd874174ea934aa2eb62",
+  "sha256": "fb6787076c11975d453b143f3901cca4ffc008e25b7167937ff0dabbe8fb0922",
+  "installedProfile": "web",
+  "installedVersion": "0.7.4",
+  "checks": {
+    "typecheck": "passed",
+    "testFiles": 10,
+    "tests": 127,
+    "build": "passed",
+    "versionCheck": "passed",
+    "packDryRun": "passed",
+    "browserValidation": "passed"
+  }
+}

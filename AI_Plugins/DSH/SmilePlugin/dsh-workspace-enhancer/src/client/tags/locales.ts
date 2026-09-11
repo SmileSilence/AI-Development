@@ -55,6 +55,36 @@ export type TaggerKey =
   | 'settings.emptyTags'
   | 'settings.tagUsage'
   | 'settings.previewSession'
+  | 'settings.running.title'
+  | 'settings.running.enabled'
+  | 'settings.running.enabledStatus'
+  | 'settings.running.disabledStatus'
+  | 'settings.running.edit'
+  | 'settings.running.cancel'
+  | 'settings.running.previewSession'
+  | 'settings.running.name'
+  | 'settings.running.nameAria'
+  | 'settings.running.baseColor'
+  | 'settings.running.effect'
+  | 'settings.running.primaryColor'
+  | 'settings.running.secondaryColor'
+  | 'settings.running.speed'
+  | 'settings.running.speedSlow'
+  | 'settings.running.speedMedium'
+  | 'settings.running.speedFast'
+  | 'settings.running.coordinatedColor'
+  | 'settings.running.finishColor'
+  | 'settings.running.preview'
+  | 'settings.running.save'
+  | 'settings.running.saving'
+  | 'settings.running.reset'
+  | 'settings.running.saved'
+  | 'settings.running.previewHint'
+  | 'settings.running.saveFailed'
+  | 'settings.running.colorSaveFailed'
+  | 'settings.running.effectNone'
+  | 'settings.running.effectEdge'
+  | 'settings.running.effectGradient'
   | 'error.saveFailed'
   // —— v0.5.0：标题栏筛选按钮 + 多条件面板（飞书式 7 种操作符）——
   | 'filter.title'
@@ -125,6 +155,36 @@ export const zh: Record<TaggerKey, string> = {
   'settings.emptyTags': '还没有标签，点击上方「增加」创建。',
   'settings.tagUsage': '工作区 {workspaces} · 会话 {sessions}',
   'settings.previewSession': '会话',
+  'settings.running.title': '运行状态标签',
+  'settings.running.enabled': '启用',
+  'settings.running.enabledStatus': '已启用',
+  'settings.running.disabledStatus': '已停用',
+  'settings.running.edit': '编辑运行状态标签',
+  'settings.running.cancel': '取消',
+  'settings.running.previewSession': '模拟运行会话',
+  'settings.running.name': '名称',
+  'settings.running.nameAria': '运行标签名称',
+  'settings.running.baseColor': '标签底色',
+  'settings.running.effect': '动态效果',
+  'settings.running.primaryColor': '动效主色',
+  'settings.running.secondaryColor': '渐变辅色',
+  'settings.running.speed': '动效速度',
+  'settings.running.speedSlow': '慢 · 4 秒',
+  'settings.running.speedMedium': '中 · 2.5 秒',
+  'settings.running.speedFast': '快 · 1.5 秒',
+  'settings.running.coordinatedColor': '协调配色',
+  'settings.running.finishColor': '完成选色',
+  'settings.running.preview': '实时预览',
+  'settings.running.save': '保存运行标签',
+  'settings.running.saving': '保存中…',
+  'settings.running.reset': '还原修改',
+  'settings.running.saved': '已保存',
+  'settings.running.previewHint': '预览即时更新，保存后应用。',
+  'settings.running.saveFailed': '运行标签保存失败，请重试。',
+  'settings.running.colorSaveFailed': '颜色预设保存失败，请重试。',
+  'settings.running.effectNone': '无动效',
+  'settings.running.effectEdge': '边缘流光',
+  'settings.running.effectGradient': '渐变流动',
   'error.saveFailed': '保存失败：{error}',
   // —— v0.5.0：标题栏筛选按钮 + 多条件面板（飞书式 7 种操作符）——
   'filter.title': '筛选',
@@ -196,6 +256,36 @@ export const en: Record<TaggerKey, string> = {
   'settings.emptyTags': 'No tags yet. Use "Add" above to create one.',
   'settings.tagUsage': '{workspaces} workspace(s) · {sessions} session(s)',
   'settings.previewSession': 'Session',
+  'settings.running.title': 'Running status tag',
+  'settings.running.enabled': 'Enabled',
+  'settings.running.enabledStatus': 'Enabled',
+  'settings.running.disabledStatus': 'Disabled',
+  'settings.running.edit': 'Edit running status tag',
+  'settings.running.cancel': 'Cancel',
+  'settings.running.previewSession': 'Simulated running session',
+  'settings.running.name': 'Name',
+  'settings.running.nameAria': 'Running tag name',
+  'settings.running.baseColor': 'Base color',
+  'settings.running.effect': 'Animation',
+  'settings.running.primaryColor': 'Animation color',
+  'settings.running.secondaryColor': 'Gradient color',
+  'settings.running.speed': 'Animation speed',
+  'settings.running.speedSlow': 'Slow · 4s',
+  'settings.running.speedMedium': 'Medium · 2.5s',
+  'settings.running.speedFast': 'Fast · 1.5s',
+  'settings.running.coordinatedColor': 'Coordinated colors',
+  'settings.running.finishColor': 'Done',
+  'settings.running.preview': 'Live preview',
+  'settings.running.save': 'Save running tag',
+  'settings.running.saving': 'Saving…',
+  'settings.running.reset': 'Reset changes',
+  'settings.running.saved': 'Saved',
+  'settings.running.previewHint': 'Preview updates immediately and applies after saving.',
+  'settings.running.saveFailed': 'Could not save the running tag. Try again.',
+  'settings.running.colorSaveFailed': 'Could not save the color preset. Try again.',
+  'settings.running.effectNone': 'None',
+  'settings.running.effectEdge': 'Edge glow',
+  'settings.running.effectGradient': 'Flowing gradient',
   'error.saveFailed': 'Save failed: {error}',
   // —— v0.5.0：标题栏筛选按钮 + 多条件面板（飞书式 7 种操作符）——
   'filter.title': 'Filter',

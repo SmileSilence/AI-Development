@@ -22,7 +22,7 @@ import type { WorkspaceId, WorkspaceView } from '@deepseek-ai/dsh-api-workspace-
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { WorkspaceBrowserInjected, WorkspaceBrowserProps } from '../contract/slots.ts'
 import type { SessionNode, SessionOrderBy, TagFilter } from '../tree.ts'
-import { applyTagFilterToGroups, allWorkspacesCollapsed, deriveFlat, deriveGroups, deriveSearchResults, isTagFilterInactive, shouldShowCollapseToggle, UNGROUPED_KEY } from '../tree.ts'
+import { applyTagFilterToSessions, applyTagFilterToGroups, allWorkspacesCollapsed, deriveFlat, deriveGroups, deriveSearchResults, isTagFilterInactive, shouldShowCollapseToggle, UNGROUPED_KEY } from '../tree.ts'
 import { ProjectRowItem, SearchResultItem, SessionNodeItem, type RowTaggerProps, type TagTarget } from './Rows.tsx'
 import { TagDialog } from '../tags/ui/TagDialog.tsx'
 import { tagById } from '../tags/tag-store.ts'
@@ -31,6 +31,7 @@ import { FilterButton } from './FilterButton.tsx'
 import { FLAT_SESSION_ORDER_KEY } from '../stores.ts'
 import { WorkspacePickFlow } from '../WorkspacePicker.tsx'
 import css from './WorkspaceBrowser.module.css'
+import { permitsBulkSelectAll, readVisibleBulkKeys, reconcileBulkSelection, selectBulkRow, type BulkGesture } from './bulk-selection.ts'
 
 /**
  * Column slide length (--ds-transition-duration-slow): rail-search focus waits it out —
@@ -382,7 +383,7 @@ type SessionTreeProps = Pick<
   /** 行勾选状态（key = workspaceId 或 sessionId）。 */
   bulkSelection: ReadonlyMap<string, 'session' | 'workspace'>
   /** Toggle one row's bulk selection. */
-  onBulkToggle: (key: string, kind: 'session' | 'workspace') => void
+  onBulkToggle: (key: string, kind: 'session' | 'workspace', gesture: BulkGesture) => void
   /** 标签子系统行侧注入面（集成自 dsh-workspace-tagger）。 */
   tagger: RowTaggerProps
   /** 标签筛选器（v0.4.0：多条件行 AND）；undefined = 不启用。 */
@@ -660,11 +661,11 @@ function SessionTree({
                 onRenameWorkspace={group.workspaceId === undefined
                   ? undefined
                   : (title: string) => onRenameWorkspace(group.workspaceId as WorkspaceId, title)}
-                bulkMode={bulkType === 'workspace'}
+                bulkMode={bulkType === 'workspace'} bulkActive={bulkType !== null}
                 bulkSelected={group.workspaceId !== undefined && bulkSelection.has(group.workspaceId)}
                 onBulkToggle={group.workspaceId === undefined
                   ? undefined
-                  : () => { onBulkToggle(group.workspaceId as WorkspaceId, 'workspace') }}
+                  : (gesture) => { onBulkToggle(group.workspaceId as WorkspaceId, 'workspace', gesture) }}
                 actions={group.workspaceId === undefined
                   ? undefined
                   : {
@@ -718,9 +719,9 @@ function SessionTree({
                     onFork={forkSession}
                     onArchive={onSessionArchive}
                     onTogglePin={() => { onTogglePinSession(node.id) }}
-                    bulkMode={bulkType === 'session'}
+                    bulkMode={bulkType === 'session'} bulkActive={bulkType !== null}
                     bulkSelected={bulkSelection.has(node.id as string)}
-                    onBulkToggle={() => { onBulkToggle(node.id as string, 'session') }}
+                    onBulkToggle={(gesture) => { onBulkToggle(node.id as string, 'session', gesture) }}
                     drag={dragProps}
                     tagger={tagger}
                     workspaceFront={group.workspaceId !== undefined
@@ -756,7 +757,7 @@ function FlatList({
   useSessions, useSessionPendingInteraction, open, forkSession, onSessionRename, onSessionArchive,
   archivedSessionIds,
   orderBy, sessionOrderByAccount, sessionUpdatedAtByAccount, syncSessionOrderAccount, setSessionOrder, t,
-  pinnedSessionIds, onTogglePinSession, bulkType, bulkSelection, onBulkToggle, tagger,
+  pinnedSessionIds, onTogglePinSession, bulkType, bulkSelection, onBulkToggle, tagger, tagFilter, workspaces, onFilteredCountChange,
 }: Pick<
   SessionTreeProps,
   | 'useSessions'
@@ -778,6 +779,7 @@ function FlatList({
   | 'bulkSelection'
   | 'onBulkToggle'
   | 'tagger'
+  | 'tagFilter' | 'workspaces' | 'onFilteredCountChange'
 >) {
   const list = useSessions(s => s)
   const pendingInteractions = useSessionPendingInteraction(s => s)
@@ -813,6 +815,9 @@ function FlatList({
         return row === undefined ? [] : [row]
       })
   }, [baseRows, sessionOrderByAccount, sessionIds])
+  const filteredRows = useMemo(() => tagFilter === undefined || tagger.settings === undefined ? rows
+    : applyTagFilterToSessions(rows, workspaces, tagger.settings, tagFilter), [rows, workspaces, tagger.settings, tagFilter])
+  useEffect(() => { onFilteredCountChange?.(tagFilter === undefined || isTagFilterInactive(tagFilter) ? 0 : filteredRows.length) }, [filteredRows, tagFilter, onFilteredCountChange])
   const [drag, setDrag] = useState<DragState | null>(null)
   const dropCommitted = useRef(false)
   useNativeDragAcceptance(drag !== null)
@@ -839,7 +844,7 @@ function FlatList({
         {rows.length === 0 && (
           <div className={css.empty}>{t('empty.none')}</div>
         )}
-        {rows.map((node) => {
+        {filteredRows.map((node) => {
           const active = drag !== null
           return (
             <SessionNodeItem
@@ -852,9 +857,9 @@ function FlatList({
               onFork={forkSession}
               onArchive={onSessionArchive}
               onTogglePin={() => { onTogglePinSession(node.id) }}
-              bulkMode={bulkType === 'session'}
+              bulkMode={bulkType === 'session'} bulkActive={bulkType !== null}
               bulkSelected={bulkSelection.has(node.id as string)}
-              onBulkToggle={() => { onBulkToggle(node.id as string, 'session') }}
+              onBulkToggle={(gesture) => { onBulkToggle(node.id as string, 'session', gesture) }}
               tagger={tagger}
               flat
               drag={{
@@ -903,9 +908,11 @@ function SearchResults({
   query,
   remote,
   resultLimit,
+  bulkType, bulkSelection, onBulkToggle,
+  tagFilter, onFilteredCountChange,
   tagger,
   t,
-}: Pick<SessionTreeProps, 'useSessions' | 'useSessionPendingInteraction' | 'open' | 't' | 'tagger'> & {
+}: Pick<SessionTreeProps, 'useSessions' | 'useSessionPendingInteraction' | 'open' | 't' | 'tagger' | 'bulkType' | 'bulkSelection' | 'onBulkToggle' | 'tagFilter' | 'onFilteredCountChange'> & {
   workspaces: readonly WorkspaceView[]
   archivedSessionIds: readonly SessionNode['id'][]
   query: string
@@ -929,6 +936,9 @@ function SearchResults({
     ),
     [list, workspaces, query, archivedSessionIds, pendingInteractions, currentRemote, resultLimit],
   )
+  const filteredResults = useMemo(() => tagFilter === undefined || tagger.settings === undefined ? results.items
+    : applyTagFilterToSessions(results.items, workspaces, tagger.settings, tagFilter), [results.items, workspaces, tagger.settings, tagFilter])
+  useEffect(() => { onFilteredCountChange?.(tagFilter === undefined || isTagFilterInactive(tagFilter) ? 0 : filteredResults.length) }, [filteredResults, tagFilter, onFilteredCountChange])
   const pending = currentRemote.status === 'loading'
   const failed = currentRemote.status === 'error'
 
@@ -936,10 +946,13 @@ function SearchResults({
     <div className={clsx(css.treeBody, css.wide)}>
       <div className={css.list}>
         <div className={css.searchTree} role="tree" aria-label={t('search.results.aria')}>
-          {results.items.map(result => (
+          {filteredResults.map(result => (
             <SearchResultItem
               key={result.id}
               result={result}
+              bulkMode={bulkType === 'session'} bulkActive={bulkType !== null}
+              bulkSelected={bulkSelection.has(result.id)}
+              onBulkToggle={(gesture) => { onBulkToggle(result.id, 'session', gesture) }}
               currentId={list.current}
               onOpen={open}
               tagger={tagger}
@@ -955,7 +968,7 @@ function SearchResults({
             {t('search.unavailable')}
           </div>
         )}
-        {!pending && results.items.length === 0 && (
+        {!pending && filteredResults.length === 0 && (
           <div className={css.empty}>{t('search.noMatches')}</div>
         )}
         {results.hasMore && (
@@ -992,15 +1005,14 @@ export function WorkspaceBrowser({
   archiveSession,
   insertSessionBefore,
   createWorkspace,
+  pickDirectory,
   searchSessions,
   searchResultLimit,
   agentPresetDefault,
-  useDirectoryFlow,
   useHostInfo,
   useTagger,
   tagger,
   taggerT,
-  renderSlot,
   t,
 }: WorkspaceBrowserProps) {
   const home = useHostInfo(info => info.home)
@@ -1015,9 +1027,6 @@ export function WorkspaceBrowser({
     t: taggerT,
     onSetTag: setTagTarget,
   }
-  // Live occupancy of this surface's directory-flow hole (the same source the
-  // flow reads): a composition without a picking affordance can add nothing.
-  const directoryFlowAvailable = useDirectoryFlow(occupied => occupied)
   const groupBy = useStore(s => s.groupBy)
   const orderBy = useStore(s => s.orderBy)
   const pinnedWorkspaceIds = useStore(s => s.pinnedWorkspaceIds)
@@ -1086,10 +1095,19 @@ export function WorkspaceBrowser({
   const [bulkType, setBulkType] = useState<'workspace' | 'session' | null>(null)
   const [bulkMenuOpen, setBulkMenuOpen] = useState(false)
   const [bulkSelection, setBulkSelection] = useState<ReadonlyMap<string, 'session' | 'workspace'>>(new Map())
+  const bulkAnchor = useRef<string | null>(null)
+  const bulkListRef = useRef<HTMLDivElement>(null)
   const [bulkBusy, setBulkBusy] = useState(false)
   const [bulkDone, setBulkDone] = useState<string | null>(null)
   const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false)
   const [bulkError, setBulkError] = useState<string | null>(null)
+
+  // 等菜单完成关闭和焦点恢复后，再将快捷键焦点交给列表。
+  useEffect(() => {
+    if (bulkType === null) return
+    const frame = requestAnimationFrame(() => bulkListRef.current?.focus({ preventScroll: true }))
+    return () => cancelAnimationFrame(frame)
+  }, [bulkType])
 
   // 标签筛选器（v0.4.0：标题栏筛选按钮 + 多条件行面板），浏览器本地状态，不持久化。
   const [tagFilter, setTagFilter] = useState<TagFilter>({
@@ -1099,16 +1117,34 @@ export function WorkspaceBrowser({
   // 筛选命中总数（由 SessionTree 汇报），供筛选面板「已筛选 N 项」展示。
   const [filterResultCount, setFilterResultCount] = useState(0)
 
-  const bulkToggle = (key: string, kind: 'session' | 'workspace'): void => {
-    if (bulkType !== null && bulkType !== kind) return
-    setBulkSelection((prev) => {
-      const next = new Map(prev)
-      if (next.has(key)) next.delete(key)
-      else next.set(key, kind)
-      return next
-    })
+  // 观察实际挂载行，保证分组、平铺、搜索与局部“显示更多”使用同一可选范围。
+  useEffect(() => {
+    const root = bulkListRef.current
+    if (root === null || bulkType === null) return
+    const reconcile = (): void => {
+      const visible = readVisibleBulkKeys(root, bulkType)
+      if (bulkAnchor.current !== null && !visible.includes(bulkAnchor.current)) bulkAnchor.current = null
+      setBulkSelection(previous => {
+        const next = reconcileBulkSelection({ keys: [...previous.keys()], anchor: bulkAnchor.current }, visible)
+        return next.keys.length === previous.size ? previous : new Map(next.keys.map(key => [key, bulkType]))
+      })
+    }
+    reconcile()
+    const observer = new MutationObserver(reconcile)
+    observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-bulk-key', 'data-bulk-kind', 'hidden', 'aria-hidden'] })
+    return () => { observer.disconnect() }
+  }, [bulkType])
+
+  const bulkToggle = (key: string, kind: 'session' | 'workspace', gesture: BulkGesture): void => {
+    const root = bulkListRef.current
+    if (bulkBusy || bulkType !== kind || root === null) return
+    const next = selectBulkRow({ keys: [...bulkSelection.keys()], anchor: bulkAnchor.current }, readVisibleBulkKeys(root, kind), key, gesture)
+    bulkAnchor.current = next.anchor
+    setBulkSelection(new Map(next.keys.map(id => [id, kind])))
+    root.focus({ preventScroll: true })
   }
   const bulkExit = (): void => {
+    bulkAnchor.current = null
     setBulkType(null)
     setBulkMenuOpen(false)
     setBulkSelection(new Map())
@@ -1461,7 +1497,9 @@ export function WorkspaceBrowser({
                 setBulkDone(null)
                 setBulkError(null)
                 setBulkConfirmOpen(false)
+                bulkAnchor.current = null
                 setBulkType(kind as 'workspace' | 'session')
+                bulkListRef.current?.focus({ preventScroll: true })
               }}
               align="end"
               portal
@@ -1503,8 +1541,7 @@ export function WorkspaceBrowser({
           {/* Adding is the button's one action, so a composition with no
               picking affordance has nothing to offer here: the region hides the
               button rather than leaving a dead one in the header. */}
-          {directoryFlowAvailable && (
-            <Tooltip label={t('workspace.add')} side="bottom" delayMs={500}>
+          <Tooltip label={t('workspace.add')} side="bottom" delayMs={500}>
               <button
                 ref={wsPlusRef}
                 type="button"
@@ -1516,8 +1553,7 @@ export function WorkspaceBrowser({
               >
                 <IconProjectAddOutline16 size={wide ? 16 : 18} />
               </button>
-            </Tooltip>
-          )}
+          </Tooltip>
         </div>
         {/* Add flow + its error dialog (same package — direct composition). */}
         <WorkspacePickFlow
@@ -1526,8 +1562,8 @@ export function WorkspaceBrowser({
           anchorRef={wsPlusRef}
           useWorkspaces={useWorkspaces}
           createWorkspace={createWorkspace}
-          useDirectoryFlow={useDirectoryFlow}
-          renderDirectoryFlow={owner => renderSlot('sidebar.workspaces.directoryFlow', owner)}
+          flowAvailable
+          directPick={pickDirectory}
           addOnly
           side="right"
           onPick={(workspaceId) => {
@@ -1589,6 +1625,23 @@ export function WorkspaceBrowser({
           itself is wide-only. */}
       <div
         className={css.listArea}
+        ref={bulkListRef}
+        tabIndex={bulkType === null ? -1 : 0}
+        onMouseDownCapture={(e) => {
+          if (bulkType !== null && e.target instanceof HTMLElement && e.target.closest('input, button, [contenteditable]') === null) {
+            e.currentTarget.focus({ preventScroll: true })
+            if (e.shiftKey) e.preventDefault()
+          }
+        }}
+        onKeyDown={(e) => {
+          if (bulkType === null || bulkBusy || !(e.ctrlKey || e.metaKey) || e.altKey || e.key.toLowerCase() !== 'a') return
+          if (!permitsBulkSelectAll(e.currentTarget, e.target)) return
+          e.preventDefault()
+          e.stopPropagation()
+          const visible = readVisibleBulkKeys(e.currentTarget, bulkType)
+          setBulkSelection(new Map(visible.map(key => [key, bulkType])))
+          if (bulkAnchor.current === null || !visible.includes(bulkAnchor.current)) bulkAnchor.current = visible[0] ?? null
+        }}
         onContextMenu={(e) => {
           // 空白区右键（需求 4）：目标是行（treeitem）时不触发（行有自己的右键）。
           if (e.target instanceof Element && e.target.closest('[role="treeitem"]') !== null) return
@@ -1610,6 +1663,10 @@ export function WorkspaceBrowser({
               query={normalizedQuery}
               remote={remoteSearch}
               resultLimit={searchResultLimit}
+              tagFilter={tagFilter} onFilteredCountChange={setFilterResultCount}
+              bulkType={bulkType}
+              bulkSelection={bulkSelection}
+              onBulkToggle={bulkToggle}
               tagger={rowTagger}
               t={t}
             />
@@ -1617,6 +1674,7 @@ export function WorkspaceBrowser({
           : groupBy === 'flat'
             ? (
               <FlatList
+                workspaces={workspaces} tagFilter={tagFilter} onFilteredCountChange={setFilterResultCount}
                 useSessions={useSessions} useSessionPendingInteraction={useSessionPendingInteraction}
                 open={open} forkSession={forkSession}
                 onSessionRename={onSessionRename} onSessionArchive={onSessionArchive}

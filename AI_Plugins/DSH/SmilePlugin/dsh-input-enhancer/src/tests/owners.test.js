@@ -72,7 +72,7 @@ describe('readConfiguredOwners 用户配置', () => {
     expect(owners).toEqual({ good: '插件' })
   })
   it('存储键名稳定', () => {
-    expect(OWNERS_STORAGE_KEY).toBe('dsh-input-enhancer:commandOwners')
+    expect(OWNERS_STORAGE_KEY).toBe('smilexx-input-enhancer:commandOwners')
   })
 })
 

@@ -1,5 +1,5 @@
 /**
- * dsh-workspace-enhancer — Client 半部（M1 fork 移植版）。
+ * smilexx-workspace-enhancer — Client 半部（M1 fork 移植版）。
  *
  * 复刻上游 @deepseek-ai/dsh-client-ui-workspace 的 index.ts 注册逻辑：
  *   - 替换 sidebar.workspaces single slot（我们的 fork WorkspaceBrowser）
@@ -66,6 +66,9 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 /** Dictionary namespace owned by this plugin（独立 NS，不与官方 workspace 冲突）。 */
 const NS = 'workspace-enhancer'
 
+/** 单实例工作区插槽的后备优先级；常规插件默认 0，因此会自然覆盖本界面。 */
+export const WORKSPACE_FALLBACK_PRIORITY = 10_000
+
 /**
  * Required services (cordis fiber inject). Same set as upstream ui-workspace,
  * plus the two remote namespaces the default-mode selector (需求 6) reads:
@@ -88,7 +91,7 @@ export function apply(ctx: Context): void {
   // <style> 注入模式，effect 持有清理）。
   ctx.effect(() => {
     const style = document.createElement('style')
-    style.dataset.pluginCss = 'dsh-workspace-enhancer'
+    style.dataset.pluginCss = 'smilexx-workspace-enhancer'
     style.textContent = `${WorkspaceBrowserRaw}\n${RowsRaw}\n${WorkspacePickerRaw}\n${TagDialogRaw}\n${TagsSettingsTabRaw}`
     document.head.appendChild(style)
     return () => style.remove()
@@ -125,7 +128,6 @@ export function apply(ctx: Context): void {
     getSnapshot: () => ctx.slots.entries(hole).length > 0,
     subscribe: listener => ctx.slots.subscribe(hole, listener),
   })
-  const browserFlowSource = flowSource('sidebar.workspaces.directoryFlow')
   const hostInfo: HostObservable<RemoteHostFacts> = {
     getSnapshot: () => ctx.remote.$host,
     subscribe: listener => ctx.on('connection/reset', listener),
@@ -157,12 +159,13 @@ export function apply(ctx: Context): void {
       await workspaces.insertSessionBefore(workspaceId, sessionId, beforeSessionId)
     },
     createWorkspace: input => workspaces.create(input),
+    pickDirectory: () => uiWorkspace.pickDirectory(),
     agentPresetDefault,
     // 标签子系统（集成自 dsh-workspace-tagger）：快照 observable → useTagger hook、
     // 动作面控制器、标签命名空间文案。
     tagger: taggerController,
     taggerT,
-    hooks: { directoryFlow: browserFlowSource, hostInfo, tagger: taggerObservable },
+    hooks: { hostInfo, tagger: taggerObservable },
   })
   // 需求 6：会话默认模式（写 settings `agent-presets.default`，绝不 agentPresets.select）。
   const agentPresetDefault: WorkspaceBrowserInjected['agentPresetDefault'] = {
@@ -196,17 +199,16 @@ export function apply(ctx: Context): void {
     createWorkspace: input => workspaces.create(input),
     hooks: { directoryFlow: pickerFlowSource },
   })
-  // 自给自足：声明 directoryFlow child（我们的 WorkspacePickFlow 需要它）。
-  // 若 archive-manager 也声明同一 child slot 则其一 apply 失败（child slot 一个
-  // declarer）——用户已选择由我们接管侧栏。无 archive-manager 时本插件完整可用。
+  // 兼容其它工作区插件：不声明公共 directoryFlow 子插槽，并以高数值优先级
+  // 作为后备项注册。宿主 single slot 取最低优先级，常规插件默认 0 会自然接管，
+  // 两者仍可同时加载，不再发生子插槽重复声明错误。
   ctx.slots.inject('sidebar.workspaces', () => ctx.slots.register(
     {
       name: 'sidebar.workspaces',
-      children: { 'sidebar.workspaces.directoryFlow': { kind: 'single', scope: 'root' } },
       store: createWorkspaceViewStore(),
       inject: browserInjected,
       locale: NS,
-      priority: -100,
+      priority: WORKSPACE_FALLBACK_PRIORITY,
     },
     WorkspaceBrowser,
   ))

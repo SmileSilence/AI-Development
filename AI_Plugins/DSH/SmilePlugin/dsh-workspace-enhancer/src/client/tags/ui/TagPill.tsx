@@ -5,14 +5,16 @@
  * 双色胶囊（会话行）：前段 = 工作区色（宽度占比 splitRatio），后段 = 会话生效色。
  * count 用于折叠工作区行显示「运行标签名×N」（任务 B 扩展1）。
  */
-import clsx from 'clsx'
+import type { RunningTagEffect } from '../settings-types.ts'
 import { textColorOn } from '../tag-store.ts'
 import css from './TagDialog.module.css'
+import clsx from 'clsx'
 
 /** 一个颜色段。 */
 export interface TagSegment {
   color: string
   name: string
+  effect?: RunningTagEffect
 }
 
 /**
@@ -22,11 +24,10 @@ export interface TagSegment {
  * @param props.className - 附加类名（供行内嵌入布局）。
  */
 export function TagPill({ tag, count, className }: { tag: TagSegment; count?: number; className?: string }) {
-  const foreground = textColorOn(tag.color)
   return (
     <span
       className={clsx(css.pill, className)}
-      style={{ backgroundColor: tag.color, color: foreground }}
+      style={{ backgroundColor: tag.color, color: textColorOn(tag.color) }}
       title={count !== undefined && count > 0 ? `${tag.name}×${count}` : tag.name}
     >
       <span className={css.pillText}>{tag.name}</span>
@@ -51,14 +52,13 @@ export function DualTagPill({
   if (front === undefined) {
     return <TagPill tag={back} className={className} />
   }
-  const backForeground = textColorOn(back.color)
   return (
     <span className={clsx(css.dualPill, className)} title={back.name}>
       <span
         className={css.dualPillFront}
         style={{ width: Math.round(140 * splitRatio), backgroundColor: front.color }}
       />
-      <span className={css.dualPillBack} style={{ backgroundColor: back.color, color: backForeground }}>
+      <span className={css.dualPillBack} style={{ backgroundColor: back.color, color: textColorOn(back.color) }}>
         <span className={css.dualPillBackText}>{back.name}</span>
       </span>
     </span>

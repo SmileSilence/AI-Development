@@ -1,5 +1,5 @@
 /**
- * dsh-skill-mcp-panel —— MCP 服务器配置模型。
+ * smilexx-skill-mcp-manager —— MCP 服务器配置模型。
  *
  * v1 仅全局生效：模型不包含 scope。env/headers 的 null 是编辑语义：
  * string = 覆盖该 key，null = 删除该 key，不出现 = 保留旧值。

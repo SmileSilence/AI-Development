@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * dsh-panel skill —— dsh-skill-mcp-panel 插件的技能热管理命令行。
+ * dsh-panel skill —— smilexx-skill-mcp-manager 插件的技能热管理命令行。
  *
  * 直接操作 DSH 技能文件系统提供方读取的技能文件；运行中的网关通过文件
  * 监听器热感知变化（无需重启）。

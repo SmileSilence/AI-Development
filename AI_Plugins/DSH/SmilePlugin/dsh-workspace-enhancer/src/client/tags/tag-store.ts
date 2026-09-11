@@ -4,7 +4,8 @@
  * 职责：颜色转换与亮度、标签 id/名称校验、生效标签规则（运行覆盖/折叠覆盖）、
  * 删除标签的原子清理操作构造、双色比例边界。组件只消费本层函数与 TaggerController。
  */
-import type { TagDefinition, WorkspaceTaggerSettings } from './settings-types.ts'
+import type { TagDefinition, WorkspaceTaggerSettings, RunningTagConfig, RunningTagEffect } from './settings-types.ts'
+import { RUNNING_EFFECT_PRESETS, RUNNING_EFFECT_SECONDS } from './running-effects.ts'
 import { SPLIT_RATIO_MIN, SPLIT_RATIO_MAX, DEFAULT_TAG_COLOR } from './settings-types.ts'
 
 /** JSON 值（与 @deepseek-ai/dsh-util-values 的 JsonValue 结构等价，保持本层零依赖）。 */
@@ -237,3 +238,31 @@ export const FALLBACK_TAG_COLOR = DEFAULT_TAG_COLOR
 
 /** 行背景微着色透明度（8%）。 */
 export const ROW_TINT_ALPHA = 0.08
+
+/** 独立运行标签；只读兼容，避免初始化时覆盖旧数据。 */
+export function resolveRunningTag(settings: WorkspaceTaggerSettings): RunningTagConfig {
+  const stored = settings.runningTag
+  const legacy = stored != null || settings.runningTagId === null ? undefined : tagById(settings, settings.runningTagId)
+  const safeColor = (value: unknown): string | null => typeof value === 'string' ? normalizeHex(value) : null
+  const color = safeColor(stored?.color ?? legacy?.color) ?? DEFAULT_TAG_COLOR
+  const rgb = hexToRgb(color)!
+  const blend = (weight: number): string => '#' + [rgb.r, rgb.g, rgb.b]
+    .map(value => Math.round(value + (255 - value) * weight).toString(16).padStart(2, '0')).join('')
+  return {
+    enabled: stored != null ? stored.enabled === true : legacy !== undefined,
+    name: (typeof stored?.name === 'string' ? stored.name.trim() : '') || legacy?.name || '运行中',
+    color,
+    effect: {
+      preset: RUNNING_EFFECT_PRESETS.find(item => item.id === stored?.effect?.preset)?.id ?? 'edge',
+      color: safeColor(stored?.effect?.color) ?? blend(0.65),
+      secondaryColor: safeColor(stored?.effect?.secondaryColor) ?? blend(0.3),
+      speed: stored?.effect?.speed && Object.hasOwn(RUNNING_EFFECT_SECONDS, stored.effect.speed) ? stored.effect.speed : 'medium',
+    },
+  }
+}
+
+/** 展示对象可直接传入共享胶囊；其 id 不进入普通标签分配。 */
+export function getRunningTag(settings: WorkspaceTaggerSettings): (TagDefinition & { effect: RunningTagEffect }) | undefined {
+  const tag = resolveRunningTag(settings)
+  return tag.enabled ? { id: '__running__', name: tag.name, color: tag.color, effect: tag.effect } : undefined
+}

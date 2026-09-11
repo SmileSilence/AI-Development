@@ -1,6 +1,16 @@
-# dsh-workspace-enhancer
+# smilexx-workspace-enhancer
 
 DSH (DeepSeek Harness) 右侧工作区增强插件。
+
+## 0.7.4 使用帮助
+
+- **批量选择**：进入批量工作区或批量会话模式，点击行单选，Ctrl+点击增减单项，Shift+点击选择连续范围，Ctrl+Shift+点击追加范围。复选框可直接勾选；工作区箭头用于展开或折叠。
+- **全选范围**：列表持有焦点时 Ctrl+A 选择当前已展开且符合筛选的可操作项，包含滚动区外行；不包含折叠或“显示更多”隐藏项及空白会话。隐藏项会从已选集合移除，输入框保留文字全选；Ctrl、Shift 和 Ctrl+A 产生的程序化列表焦点不会显示额外白色边框。
+- **工作区插件兼容**：本插件作为 `sidebar.workspaces` 的后备提供者注册。其它工作区插件使用常规优先级时会由宿主正常选中，双方可以同时加载，不会因公共目录选择子插槽重复声明而导致插件树失败；本插件的设置和持久化服务仍保持可用。
+- **运行状态标签**：设置 → 插件 → 标签管理默认显示模拟会话行和名称、效果、速度摘要；点击右侧编辑图标展开完整表单，保存或取消后自动折叠。编辑草稿只影响模拟行，保存成功后才应用到侧栏。
+- **整行动效**：预设边缘流光、渐变流动与无动效，速度为慢（4 秒）、中（2.5 秒）、快（1.5 秒）。边缘流光从行左上角开始沿圆角边缘顺时针循环；渐变使用无缝连续循环。动效作用于完整运行会话行和含运行会话的折叠工作区行；标签胶囊保持静态，系统减少动态效果时保留静态底色或边缘提示。旧跑马灯配置会自动切换为边缘流光。
+- **兼容说明**：首次读取继承旧运行标签的名称、颜色和启用状态，保存独立设置后不再与普通标签联动；原普通标签和绑定保留。普通标签筛选始终按手动分类判断。
+- **悬停统计**：工作区卡片显示未归档、非空主会话总数（不计子代理），不受折叠或筛选影响；同时显示工作区原标签及启用的运行状态与数量。
 
 ## 功能
 
@@ -11,7 +21,7 @@ DSH (DeepSeek Harness) 右侧工作区增强插件。
 5. **批量归档会话 + 批量删除工作区**（归档语义：界面消失、数据保留磁盘）
 6. **会话默认模式选择器** — 标题栏上方类权限选择器，选择新建会话默认 agent preset
 7. **工作区/会话标签** — 集成 dsh-workspace-tagger：标签显示在工作区/会话名称左侧，并支持双色胶囊、行内微着色和标签管理设置页；标签管理页和行内标签弹窗都可修改标签颜色（配置 `tags.enabled` 可开关）
-8. **标签弹窗下拉 + 运行标签增强** — 设置标签改为单个下拉菜单（运行中标签不出现，只在设置页配置）；折叠工作区显示「运行标签名×N」；运行中会话/有运行会话的工作区自动置顶
+8. **标签弹窗下拉 + 运行标签增强** — 普通标签在下拉菜单中分配，运行状态在设置页独立配置；折叠工作区显示「运行标签名×N」；运行中会话/有运行会话的工作区自动置顶
 9. **标签筛选（飞书式 7 种操作符）** — 工作区标题栏右侧「筛选」漏斗按钮（仅宽侧栏）弹出筛选面板：多条件行、行间 AND，每行独立选择范围（全部/工作区/会话）与条件（等于/不等于/包含/不包含/包含全部/为空/不为空 7 种操作符），标签选择（等于/不等于单选、包含族多选、为空/不为空无值），支持添加/删除条件行、清除全部，实时显示「已筛选 N 项」；筛选生效时按钮高亮 + 角标；搜索框与图标按钮保持同一组紧挨
 10. **一键折叠/展开所有工作区（双向）** — 「工作区」标题右侧紧挨着一个小箭头按钮（仅宽侧栏、分组视图）：未全部折叠时显示 ▼ 点击一键折叠全部；全部折叠后翻转为 ▶ 点击一键展开全部（tooltip「折叠全部」/「展开全部」）；无工作区或 flat 视图不显示
 
@@ -19,13 +29,13 @@ DSH (DeepSeek Harness) 右侧工作区增强插件。
 
 ```bash
 # npm（发布后）
-dsh plugin --profile web add dsh-workspace-enhancer
+dsh plugin --profile web add smilexx-workspace-enhancer
 
 # tarball 离线
-dsh plugin --profile web add ./dsh-workspace-enhancer-0.6.0.tgz
+dsh plugin --profile web add ./smilexx-workspace-enhancer-0.7.4.tgz
 
 # git（需 pnpm allowBuilds 授权 prepare 脚本）
-dsh plugin --profile web add github:user/dsh-workspace-enhancer#<sha>
+dsh plugin --profile web add github:user/smilexx-workspace-enhancer#<sha>
 ```
 
 全局生效：把 patch 行追加到 `$DSH_HOME/cordis.patch.yml`（所有 profile 共享）。
@@ -33,7 +43,7 @@ dsh plugin --profile web add github:user/dsh-workspace-enhancer#<sha>
 ## 卸载
 
 ```bash
-dsh plugin --profile <name> remove dsh-workspace-enhancer
+dsh plugin --profile <name> remove smilexx-workspace-enhancer
 ```
 
 核对四处清单（dependencies、dsh.profile.bundles、node_modules、patch 层）确认无残留。

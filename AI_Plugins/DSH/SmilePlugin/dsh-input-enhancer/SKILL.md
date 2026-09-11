@@ -1,10 +1,10 @@
 ---
-name: dsh-input-enhancer
-description: 维护 dsh-input-enhancer 插件（分类命令菜单 + Plan 模式按钮 + 实时调整方向）的构建、测试、打包与验收流程。
+name: smilexx-input-enhancer
+description: 维护 smilexx-input-enhancer 插件（分类命令菜单 + Plan 模式按钮 + 实时调整方向）的构建、测试、打包与验收流程。
 ---
-# dsh-input-enhancer 维护
+# smilexx-input-enhancer 维护
 
-本技能用于 dsh-input-enhancer 2.3.1 的构建、测试、打包与验收。
+本技能用于 smilexx-input-enhancer 2.3.1 的构建、测试、打包与验收。
 
 ## 常用命令
 
@@ -12,7 +12,7 @@ description: 维护 dsh-input-enhancer 插件（分类命令菜单 + Plan 模式
 pnpm run build      # 构建 lib/index.js + lib/client.js
 pnpm test           # vitest 单元/组件测试（含调整方向事务与按钮顺序回归）
 pnpm run check      # 静态验收（产物/入口/补丁/许可/外置依赖）
-pnpm run pack       # 生成 dsh-input-enhancer-2.3.1.tgz
+pnpm run pack       # 生成 smilexx-input-enhancer-2.3.1.tgz
 pnpm run test:e2e   # Stage C 浏览器端到端验收
 ```
 

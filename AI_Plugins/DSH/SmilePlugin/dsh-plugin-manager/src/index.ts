@@ -31,12 +31,9 @@ import { McpManagerGateway } from "./mcp/gateway.js";
 import { ensureGlobalShim } from "./global-shim.js";
 import { MCP_MANIFEST } from "./mcp/wire.js";
 import { NestedSkillProvider, NESTED_SKILL_RANK } from "./provider.js";
-import { PLUGINS_MANIFEST, PluginsViewerGateway } from "./plugin/service.js";
-import { registerPluginTools } from "./plugin/tools.js";
-import { argvProfile } from "./plugin/scan.js";
 
 /**
- * dsh-plugin-manager —— 宿主半区。
+ * smilexx-skill-mcp-manager —— 宿主半区。
  *
  * 一个 Typert 远程服务（"skillsViewer"），对外暴露技能目录与热管理操作：
  * 启用/停用（*.disabled 改名）、删除、添加（导入目录束或单文件技能）、
@@ -48,7 +45,7 @@ import { argvProfile } from "./plugin/scan.js";
  * 技能文件系统提供方在各根目录里发现的东西。监听器约 200ms 内热感知
  * 变化，因此以上所有操作都无需重启。
  */
-export const name = "dsh-plugin-manager";
+export const name = "smilexx-skill-mcp-manager";
 export const inject = ["typert", "tools", "loader", "skills", "sessions", "agents"];
 
 // ── wire 模式（zod v4）───────────────────────────────────────────────────
@@ -160,146 +157,146 @@ const addResultSchema = z.object({ name: z.string(), kind: z.enum(["bundle", "fl
 
 /** 注册到 API 网关的类型化 wire 描述符。 */
 const MANIFEST = {
-  package: "dsh-plugin-manager",
+  package: "smilexx-skill-mcp-manager",
   face: "host",
   schemas: [],
   invocations: [
     {
-      id: "dsh-plugin-manager#skillsViewer/list",
+      id: "smilexx-skill-mcp-manager#skillsViewer/list",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "list",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#sessionId", schema: sessionIdSchema } }
+        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#sessionId", schema: sessionIdSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#SkillListResult", schema: listResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SkillListResult", schema: listResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/workspaces",
+      id: "smilexx-skill-mcp-manager#skillsViewer/workspaces",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "workspaces",
       invocation: { kind: "direct" },
       parameters: [],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#WorkspacesResult", schema: workspacesResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#WorkspacesResult", schema: workspacesResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/groups",
+      id: "smilexx-skill-mcp-manager#skillsViewer/groups",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "groups",
       invocation: { kind: "direct" },
       parameters: [],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#GroupsResult", schema: groupsResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#GroupsResult", schema: groupsResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/checkUpdate",
+      id: "smilexx-skill-mcp-manager#skillsViewer/checkUpdate",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "checkUpdate",
       invocation: { kind: "direct" },
       parameters: [],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#CheckUpdateResult", schema: checkUpdateResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#CheckUpdateResult", schema: checkUpdateResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/saveGroup",
+      id: "smilexx-skill-mcp-manager#skillsViewer/saveGroup",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "saveGroup",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#SaveGroupPayload", schema: saveGroupPayloadSchema } }
+        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SaveGroupPayload", schema: saveGroupPayloadSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#GroupsResult", schema: groupsResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#GroupsResult", schema: groupsResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/deleteGroup",
+      id: "smilexx-skill-mcp-manager#skillsViewer/deleteGroup",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "deleteGroup",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#DeleteGroupPayload", schema: deleteGroupPayloadSchema } }
+        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#DeleteGroupPayload", schema: deleteGroupPayloadSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#GroupsResult", schema: groupsResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#GroupsResult", schema: groupsResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/content",
+      id: "smilexx-skill-mcp-manager#skillsViewer/content",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "content",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "name", wire: "name", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#SkillName", schema: z.string() } },
-        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#sessionId", schema: sessionIdSchema } },
-        { name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#SkillScope", schema: z.union([z.string(), z.null()]) } }
+        { name: "name", wire: "name", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SkillName", schema: z.string() } },
+        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#sessionId", schema: sessionIdSchema } },
+        { name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SkillScope", schema: z.union([z.string(), z.null()]) } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#SkillContent", schema: skillContentSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SkillContent", schema: skillContentSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/setEnabled",
+      id: "smilexx-skill-mcp-manager#skillsViewer/setEnabled",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "setEnabled",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "name", wire: "name", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#SkillName", schema: z.string() } },
-        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#sessionId", schema: sessionIdSchema } },
-        { name: "enabled", wire: "enabled", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#EnabledFlag", schema: z.boolean() } },
-        { name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#SkillScope", schema: z.union([z.string(), z.null()]) } }
+        { name: "name", wire: "name", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SkillName", schema: z.string() } },
+        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#sessionId", schema: sessionIdSchema } },
+        { name: "enabled", wire: "enabled", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#EnabledFlag", schema: z.boolean() } },
+        { name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SkillScope", schema: z.union([z.string(), z.null()]) } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#SetEnabledResult", schema: setEnabledResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SetEnabledResult", schema: setEnabledResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/migrate",
+      id: "smilexx-skill-mcp-manager#skillsViewer/migrate",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "migrate",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "name", wire: "name", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#SkillName", schema: z.string() } },
-        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#sessionId", schema: sessionIdSchema } },
-        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#MigratePayload", schema: migratePayloadSchema } }
+        { name: "name", wire: "name", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SkillName", schema: z.string() } },
+        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#sessionId", schema: sessionIdSchema } },
+        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#MigratePayload", schema: migratePayloadSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#MigrateResult", schema: migrateResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#MigrateResult", schema: migrateResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/batchMigrate",
+      id: "smilexx-skill-mcp-manager#skillsViewer/batchMigrate",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "batchMigrate",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#sessionId", schema: sessionIdSchema } },
-        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#BatchMigratePayload", schema: batchMigratePayloadSchema } }
+        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#sessionId", schema: sessionIdSchema } },
+        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#BatchMigratePayload", schema: batchMigratePayloadSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#BatchMigrateResult", schema: batchMigrateResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#BatchMigrateResult", schema: batchMigrateResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/deleteSkill",
+      id: "smilexx-skill-mcp-manager#skillsViewer/deleteSkill",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "deleteSkill",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "name", wire: "name", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#SkillName", schema: z.string() } },
-        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#sessionId", schema: sessionIdSchema } },
-        { name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#SkillScope", schema: z.union([z.string(), z.null()]) } }
+        { name: "name", wire: "name", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SkillName", schema: z.string() } },
+        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#sessionId", schema: sessionIdSchema } },
+        { name: "scope", wire: "scope", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#SkillScope", schema: z.union([z.string(), z.null()]) } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#DeleteSkillResult", schema: deleteSkillResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#DeleteSkillResult", schema: deleteSkillResultSchema }
     },
     {
-      id: "dsh-plugin-manager#skillsViewer/addSkill",
+      id: "smilexx-skill-mcp-manager#skillsViewer/addSkill",
       service: "skillsViewer",
       namespace: "skillsViewer",
       method: "addSkill",
       invocation: { kind: "direct" },
       parameters: [
-        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#sessionId", schema: sessionIdSchema } },
-        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "dsh-plugin-manager#AddPayload", schema: addPayloadSchema } }
+        { name: "sessionId", wire: "sessionId", source: "json", acceptsUndefined: true, codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#sessionId", schema: sessionIdSchema } },
+        { name: "payload", wire: "payload", source: "json", codec: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#AddPayload", schema: addPayloadSchema } }
       ],
-      result: { mode: "strict", typeSymbol: "dsh-plugin-manager#AddResult", schema: addResultSchema }
+      result: { mode: "strict", typeSymbol: "smilexx-skill-mcp-manager#AddResult", schema: addResultSchema }
     }
   ],
   model: { services: [], events: [], objects: [] }
@@ -312,7 +309,7 @@ const MANIFEST = {
 const PANEL_MANIFEST = {
   ...MANIFEST,
   schemas: [...MANIFEST.schemas, ...MCP_MANIFEST.schemas],
-  invocations: [...MANIFEST.invocations, ...MCP_MANIFEST.invocations, ...PLUGINS_MANIFEST.invocations]
+  invocations: [...MANIFEST.invocations, ...MCP_MANIFEST.invocations]
 };
 
 /** 归一技能 md 文本：去 BOM、CRLF 归一为 LF（yaml 解析对孤立 \r 敏感）。 */
@@ -987,9 +984,6 @@ export function apply(ctx: any, config: any = {}) {
   ensureGlobalShim(ctx.logger);
   new SkillsViewerGateway(ctx);
   new McpManagerGateway(ctx);
-  const profile = typeof config?.profile === "string" && config.profile !== "" ? config.profile : argvProfile();
-  new PluginsViewerGateway(ctx, profile);
-  ctx.effect(() => ctx.typert.register(PANEL_MANIFEST), "dsh-plugin-manager: typert manifest");
+  ctx.effect(() => ctx.typert.register(PANEL_MANIFEST), "smilexx-skill-mcp-manager: typert manifest");
   ctx.skills.registerProvider((control) => new NestedSkillProvider(NESTED_SKILL_RANK, control.signal, control.invalidate));
-  registerPluginTools(ctx, profile);
 }

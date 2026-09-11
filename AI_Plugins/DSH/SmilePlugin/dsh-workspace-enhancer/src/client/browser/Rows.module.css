@@ -10,6 +10,89 @@
   color: var(--dsw-alias-label-primary);
 }
 
+/* 运行状态整行效果。装饰层不接收事件，行内容始终位于其上方。 */
+.runningRowSurface {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.runningRowSurface > :not(.runningRowLayers) {
+  position: relative;
+  z-index: 1;
+}
+
+.runningRowLayers,
+.runningRowBase,
+.runningRowEffect {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.runningRowLayers { z-index: 0; }
+.runningRowBase { background: var(--dsh-running-base); }
+
+.dshRunningEdge {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.runningEdgePath {
+  x: 1px;
+  y: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  rx: 7px;
+  ry: 7px;
+  fill: none;
+  stroke: var(--dsh-running-color);
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-dasharray: 18 82;
+  filter: drop-shadow(0 0 2px var(--dsh-running-color));
+  animation: dshRunningPerimeter var(--dsh-running-duration) linear infinite;
+}
+
+.dshRunningGradient {
+  inset: 0 auto 0 0;
+  width: 200%;
+  background: linear-gradient(110deg, transparent 5%, var(--dsh-running-color), var(--dsh-running-secondary), transparent 95%);
+  background-size: 50% 100%;
+  background-repeat: repeat-x;
+  opacity: 0.16;
+  will-change: transform;
+  animation: dshRunningGradientLoop var(--dsh-running-duration) linear infinite;
+}
+
+@keyframes dshRunningPerimeter {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -100; }
+}
+
+@keyframes dshRunningGradientLoop {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* 宿主交互底色优先；边缘提示仍保留。 */
+.runningRowSurface:hover .runningRowBase,
+.runningRowSurface.selected .runningRowBase,
+.runningRowSurface.bulkSelected .runningRowBase,
+.runningRowSurface.menuOpen .runningRowBase {
+  opacity: 0;
+}
+
+.runningRowSurface:hover .dshRunningGradient,
+.runningRowSurface.selected .dshRunningGradient,
+.runningRowSurface.bulkSelected .dshRunningGradient,
+.runningRowSurface.menuOpen .dshRunningGradient {
+  opacity: 0.08;
+}
+
 /* 批量模式（需求 5）行首勾选框。 */
 .bulkCheckbox {
   flex: none;
@@ -165,8 +248,12 @@
 
 /* Project leading slot: folder by default, expand arrow on row hover. */
 .projectRow .chevron { display: none; }
-.projectRow:hover .chevron { display: inline-flex; }
-.projectRow:hover .folder { display: none; }
+.projectRow:hover .chevron,
+.projectRow:focus-within .chevron,
+.projectRow[data-bulk-kind] .chevron { display: inline-flex; }
+.projectRow:hover .folder,
+.projectRow:focus-within .folder,
+.projectRow[data-bulk-kind] .folder { display: none; }
 
 /* Expand arrow (filled triangle): points right closed, rotates to point down open. */
 .arrow {
@@ -477,8 +564,39 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sessionRow,
-  .arrow {
+  .arrow,
+  .runningRowEffect {
     animation: none;
     transition: none;
   }
+
+  .runningEdgePath {
+    animation: none;
+    stroke-dasharray: none;
+    filter: none;
+  }
+}
+
+/* 工作区原标签与运行状态并列展示，长标签换行，不撑宽悬停卡。 */
+.workspaceHoverTags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 100%;
+}
+
+/* 批量选中态遵循宿主交互色，覆盖标签的整行浅色遮罩。 */
+.projectRow.bulkSelected,
+.sessionRow.bulkSelected,
+.searchResultRow.bulkSelected {
+  background: var(--dsw-alias-interactive-bg-hover);
+  box-shadow: inset 0 0 0 1px var(--dsw-alias-interactive-accent, var(--dsw-alias-label-primary)) !important;
+}
+.expandButton {
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
 }

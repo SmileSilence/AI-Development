@@ -60,6 +60,7 @@ export const zh = {
   'status.completed': '已完成',
   'schedule.active': '有活动定时任务',
   'hover.created': '创建于 {time}',
+  'hover.sessionCount': '会话：{n}',
   'hover.copied': '已复制',
   'date.ymd': '{y}年{m}月{d}日',
   'time.now': '刚刚',
@@ -69,7 +70,7 @@ export const zh = {
   'time.months': '{n}个月',
   'time.years': '{n}年',
   'time.ago': '{t}前',
-  // ——— 插件增强键（dsh-workspace-enhancer）———
+  // ——— 插件增强键（smilexx-workspace-enhancer）———
   'menu.pin': '置顶',
   'menu.unpin': '取消置顶',
   'menu.openWorkspace': '打开工作区',
@@ -170,6 +171,7 @@ export const en = {
   'status.completed': 'Completed',
   'schedule.active': 'Has active scheduled task',
   'hover.created': 'Created {time}',
+  'hover.sessionCount': 'Sessions: {n}',
   'hover.copied': 'Copied',
   'date.ymd': '{y}-{m}-{d}',
   'time.now': 'now',
@@ -179,7 +181,7 @@ export const en = {
   'time.months': '{n}mo',
   'time.years': '{n}y',
   'time.ago': '{t} ago',
-  // ——— 插件增强键（dsh-workspace-enhancer）———
+  // ——— 插件增强键（smilexx-workspace-enhancer）———
   'menu.pin': 'Pin',
   'menu.unpin': 'Unpin',
   'menu.openWorkspace': 'Open workspace',

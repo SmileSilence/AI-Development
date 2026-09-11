@@ -1,5 +1,5 @@
 /**
- * dsh-input-enhancer 客户端插件主体（2.3.1）
+ * smilexx-input-enhancer 客户端插件主体（2.3.1）
  *
  * 功能清单：
  * - 分类命令菜单   依赖 slots / sessions / inputTriggers；
@@ -25,7 +25,7 @@ import { registerDirectionAdjustSeat } from './direction/directionSeat.js'
 export const inject = ['slots']
 
 /** 原型防重复包装标记（HMR 重入安全）。 */
-const PATCHED = Symbol.for('dsh-input-enhancer.commandUi.patched')
+const PATCHED = Symbol.for('smilexx-input-enhancer.commandUi.patched')
 
 /**
  * 经宿主模块系统 require ui-commands 客户端模块（工厂参数 require 由
@@ -81,7 +81,7 @@ function installCommandOwnerInterceptor(ctx) {
  * @param {{ commandOwners?: Record<string, string> }} [_config] - 预留：客户端启动图不传配置。
  */
 export async function apply(ctx, _config) {
-  ctx.effect(() => injectStylesOnce(), 'dsh-input-enhancer: 注入样式')
+  ctx.effect(() => injectStylesOnce(), 'smilexx-input-enhancer: 注入样式')
 
   // L1：先装拦截（晚于我们 apply 的插件命令即可归属），失败不阻塞功能
   installCommandOwnerInterceptor(ctx)

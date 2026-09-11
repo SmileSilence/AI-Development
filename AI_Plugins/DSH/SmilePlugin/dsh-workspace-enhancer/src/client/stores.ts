@@ -5,8 +5,10 @@
  * plugin reloads); register() receives the factory and the browser derives
  * its PropsStore share from the return type.
  *
- * persist 键用插件自己的命名空间（dsh-workspace-enhancer:view.v1），不复用官方
+ * persist 键用插件自己的命名空间（smilexx-workspace-enhancer:view.v1），不复用官方
  * `dsh.workspace.view.v5`——避免与官方/其他插件共享 LocalStorage（见 PLAN §5.1）。
+ * 0.7.3 包改名：createWorkspaceViewStore 首次运行会把旧键
+ * dsh-workspace-enhancer:view.v1 的已存视图状态迁移到新键并清理旧键。
  */
 import { defineStore, type EngineStoreHandle } from '@deepseek-ai/dsh-client-store'
 
@@ -61,6 +63,7 @@ type WorkspaceViewActions = {
  * @returns the store handle (spec + type + identity + factory in one).
  */
 export function createWorkspaceViewStore(): EngineStoreHandle<WorkspaceViewState, WorkspaceViewActions> {
+  migrateLegacyPersist()
   return defineStore({
     init: (): WorkspaceViewState => ({
       groupBy: 'workspace',
@@ -71,7 +74,7 @@ export function createWorkspaceViewStore(): EngineStoreHandle<WorkspaceViewState
       pinnedWorkspaceIds: [],
       pinnedSessionIds: [],
     }),
-    persist: 'dsh-workspace-enhancer:view.v1',
+    persist: 'smilexx-workspace-enhancer:view.v1',
     actions: {
       setGroupBy: (d, mode: SessionGroupBy) => { d.groupBy = mode },
       setOrderBy: (d, mode: SessionOrderBy) => { d.orderBy = mode },
@@ -111,4 +114,26 @@ export function createWorkspaceViewStore(): EngineStoreHandle<WorkspaceViewState
       },
     },
   })
+}
+
+/**
+ * 一次性迁移：0.7.3 包改名后首次创建视图 store 时，把旧 persist 键
+ * `dsh-workspace-enhancer:view.v1` 的已存状态搬移到新键并删除旧键。
+ * 无旧数据、新键已存在（避免覆盖更新数据）或迁移失败时静默返回。
+ */
+const LEGACY_VIEW_STORAGE_KEY = 'dsh-workspace-enhancer:view.v1'
+const VIEW_STORAGE_KEY = 'smilexx-workspace-enhancer:view.v1'
+
+function migrateLegacyPersist(): void {
+  try {
+    if (typeof localStorage === 'undefined') return
+    const legacy = localStorage.getItem(LEGACY_VIEW_STORAGE_KEY)
+    if (legacy === null) return
+    if (localStorage.getItem(VIEW_STORAGE_KEY) === null) {
+      localStorage.setItem(VIEW_STORAGE_KEY, legacy)
+    }
+    localStorage.removeItem(LEGACY_VIEW_STORAGE_KEY)
+  } catch {
+    // 隐私模式 / 配额：静默放弃迁移，store 从 init 起步。
+  }
 }

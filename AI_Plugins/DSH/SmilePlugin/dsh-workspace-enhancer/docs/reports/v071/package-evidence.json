@@ -1,0 +1,16 @@
+{
+  "package": "dsh-workspace-enhancer-0.7.1.tgz",
+  "version": "0.7.1",
+  "bytes": 77779,
+  "sha256": "C62608A623765EC0A04496AB9B801B5A80C1FF4E1621A99FDFE02B6A6EF2514C",
+  "tests": {
+    "files": 9,
+    "passed": 123,
+    "failed": 0
+  },
+  "dailyProfile": {
+    "name": "web",
+    "resolvedVersion": "0.7.1",
+    "bundleEntries": 1
+  }
+}

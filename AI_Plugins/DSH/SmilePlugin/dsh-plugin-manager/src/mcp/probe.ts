@@ -1,5 +1,5 @@
 /**
- * dsh-skill-mcp-panel —— MCP 临时连接探针。
+ * smilexx-skill-mcp-manager —— MCP 临时连接探针。
  *
  * 不写 patch、不注册 DSH 工具；Web“测试连接”与 `dsh-panel mcp test` 共用。
  */
@@ -56,7 +56,7 @@ export async function probeMcpServer(raw: unknown, timeoutMs = PROBE_TIMEOUT_MS)
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
-  const client = new Client({ name: "dsh-skill-mcp-panel", version: "2.0.0" });
+  const client = new Client({ name: "smilexx-skill-mcp-manager", version: "2.0.0" });
   let transport: StdioClientTransport | StreamableHTTPClientTransport | undefined;
   try {
     transport = createTransport(input);
