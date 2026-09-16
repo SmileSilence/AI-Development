@@ -192,7 +192,7 @@ metadata:
 |-------|----------|
 | Codex / DSH / MiMo | `C:/Users/19163/.agents/skills/`（共享目录） |
 | Claude Code | `C:/Users/19163/.claude/skills/` |
-| Claude 桌面版 | 不直接加载技能目录；MCP 由 `install-skills.ps1` 自动注册到 `%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\claude_desktop_config.json`（MSIX 重定向路径，当前仅 multi-agent-bridge），重启桌面版生效 |
+| Claude 桌面版 | 不读取本地技能目录：其 Skills 页走账号云同步（`Add skill` 上传 ZIP 或在 claude.ai/customize/skills 管理）。MCP 由 `install-skills.ps1` 自动注册到 `claude_desktop_config.json`（当前部署为 3p 模式，配置在 `%LOCALAPPDATA%\Claude-3p\`；标准 MSIX 备用路径同脚本），重启桌面版生效 |
 
 ### 4.2 安装方式
 

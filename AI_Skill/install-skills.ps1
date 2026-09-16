@@ -141,18 +141,27 @@ if ($installFailures.Count -gt 0) {
     throw "有 $($installFailures.Count) 项技能同步失败：$($installFailures -join '; ')"
 }
 
-# Claude 桌面版（MSIX）MCP 接入：把共享 MCP（multi-agent-bridge）注册进
-# claude_desktop_config.json。幂等——配置文件存在才处理；已有同名条目且
-# 指向一致时跳过，用户手工改过的其他键一律保留。
-$desktopConfigPath = Join-Path $env:LOCALAPPDATA "Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\claude_desktop_config.json"
+# Claude 桌面版 MCP 接入：把共享 MCP（multi-agent-bridge）注册进
+# claude_desktop_config.json。桌面版存在两种部署：
+# - 3p 模式（deploymentMode: "3p"，经网关认证）读 %LOCALAPPDATA%\Claude-3p\
+# - 标准 MSIX 读 %LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\
+# 两处配置都存在时以 3p 为准（当前生效实例），其余位置同样注册但优先级低。
+# 幂等——配置文件存在才处理；已有同名条目且指向一致时跳过，用户手工改过的键一律保留。
 $bridgeServerPath = "D:\Work\AI-Development\multi-agent-bridge\dist\server.js"
 $desktopMcpTarget = @{
     command = "node"
     args    = @($bridgeServerPath)
     env     = @{ MAB_ORIGIN_AGENT = "claude-desktop" }
 }
+$desktopConfigPaths = @(
+    (Join-Path $env:LOCALAPPDATA "Claude-3p\claude_desktop_config.json"),
+    (Join-Path $env:LOCALAPPDATA "Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\claude_desktop_config.json")
+)
 
-if (Test-Path -LiteralPath $desktopConfigPath) {
+foreach ($desktopConfigPath in $desktopConfigPaths) {
+    if (-not (Test-Path -LiteralPath $desktopConfigPath)) {
+        continue
+    }
     try {
         $desktopConfig = Get-Content $desktopConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
         $existing = $desktopConfig.mcpServers.'multi-agent-bridge'
@@ -161,7 +170,7 @@ if (Test-Path -LiteralPath $desktopConfigPath) {
             -and @($existing.args) -eq $bridgeServerPath
 
         if ($alreadySame) {
-            Write-Host "Claude 桌面版 MCP：multi-agent-bridge 已注册，跳过" -ForegroundColor DarkGray
+            Write-Host "Claude 桌面版 MCP：multi-agent-bridge 已注册，跳过（$desktopConfigPath）" -ForegroundColor DarkGray
         } elseif (-not (Test-Path -LiteralPath $bridgeServerPath)) {
             Write-Host "Claude 桌面版 MCP：找不到 $bridgeServerPath，跳过注册" -ForegroundColor Yellow
         } else {
@@ -173,9 +182,10 @@ if (Test-Path -LiteralPath $desktopConfigPath) {
             Write-Host "Claude 桌面版 MCP：已注册 multi-agent-bridge（重启 Claude 桌面版生效）" -ForegroundColor Green
         }
     } catch {
-        Write-Host "Claude 桌面版 MCP 注册失败：$($_.Exception.Message)" -ForegroundColor Yellow
+        Write-Host "Claude 桌面版 MCP 注册失败（$desktopConfigPath）：$($_.Exception.Message)" -ForegroundColor Yellow
     }
-} else {
+}
+if (-not ($desktopConfigPaths | Where-Object { Test-Path -LiteralPath $_ })) {
     Write-Host "Claude 桌面版：未检测到配置文件，跳过 MCP 注册" -ForegroundColor DarkGray
 }
 
