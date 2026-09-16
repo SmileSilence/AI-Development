@@ -1,4 +1,4 @@
-# AI技能一键安装脚本
+﻿# AI技能一键安装脚本
 # 仓库根目录用法：pwsh -File .\AI_Skill\install-skills.ps1 [-UseSymlink] [-Force] [-KeepCodexCopies] [-RecommendedOnly]
 
 param(
@@ -21,8 +21,8 @@ if (-not (Test-Path $manifestPath)) {
     exit 1
 }
 
-# 读取清单
-$manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
+# 读取清单（显式 UTF-8：Windows PowerShell 5.1 默认按 ANSI 读取会把中文 JSON 读碎）
+$manifest = Get-Content $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $skills = $manifest.skills
 $allSkillCount = $skills.Count
 if ($RecommendedOnly) {
@@ -139,6 +139,44 @@ if (-not $KeepCodexCopies) {
 
 if ($installFailures.Count -gt 0) {
     throw "有 $($installFailures.Count) 项技能同步失败：$($installFailures -join '; ')"
+}
+
+# Claude 桌面版（MSIX）MCP 接入：把共享 MCP（multi-agent-bridge）注册进
+# claude_desktop_config.json。幂等——配置文件存在才处理；已有同名条目且
+# 指向一致时跳过，用户手工改过的其他键一律保留。
+$desktopConfigPath = Join-Path $env:LOCALAPPDATA "Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\claude_desktop_config.json"
+$bridgeServerPath = "D:\Work\AI-Development\multi-agent-bridge\dist\server.js"
+$desktopMcpTarget = @{
+    command = "node"
+    args    = @($bridgeServerPath)
+    env     = @{ MAB_ORIGIN_AGENT = "claude-desktop" }
+}
+
+if (Test-Path -LiteralPath $desktopConfigPath) {
+    try {
+        $desktopConfig = Get-Content $desktopConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $existing = $desktopConfig.mcpServers.'multi-agent-bridge'
+        $alreadySame = $null -ne $existing `
+            -and $existing.command -eq $desktopMcpTarget.command `
+            -and @($existing.args) -eq $bridgeServerPath
+
+        if ($alreadySame) {
+            Write-Host "Claude 桌面版 MCP：multi-agent-bridge 已注册，跳过" -ForegroundColor DarkGray
+        } elseif (-not (Test-Path -LiteralPath $bridgeServerPath)) {
+            Write-Host "Claude 桌面版 MCP：找不到 $bridgeServerPath，跳过注册" -ForegroundColor Yellow
+        } else {
+            if ($null -eq $desktopConfig.mcpServers) {
+                $desktopConfig | Add-Member -MemberType NoteProperty -Name mcpServers -Value ([pscustomobject]@{}) -Force
+            }
+            $desktopConfig.mcpServers | Add-Member -MemberType NoteProperty -Name 'multi-agent-bridge' -Value ([pscustomobject]$desktopMcpTarget) -Force
+            $desktopConfig | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $desktopConfigPath -Encoding UTF8
+            Write-Host "Claude 桌面版 MCP：已注册 multi-agent-bridge（重启 Claude 桌面版生效）" -ForegroundColor Green
+        }
+    } catch {
+        Write-Host "Claude 桌面版 MCP 注册失败：$($_.Exception.Message)" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "Claude 桌面版：未检测到配置文件，跳过 MCP 注册" -ForegroundColor DarkGray
 }
 
 Write-Host "安装完成！" -ForegroundColor Green
