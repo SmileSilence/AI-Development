@@ -1,0 +1,7 @@
+# smilexx-model-enhancer bundle patch
+# Client plugin injecting per-model capability toggles into the Models settings page
+# Applied when this bundle appears in a profile's dsh.profile.bundles list
+
+- insert:
+    - id: smilexx-model-enhancer
+      name: 'smilexx-model-enhancer'
