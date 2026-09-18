@@ -1,0 +1,25 @@
+name: smilexx-multi-agent-bridge
+description: 使用本地 MCP 在 Codex、Claude 与 DSH 之间进行双向任务委派、并行分析和隔离开发。
+
+metadata:
+  version: "v1"
+  publisher: "SmileXX"
+  category: AI工具
+  platforms: ["OpenAI/Codex", "DSH", "Claude"]
+  keywords: [agent, delegation, orchestration, mcp]
+
+interface:
+  display_name: "Multi-Agent Bridge"
+  short_description: "让 Codex、Claude、DSH 互相委派任务"
+  default_prompt: |
+    使用 Multi-Agent Bridge 将适合的子任务委派给其他 Agent，等待结果后审查并汇总。
+  hidden: false
+
+invocation: auto
+
+permissions:
+  - file_system: read_write
+
+compatibility:
+  codex_version: ">=2.0.0"
+  agents_md_spec: ">=0.8.0"
