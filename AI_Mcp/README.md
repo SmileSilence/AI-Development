@@ -20,4 +20,10 @@ AI_Mcp/
 └── <mcp-project>/                  # 具体 MCP 服务或配置
 ```
 
-当前目录暂未收录具体 MCP 服务；新增内容时应同时更新本说明文档。
+## 已实现服务
+
+| 服务 | 位置 | 说明 |
+|------|------|------|
+| `multi-agent-bridge` | `../multi-agent-bridge/` | Codex、Claude、DSH 任意主控的异步委派、状态查询和 Git worktree 隔离执行层 |
+
+MCP 源码保留在仓库一级目录，便于与 `AI_Skill/` 中的共享编排 Skill 和 DSH 诊断工具共同维护；本目录负责 MCP 分类索引。

@@ -1,0 +1,25 @@
+name: smilexx-blender-link
+description: 驱动本机 Blender 建模/场景/渲染自动化（Agent Link TCP 链路，新电脑一键安装）。
+metadata:
+  version: "v1"
+  publisher: "SmileXX"
+  category: AI工具
+  platforms: ["OpenAI/Codex", "DSH", "Claude"]
+  keywords: [blender, 3d, 建模, 渲染, agent-link, 自动化]
+
+interface:
+  display_name: "Blender Agent Link"
+  short_description: "Blender 建模渲染自动化链路（含新机一键安装）"
+  default_prompt: |
+    # 技能名称: smilexx-blender-link
+    # 功能: 通过 127.0.0.1:9876 在 Blender 主线程执行 Python，实现建模、场景、材质、渲染自动化
+    # 使用场景: 首次在本机使用先运行 scripts/install-agent-link.ps1 安装链路并重启 Blender；
+    #           日常用 scripts/blink.ps1 -Ping 探活、-File 执行脚本，返回值赋给 __result__
+  hidden: false
+
+invocation: auto
+
+permissions:
+  - file_system: read_write
+  - network: read
+  - process: execute

@@ -3,7 +3,7 @@ name: smilexx-dsh-plugin-creator
 description: 创建、修改、调试和验证 DSH 可安装插件包与 Cordis 会话内动态插件；涉及插件打包、服务、工具、界面插槽或 cordis_define/run 时使用。
 metadata:
   publisher: SmileXX
-  version: "1.3.0"
+  version: "1.5.0"
   short-description: DSH 插件包与 Cordis 动态插件开发
   category: 插件开发
   platforms: [DSH, Claude, OpenAI/Codex]
@@ -42,7 +42,9 @@ metadata:
 4. **分离业务与展示**：业务返回值保持类型正确、无损且可供程序使用；模型文本、界面摘要和持久化事件分别限制大小。只从内部实时对象读取必要字段，再构造自己拥有的 JSON。
 5. **按需验证**：覆盖本次涉及的运行模式和安装边界；用真实挂载、卸载、浏览器交互或回放验证相应行为。静态检查不能证明真实宿主兼容。
 6. **遵循项目标准**：说明、界面和代码注释使用中文，文件名与代码标识符使用英文；发布版本采用语义化版本。外部发布、审批和运行权限沿用用户授权及目标平台机制。
-7. **保持横向兼容**：开发或修改插件时不影响其他已装插件——不污染全局作用域、不覆盖共享工具/事件/插槽/服务/主题、不修改共享配置与其他插件文件；变更后验证其他插件功能不受影响。详细清单见[兼容性规范](references/compatibility.md)。
+7. **统一自有插件命名**：SmileXX 自有 DSH 插件的 npm 包名、Cordis 实例 ID、Host 插件名及所有对外标识必须使用 `smilexx-` 前缀；插件内部派生标识以完整插件 ID 继续前缀化。禁止使用无归属的通用名称，例如 `notification-manager`、`settings` 或 `notifications`。
+8. **保持横向兼容**：开发或修改插件时不影响其他已装插件——不污染全局作用域、不覆盖共享工具/事件/插槽/服务/主题、不修改共享配置与其他插件文件；变更后验证其他插件功能不受影响。详细清单见[兼容性规范](references/compatibility.md)。
+9. **守住宿主依赖边界**：不得仅因类型引用或构建需要，把 DSH 已提供的核心、Cordis、Controller 或 Client 能力重复装入插件运行依赖。按目标版本的模块加载契约选择 `devDependencies`、`peerDependencies` 与构建 `external`，并以最终安装包在真实 profile 中启动验证。详细流程见[插件包开发](references/package-development.md)。
 
 ## 使用示例
 
@@ -62,6 +64,14 @@ metadata:
 ## 来源与维护
 
 动态流程改编自 DeepSeek 官方 `cordis-plugin-development`，保留 MIT 许可；原文出处、固定提交与合并边界见[来源记录](references/sources.md)。插件包流程来自本地既有技能，适配时按目标版本核实。
+
+### 1.5.0（2026-09-11）
+
+补充宿主依赖边界、React 外部存储订阅绑定、插件改名升级清理、安装态哈希与启动验证，以及浏览器通知等活动对象的生命周期要求。
+
+### 1.4.0（2026-09-11）
+
+新增 SmileXX 自有 DSH 插件强制使用 `smilexx-` 前缀的命名规则，并要求所有派生对外标识继续以前缀隔离。
 
 ### 1.3.0（2026-09-11）
 

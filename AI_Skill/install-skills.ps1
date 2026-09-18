@@ -148,10 +148,11 @@ if ($installFailures.Count -gt 0) {
 # 两处配置都存在时以 3p 为准（当前生效实例），其余位置同样注册但优先级低。
 # 幂等——配置文件存在才处理；已有同名条目且指向一致时跳过，用户手工改过的键一律保留。
 $bridgeServerPath = "D:\Work\AI-Development\multi-agent-bridge\dist\server.js"
+$bridgeNodePath = if ($null -ne (Get-Command node -ErrorAction SilentlyContinue)) { (Get-Command node).Source } else { "node" }
 $desktopMcpTarget = @{
-    command = "node"
+    command = $bridgeNodePath
     args    = @($bridgeServerPath)
-    env     = @{ MAB_ORIGIN_AGENT = "claude-desktop" }
+    env     = @{ MAB_ORIGIN_AGENT = "claude" }
 }
 $desktopConfigPaths = @(
     (Join-Path $env:LOCALAPPDATA "Claude-3p\claude_desktop_config.json"),
@@ -167,7 +168,8 @@ foreach ($desktopConfigPath in $desktopConfigPaths) {
         $existing = $desktopConfig.mcpServers.'multi-agent-bridge'
         $alreadySame = $null -ne $existing `
             -and $existing.command -eq $desktopMcpTarget.command `
-            -and @($existing.args) -eq $bridgeServerPath
+            -and @($existing.args) -eq $bridgeServerPath `
+            -and $existing.env.MAB_ORIGIN_AGENT -eq "claude"
 
         if ($alreadySame) {
             Write-Host "Claude 桌面版 MCP：multi-agent-bridge 已注册，跳过（$desktopConfigPath）" -ForegroundColor DarkGray
@@ -178,6 +180,7 @@ foreach ($desktopConfigPath in $desktopConfigPaths) {
                 $desktopConfig | Add-Member -MemberType NoteProperty -Name mcpServers -Value ([pscustomobject]@{}) -Force
             }
             $desktopConfig.mcpServers | Add-Member -MemberType NoteProperty -Name 'multi-agent-bridge' -Value ([pscustomobject]$desktopMcpTarget) -Force
+            Copy-Item -LiteralPath $desktopConfigPath -Destination "$desktopConfigPath.bak" -Force
             $desktopConfig | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $desktopConfigPath -Encoding UTF8
             Write-Host "Claude 桌面版 MCP：已注册 multi-agent-bridge（重启 Claude 桌面版生效）" -ForegroundColor Green
         }

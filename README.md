@@ -9,7 +9,7 @@
 | `AI_Skill/` | AI 技能 | 管理 SmileXX 自有技能、第三方技能索引与跨 Agent 安装 | 设计文档、技能清单、Excel 表格、安装清单、安装脚本、具体技能源码 |
 | `AI_Mcp/` | MCP 服务 | 管理 MCP（模型上下文协议）服务、配置与接入资料 | 分类说明；后续可存放服务清单、配置文档、安装脚本和具体 MCP 项目 |
 | `AI_Plugins/` | AI 插件 | 按 Agent 平台管理 SmileXX 自有插件和第三方插件资料 | 平台说明、插件分类、本地第三方源码与后续插件清单 |
-| `hermes-dsh-bridge/` | 协作桥工具集 | Hermes⇄DSH 协作桥：RPC 客户端、任务流程、监管器与文档 | 共享任务文件、工具脚本、交接说明 |
+| `multi-agent-bridge/` | 多 Agent MCP | 任意 Agent 可作为根协调器的本地协作执行层 | TypeScript MCP、SQLite 队列、Agent 适配器、共享 Skill 与安装脚本 |
 | `scripts/` | 自动化运维脚本 | 工作区日常自动维护（临时/缓存/产物白名单清理） | 自动清理脚本与配套说明 |
 
 ## 仓库结构
@@ -35,12 +35,12 @@ AI-Development/
 │       ├── README.md               # DSH 插件分类说明
 │       ├── OtherPlugin/            # 第三方插件本地工作区
 │       └── SmilePlugin/            # SmileXX 自有插件源码
-├── hermes-dsh-bridge/              # Hermes⇄DSH 协作桥工具集
-│   ├── README.md                   # 协作桥说明
-│   ├── inbox/                      # 各代理待办任务
-│   ├── outbox/                     # 各代理执行结果
-│   ├── shared/                     # 任务文件与 DELEGATE.md
-│   └── tools/                      # RPC/流程/监管工具脚本
+├── multi-agent-bridge/             # 通用多 Agent MCP 执行层
+│   ├── src/                        # MCP、队列、worker 与 Agent 适配器
+│   ├── test/                       # 服务、MCP 与 worktree 测试
+│   ├── tools/                      # DSH 适配诊断与兼容脚本
+│   ├── install.ps1                 # 三端注册与共享 Skill 安装
+│   └── uninstall.ps1               # 安全注销与运行数据清理
 └── scripts/                        # 自动化运维脚本
     └── auto-clean.ps1              # 每日 0 点清理临时/缓存/产物（错过则开机补跑）
 ```
@@ -49,6 +49,7 @@ AI-Development/
 
 - AI 技能的设计、清单、安装和维护：查看 [`AI_Skill/README.md`](AI_Skill/README.md)
 - MCP 服务的分类规则：查看 [`AI_Mcp/README.md`](AI_Mcp/README.md)
+- 多 Agent 协作服务：查看 [`multi-agent-bridge/README.md`](multi-agent-bridge/README.md)
 - AI 插件的平台分类与维护规则：查看 [`AI_Plugins/README.md`](AI_Plugins/README.md)
 
 ## 管理原则
@@ -62,7 +63,9 @@ AI-Development/
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-17 | v13 | multi-agent-bridge 升级为可由 Codex、Claude、DSH 任意主控调用的本地 MCP，并增加共享 Skill 与三端安装器 |
 | 2026-09-10 | v11 | 新增 scripts/ 自动化运维目录与 auto-clean.ps1（每日 0 点清理工作区临时/缓存/产物，错过计划时间则开机后补跑，配套计划任务 AI-Dev-AutoClean） |
-| 2026-09-09 | v10 | 根目录收录 hermes-dsh-bridge 协作桥工具集；同步 SmilePlugin 插件索引（dsh-input-enhancer / dsh-plugin-manager 纳入、enhancer 版本更新） |
+| 2026-09-16 | v12 | 协作桥更名为 multi-agent-bridge，移除 Hermes 专属依赖并泛化为多 Agent 协作工具集 |
+| 2026-09-09 | v10 | 根目录收录协作桥工具集；同步 SmilePlugin 插件索引（dsh-input-enhancer / dsh-plugin-manager 纳入、enhancer 版本更新） |
 | 2026-08-29 | v9 | 新增 AI_Plugins 分类，并补充 DSH 自有插件与第三方插件的目录规范 |
 | 2026-08-29 | v8 | 根目录改为分类导航；技能相关文档、表格、清单和脚本统一归入 AI_Skill；补充 AI_Mcp 分类说明 |

@@ -4,8 +4,8 @@ description: 全局简体中文配置与 AI Agent 管理；安装后自动生效
 metadata:
   publisher: SmileXX
   short-description: 全局中文配置与 Agent 管理
-  version: "v21"
-  last-updated: "2026-09-11"
+  version: "v23.2"
+  last-updated: "2026-09-17"
   category: 全局配置
   platforms: [DSH, Claude, OpenAI/Codex, Gemini]
   keywords: [config, global, AI, agent, Chinese]
@@ -151,6 +151,8 @@ metadata:
 | Claude Code | `claude`（交互）或 `claude -p <提示>`（非交互） | npm 全局安装，`claude.ps1` |
 | Gemini CLI | `gemini` | 配置目录 `%USERPROFILE%\.gemini` |
 
+跨 Agent 委派、并行评审、交叉验证和隔离开发统一使用 `smilexx-multi-agent-bridge` Skill 及其 MCP 工具；本技能只保留通用启动规则、文件卫生和会话同步，不重复实现任务路由。
+
 ### F. 文件卫生规则（必须遵守）
 
 1. **建临时目录**：开始任何 agent 任务前，先在**对应项目目录**内创建任务临时目录：
@@ -235,6 +237,9 @@ powershell -File scripts/sync-agent-sessions.ps1 -Mode Import -Source Codex -Tar
 6. **原始会话只读**：不得修改或删除 `.claude\projects`、`.dsh\sessions`、`.codex\sessions` 内的原始会话。
 7. **先检测后导入**：未被 Codex 原生检测器返回的会话不得强制写入。
 8. **版本兼容**：Codex App Server 属于高级接口；接口不兼容时停止并改用官方“设置 → 导入”或 `/import`。
+9. **PowerShell 脚本编码**：含中文注释的 .ps1 必须保存为带 BOM 的 UTF-8——Windows PowerShell 5.1（含 DSH harness 外壳）对无 BOM 文件按 ANSI/GBK 解析，中文字符串会碎成语法错误；用 agent 写文件工具重写脚本后须重新补 BOM。
+10. **重命名后的补丁路径**：项目目录重命名后，当前 Codex 任务的补丁工具可能仍绑定原工作区根目录；修改前先核对实际项目路径，并对迁移后的文件使用绝对路径，完成后同时检查旧、新目录，避免补丁误写回空的旧目录。
+11. **跨进程中文输出编码**：Windows 子进程通过 Python wrapper 返回中文时，不能依赖系统默认代码页；涉及 Agent 摘要、日志或 RPC 结果时，必须显式设置 `PYTHONIOENCODING=utf-8` 或调用 `sys.stdout/stderr.reconfigure(encoding="utf-8")`，并用真实中文任务检查最终日志。
 
 ## 示例
 
@@ -284,7 +289,11 @@ def calculate_total(items):
 
 | 日期 | 版本 | 变更说明 |
 |------|------|----------|
+| 2026-09-17 | v23.2 | 经验回写：Windows Python 子进程默认代码页会污染中文 Agent 摘要；跨进程输出必须显式使用 UTF-8，并做真实链路验证 |
+| 2026-09-17 | v23.1 | 经验回写：项目目录重命名后补丁工具可能仍绑定旧任务根目录；应核对实际路径、使用绝对路径，并检查旧新目录防止误写 |
+| 2026-09-17 | v23 | 新增跨 Agent 委派路由：统一交由 smilexx-multi-agent-bridge Skill 与 MCP 执行，本技能继续负责通用规则和会话同步 |
 | 2026-09-11 | v21 | 新增「技能经验回写」规则：使用技能中遇到的问题、被用户纠正或自查发现的错误，须及时将原错误之处与正确方法回写对应技能并同步安装目录 |
+| 2026-09-16 | v22 | 经验回写：Windows PowerShell 5.1 对无 BOM 的 UTF-8 脚本按系统 ANSI 解析，含中文注释的 .ps1 必须带 UTF-8 BOM；DSH harness 外壳与未装 pwsh 7 的机器均按 PS 5.1 行为解析，AI_Skill/install-skills.ps1 已补 BOM |
 | 2026-09-10 | v20 | 新增设计与规划阶段主动澄清规则：先查明可发现事实；关键疑问必须询问用户，并说明提问原因及其对方案决策的影响 |
 | 2026-09-06 | v19 | 技能遵循规则新增「规划先检查」：创建计划（plan 模式）前，先检查是否存在相关技能或相关文档，计划必须满足技能/文档要求 |
 | 2026-09-06 | v18 | 文件卫生规则改为项目内临时目录：任务运行中产生的临时文件统一放入对应项目目录内 `Temp\` 文件夹并在结束后自动删除（替换原 Downloads\anget-tmp 方案，会话同步等专项临时目录保留）；文档规范补充报告文档归档到 `<项目目录>\docs\reports\` |

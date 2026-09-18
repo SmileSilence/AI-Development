@@ -1,7 +1,7 @@
 {
   "install_dir": "$USERPROFILE/.agents/skills",
   "source_dir": "SmlieSkills",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "skills": [
     {
       "name": "smilexx-coding-workflow",
@@ -64,6 +64,27 @@
       "publisher": "SmileXX",
       "default_install": true,
       "description": "开发 Unity 插件或 Package；涉及 asmdef、编辑器扩展、Inspector 或 ScriptableObject 时使用。",
+      "source": "local"
+    },
+    {
+      "name": "smilexx-blender-link",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "驱动本机 Blender 进行建模、场景、材质、渲染等自动化操作（Agent Link TCP 链路，含新电脑一键安装）。",
+      "source": "local"
+    },
+    {
+      "name": "smilexx-photoshop-link",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "驱动本机 Photoshop 进行绘图、修图、批量处理等自动化操作（COM/DoJavaScript 链路）。",
+      "source": "local"
+    },
+    {
+      "name": "smilexx-multi-agent-bridge",
+      "publisher": "SmileXX",
+      "default_install": true,
+      "description": "跨 Agent 委派与并行协作；支持 Codex、Claude、DSH 任意一方作为协调器调用其他 Agent。",
       "source": "local"
     }
   ]

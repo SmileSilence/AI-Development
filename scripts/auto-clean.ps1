@@ -5,7 +5,7 @@
 #
 # 安全设计：
 #   - 只处理下方白名单中的绝对路径，且断言路径位于 $Workspace 之内；
-#   - 绝不触碰源码、文档、AI_App/、各 node_modules/、hermes 跟踪文件；
+#   - 绝不触碰源码、文档、AI_App/、各 node_modules/、Agent 跟踪文件；
 #   - 被占用的文件（如 DSH 运行时锁定的硬链接）删除失败仅记录，不中断、不重试其他方式。
 #
 # 用法：
@@ -108,13 +108,12 @@ Get-ChildItem -Path (Join-Path $Workspace 'AI_Plugins\DSH\SmilePlugin') -Recurse
     Where-Object { $_.Name -match '^\.m\d+-evidence$' } |
     ForEach-Object { Remove-One $_.FullName }
 
-# 5. hermes-dsh-bridge 运行时产物
-Remove-One (Join-Path $Workspace 'hermes-dsh-bridge\logs')
-Remove-One (Join-Path $Workspace 'hermes-dsh-bridge\outbox')
-Remove-One (Join-Path $Workspace 'hermes-dsh-bridge\shared\dsh-watchdog.log')
-Remove-One (Join-Path $Workspace 'hermes-dsh-bridge\shared\dsh-watchdog.pid')
-Remove-One (Join-Path $Workspace 'hermes-dsh-bridge\shared\hermes-export.jsonl')
-Get-ChildItem -Path (Join-Path $Workspace 'hermes-dsh-bridge\shared') -Filter 'task-*.md' -File -ErrorAction SilentlyContinue | ForEach-Object { Remove-One $_.FullName }
+# 5. multi-agent-bridge 运行时产物
+Remove-One (Join-Path $Workspace 'multi-agent-bridge\logs')
+Remove-One (Join-Path $Workspace 'multi-agent-bridge\outbox')
+Remove-One (Join-Path $Workspace 'multi-agent-bridge\shared\dsh-watchdog.log')
+Remove-One (Join-Path $Workspace 'multi-agent-bridge\shared\dsh-watchdog.pid')
+Get-ChildItem -Path (Join-Path $Workspace 'multi-agent-bridge\shared') -Filter 'task-*.md' -File -ErrorAction SilentlyContinue | ForEach-Object { Remove-One $_.FullName }
 
 # 6. Python 缓存
 Remove-PythonCache

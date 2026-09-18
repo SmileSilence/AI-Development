@@ -1,0 +1,25 @@
+name: smilexx-photoshop-link
+description: 驱动本机 Photoshop 绘图/修图/批量处理自动化（COM/DoJavaScript，纯客户端即开即用）。
+metadata:
+  version: "v1"
+  publisher: "SmileXX"
+  category: AI工具
+  platforms: ["OpenAI/Codex", "DSH", "Claude"]
+  keywords: [photoshop, ps, com, extendscript, 绘图, 修图, 自动化]
+
+interface:
+  display_name: "Photoshop Link"
+  short_description: "Photoshop COM 自动化链路（装了 PS 即可用）"
+  default_prompt: |
+    # 技能名称: smilexx-photoshop-link
+    # 功能: 通过 COM 接口 Photoshop.Application 执行 ExtendScript，实现绘图、修图、批量处理、导出自动化
+    # 使用场景: 先 scripts/ps-exec.ps1 -Ping 建链；写 jsx 脚本后用 -File 执行，末行表达式即返回值；
+    #           PS 2026 脚本限制（路径 API/executeAction/select 形式）见 references/photoshop-link.md
+  hidden: false
+
+invocation: auto
+
+permissions:
+  - file_system: read_write
+  - network: read
+  - process: execute
